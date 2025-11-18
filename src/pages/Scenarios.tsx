@@ -44,7 +44,7 @@ const Scenarios = () => {
   const scenarios: Scenario[] = [
     {
       id: "celebrity",
-      title: "Sophie Marceau",
+      title: "Mio Khalifo",
       description: "Collaboration vérifiée",
       icon: (
         <div className="relative">
