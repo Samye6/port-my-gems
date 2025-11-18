@@ -22,6 +22,9 @@ interface Scenario {
   title: string;
   description: string;
   icon: React.ReactNode;
+  detailedDescription: string;
+  photos: number;
+  videos: number;
 }
 
 const Scenarios = () => {
@@ -86,6 +89,9 @@ const Scenarios = () => {
       id: "celebrity",
       title: "Mio Khalifo",
       description: "Collaboration vérifiée",
+      detailedDescription: "Une star internationale qui cherche quelqu'un qui la comprend vraiment...",
+      photos: 150,
+      videos: 25,
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -97,6 +103,9 @@ const Scenarios = () => {
       id: "celebrity2",
       title: "Korinna Kopfa",
       description: "Collaboration vérifiée",
+      detailedDescription: "Une influenceuse qui partage ses moments les plus intimes avec toi...",
+      photos: 200,
+      videos: 30,
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -108,42 +117,63 @@ const Scenarios = () => {
       id: "colleague",
       title: "Collègue",
       description: "Tension au bureau",
+      detailedDescription: "Cette collègue qui te regarde différemment depuis la dernière réunion...",
+      photos: 45,
+      videos: 8,
       icon: <Users className="w-6 h-6" />,
     },
     {
       id: "stranger",
       title: "Inconnue",
       description: "Rencontre inattendue",
+      detailedDescription: "Cette mystérieuse inconnue croisée dans un bar qui n'arrête pas de te sourire...",
+      photos: 32,
+      videos: 5,
       icon: <Sparkles className="w-6 h-6" />,
     },
     {
       id: "ex",
       title: "L'Ex",
       description: "Le passé qui revient",
+      detailedDescription: "Ton ex qui revient dans ta vie avec de nouvelles intentions...",
+      photos: 60,
+      videos: 12,
       icon: <Heart className="w-6 h-6" />,
     },
     {
       id: "married",
       title: "Femme Mariée",
       description: "Relation interdite",
+      detailedDescription: "Une femme mariée qui cherche l'excitation que son couple ne lui offre plus...",
+      photos: 38,
+      videos: 7,
       icon: <Crown className="w-6 h-6" />,
     },
     {
       id: "boss",
       title: "La Patronne",
       description: "Une supérieure qui aime le pouvoir",
+      detailedDescription: "Ta patronne autoritaire qui aime mélanger travail et plaisir...",
+      photos: 55,
+      videos: 10,
       icon: <Briefcase className="w-6 h-6" />,
     },
     {
       id: "doctor",
       title: "Docteure",
       description: "Consultation privée",
+      detailedDescription: "Une docteure qui propose des consultations très... personnalisées...",
+      photos: 42,
+      videos: 9,
       icon: <Stethoscope className="w-6 h-6" />,
     },
     {
       id: "secretary",
       title: "Secrétaire",
       description: "Assistante dévouée",
+      detailedDescription: "Ta secrétaire qui ferait n'importe quoi pour te satisfaire...",
+      photos: 48,
+      videos: 11,
       icon: <ClipboardList className="w-6 h-6" />,
     },
   ];
@@ -266,26 +296,48 @@ const Scenarios = () => {
             const isClickable = isAuthenticated || isUnlocked;
             
             return (
-              <button
+              <div
                 key={scenario.id}
-                onClick={() => handleScenarioClick(scenario)}
-                disabled={!isClickable}
-                className={`relative aspect-square rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary transition-all hover:scale-105 animate-fade-in ${!isClickable ? "opacity-50 cursor-not-allowed" : ""}`}
+                className="relative aspect-square rounded-xl animate-fade-in group [perspective:1000px]"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                {shouldShowLock && (
-                  <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
-                    <Lock className="w-3 h-3 text-muted-foreground" />
+                <button
+                  onClick={() => handleScenarioClick(scenario)}
+                  disabled={!isClickable}
+                  className={`relative w-full h-full [transform-style:preserve-3d] transition-all duration-500 group-hover:[transform:rotateY(180deg)] ${!isClickable ? "cursor-not-allowed" : ""}`}
+                >
+                  {/* Front Face */}
+                  <div className={`absolute inset-0 rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] ${!isClickable ? "opacity-50" : ""}`}>
+                    {shouldShowLock && (
+                      <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
+                        <Lock className="w-3 h-3 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                      {scenario.icon}
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-semibold text-foreground text-sm mb-0.5">{scenario.title}</h3>
+                      <p className="text-xs text-muted-foreground">{scenario.description}</p>
+                    </div>
                   </div>
-                )}
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                {scenario.icon}
+
+                  {/* Back Face */}
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/30 p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                    <p className="text-[10px] text-foreground text-center leading-tight mb-2 line-clamp-4">
+                      {scenario.detailedDescription}
+                    </p>
+                    <div className="text-center space-y-1 mt-auto">
+                      <p className="text-[9px] text-muted-foreground">
+                        📸 {scenario.photos} photos
+                      </p>
+                      <p className="text-[9px] text-muted-foreground">
+                        🎬 {scenario.videos} vidéos
+                      </p>
+                    </div>
+                  </div>
+                </button>
               </div>
-              <div className="text-center">
-                <h3 className="font-semibold text-foreground text-sm mb-0.5">{scenario.title}</h3>
-                <p className="text-xs text-muted-foreground">{scenario.description}</p>
-              </div>
-            </button>
             );
           })}
         </div>
