@@ -329,12 +329,12 @@ const Scenarios = () => {
                         {scenario.detailedDescription}
                       </p>
                       <div className="space-y-1 pt-2">
-                        <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-                          <Camera className="w-3 h-3 text-primary" />
+                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 font-semibold">
+                          <Camera className="w-4 h-4 text-primary" />
                           {scenario.photos} photos
                         </p>
-                        <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-                          <Video className="w-3 h-3 text-primary" />
+                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 font-semibold">
+                          <Video className="w-4 h-4 text-primary" />
                           {scenario.videos} vidéos
                         </p>
                       </div>
