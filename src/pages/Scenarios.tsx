@@ -126,19 +126,19 @@ const Scenarios = () => {
 
       {/* Scenarios Grid */}
       <div className="p-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {scenarios.map((scenario, index) => (
             <button
               key={scenario.id}
               onClick={() => setSelectedScenario(scenario)}
-              className="aspect-square rounded-2xl bg-gradient-to-br from-card to-secondary border border-border p-4 flex flex-col items-center justify-center gap-3 hover:border-primary transition-all hover:scale-105 animate-fade-in"
+              className="aspect-square rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary transition-all hover:scale-105 animate-fade-in"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 {scenario.icon}
               </div>
               <div className="text-center">
-                <h3 className="font-semibold text-foreground mb-1">{scenario.title}</h3>
+                <h3 className="font-semibold text-foreground text-sm mb-0.5">{scenario.title}</h3>
                 <p className="text-xs text-muted-foreground">{scenario.description}</p>
               </div>
             </button>
