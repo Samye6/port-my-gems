@@ -33,8 +33,12 @@ const Scenarios = () => {
   const navigate = useNavigate();
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState<"all" | "verified" | "general">("all");
+  const [filter, setFilter] = useState<"all" | "verified" | "general" | "favorites">("all");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const saved = localStorage.getItem("favoriteScenarios");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -84,6 +88,19 @@ const Scenarios = () => {
 
   const isScenarioUnlocked = (scenarioId: string) => {
     return scenarioId === "colleague" || scenarioId === "doctor";
+  };
+
+  const toggleFavorite = (e: React.MouseEvent, scenarioId: string) => {
+    e.stopPropagation();
+    const newFavorites = favorites.includes(scenarioId)
+      ? favorites.filter((id) => id !== scenarioId)
+      : [...favorites, scenarioId];
+    setFavorites(newFavorites);
+    localStorage.setItem("favoriteScenarios", JSON.stringify(newFavorites));
+  };
+
+  const isFavorite = (scenarioId: string) => {
+    return favorites.includes(scenarioId);
   };
 
   const scenarios: Scenario[] = [
@@ -234,6 +251,7 @@ const Scenarios = () => {
     if (filter === "all") return matchesSearch;
     if (filter === "verified") return matchesSearch && (scenario.id === "celebrity" || scenario.id === "celebrity2");
     if (filter === "general") return matchesSearch && scenario.id !== "celebrity" && scenario.id !== "celebrity2";
+    if (filter === "favorites") return matchesSearch && isFavorite(scenario.id);
     
     return matchesSearch;
   });
@@ -304,6 +322,15 @@ const Scenarios = () => {
           >
             Général
           </Button>
+          <Button
+            size="sm"
+            variant={filter === "favorites" ? "default" : "outline"}
+            onClick={() => setFilter("favorites")}
+            className="flex-1"
+          >
+            <Heart className="w-3 h-3 mr-1" />
+            Favoris
+          </Button>
         </div>
       </div>
 
@@ -328,10 +355,19 @@ const Scenarios = () => {
                 >
                   {/* Front Face */}
                   <div className={`absolute inset-0 rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] ${!isClickable ? "opacity-50" : ""}`}>
-                    {shouldShowLock && (
+                    {shouldShowLock ? (
                       <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
                         <Lock className="w-3 h-3 text-muted-foreground" />
                       </div>
+                    ) : (
+                      <button
+                        onClick={(e) => toggleFavorite(e, scenario.id)}
+                        className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10 hover:bg-background transition-colors"
+                      >
+                        <Heart 
+                          className={`w-3 h-3 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
+                        />
+                      </button>
                     )}
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                       {scenario.icon}
