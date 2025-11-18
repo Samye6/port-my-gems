@@ -38,8 +38,11 @@ All colors MUST be HSL.
 
     --radius: 1rem;
 
-    --chat-user: 338 20% 25%;
-    --chat-ai: 0 0% 11%;
+    --chat-user: 338 100% 65%;
+    --chat-ai: 0 0% 15%;
+    
+    --lydia-pink: 338 100% 65%;
+    --conversation-hover: 0 0% 13%;
 
     --sidebar-background: 0 0% 11%;
     --sidebar-foreground: 0 0% 100%;

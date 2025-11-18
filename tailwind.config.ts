@@ -61,6 +61,8 @@ export default {
           user: "hsl(var(--chat-user))",
           ai: "hsl(var(--chat-ai))",
         },
+        "lydia-pink": "hsl(var(--lydia-pink))",
+        "conversation-hover": "hsl(var(--conversation-hover))",
       },
       borderRadius: {
         lg: "var(--radius)",

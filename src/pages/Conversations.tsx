@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Plus } from "lucide-react";
+import { Search, MoreVertical, Pin, Archive, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import PageHeader from "@/components/PageHeader";
 import BottomNav from "@/components/BottomNav";
 
@@ -13,109 +19,256 @@ interface Conversation {
   lastMessage: string;
   time: string;
   unread?: number;
+  isPinned?: boolean;
+  isRead?: boolean;
 }
 
 const Conversations = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-
-  const conversations: Conversation[] = [
+  const [activeTab, setActiveTab] = useState("all");
+  const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: "1",
       name: "Sarah",
       lastMessage: "Je t'attends dans mon bureau...",
-      time: "Il y a 5 min",
+      time: "15:32",
       unread: 2,
+      isPinned: true,
+      isRead: false,
     },
     {
       id: "2",
       name: "Emma",
       lastMessage: "Tu as aimé notre conversation ?",
-      time: "Il y a 1h",
+      time: "14:20",
+      isPinned: false,
+      isRead: true,
     },
-  ];
+    {
+      id: "3",
+      name: "Sofia",
+      lastMessage: "À ce soir alors... 😘",
+      time: "12:45",
+      isPinned: true,
+      isRead: false,
+      unread: 1,
+    },
+  ]);
+
+  const togglePin = (id: string) => {
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === id ? { ...conv, isPinned: !conv.isPinned } : conv
+      )
+    );
+  };
+
+  const archiveConversation = (id: string) => {
+    setConversations((prev) => prev.filter((conv) => conv.id !== id));
+  };
+
+  const deleteConversation = (id: string) => {
+    setConversations((prev) => prev.filter((conv) => conv.id !== id));
+  };
+
+  const filteredConversations = conversations.filter((conv) => {
+    const matchesSearch = conv.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    if (activeTab === "unread") {
+      return matchesSearch && !conv.isRead;
+    }
+    return matchesSearch;
+  });
+
+  const pinnedConversations = filteredConversations
+    .filter((conv) => conv.isPinned)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const unpinnedConversations = filteredConversations
+    .filter((conv) => !conv.isPinned)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const sortedConversations = [...pinnedConversations, ...unpinnedConversations];
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-24">
       <PageHeader />
 
       {/* Search Bar */}
-      <div className="px-4 py-4 bg-card/30">
+      <div className="px-4 py-3 bg-card/30">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Rechercher une conversation..."
-            className="pl-10 bg-secondary border-border"
+            placeholder="Rechercher..."
+            className="pl-10 bg-secondary/50 border-border rounded-xl"
           />
         </div>
       </div>
 
-      {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto">
-        {conversations.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Plus className="w-10 h-10 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              Aucune conversation
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              Commencez une nouvelle conversation pour découvrir Lydia
-            </p>
-            <Button
-              onClick={() => navigate("/scenarios")}
-              className="bg-primary hover:bg-primary/90"
+      {/* Tabs */}
+      <div className="px-4 py-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="bg-transparent gap-2 p-0 h-auto">
+            <TabsTrigger
+              value="all"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 text-sm font-medium border border-border data-[state=inactive]:border-muted data-[state=inactive]:bg-transparent"
             >
-              Nouvelle conversation
-            </Button>
+              Toutes
+            </TabsTrigger>
+            <TabsTrigger
+              value="unread"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 py-1.5 text-sm font-medium border border-border data-[state=inactive]:border-muted data-[state=inactive]:bg-transparent"
+            >
+              Non lues
+            </TabsTrigger>
+          </TabsList>
+
+          <div className="flex items-center gap-2 mt-3 mb-2 ml-1">
+            <Archive className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Archivées</span>
           </div>
-        ) : (
-          <div>
-            {conversations.map((conv) => (
-              <button
-                key={conv.id}
-                onClick={() => navigate(`/chat/${conv.id}`)}
-                className="w-full p-4 flex items-center gap-4 border-b border-border hover:bg-secondary/50 transition-all duration-300 animate-fade-in"
-              >
-                <Avatar className="w-14 h-14">
-                  <AvatarFallback className="bg-primary/20 text-primary text-lg">
-                    {conv.name[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 text-left">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-foreground">{conv.name}</h3>
-                    <span className="text-xs text-muted-foreground">{conv.time}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground truncate max-w-[200px]">
-                      {conv.lastMessage}
-                    </p>
-                    {conv.unread && (
-                      <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-full min-w-[20px] text-center">
-                        {conv.unread}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+
+          <TabsContent value="all" className="mt-0">
+            <ConversationList
+              conversations={sortedConversations}
+              onNavigate={navigate}
+              onTogglePin={togglePin}
+              onArchive={archiveConversation}
+              onDelete={deleteConversation}
+            />
+          </TabsContent>
+
+          <TabsContent value="unread" className="mt-0">
+            <ConversationList
+              conversations={sortedConversations}
+              onNavigate={navigate}
+              onTogglePin={togglePin}
+              onArchive={archiveConversation}
+              onDelete={deleteConversation}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
 
-      {/* FAB Button */}
-      <button
-        onClick={() => navigate("/scenarios")}
-        className="fixed bottom-24 right-4 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300 z-40"
-      >
-        <Plus className="w-6 h-6 text-primary-foreground" />
-      </button>
-
       <BottomNav />
+    </div>
+  );
+};
+
+interface ConversationListProps {
+  conversations: Conversation[];
+  onNavigate: (path: string) => void;
+  onTogglePin: (id: string) => void;
+  onArchive: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
+const ConversationList = ({
+  conversations,
+  onNavigate,
+  onTogglePin,
+  onArchive,
+  onDelete,
+}: ConversationListProps) => {
+  if (conversations.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 text-center">
+        <p className="text-muted-foreground">Aucune conversation</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      {conversations.map((conv) => (
+        <div
+          key={conv.id}
+          className="rounded-2xl bg-card/30 hover:bg-[hsl(var(--conversation-hover))] transition-colors duration-200 animate-fade-in"
+        >
+          <div className="flex items-center gap-3 p-3">
+            <button
+              onClick={() => onNavigate(`/chat/${conv.id}`)}
+              className="flex items-center gap-3 flex-1 min-w-0"
+            >
+              <Avatar className="w-12 h-12 flex-shrink-0">
+                <AvatarFallback className="bg-primary/20 text-primary text-base">
+                  {conv.name[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0 text-left">
+                <div className="flex items-center justify-between mb-0.5">
+                  <h3
+                    className={`font-semibold text-foreground ${
+                      !conv.isRead ? "font-bold" : "font-medium"
+                    }`}
+                  >
+                    {conv.name}
+                  </h3>
+                  <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                    {conv.time}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <p
+                    className={`text-sm truncate ${
+                      !conv.isRead
+                        ? "text-foreground font-medium"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {conv.lastMessage}
+                  </p>
+                  {conv.unread && (
+                    <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-full min-w-[20px] text-center flex-shrink-0">
+                      {conv.unread}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </button>
+
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {conv.isPinned && (
+                <Pin className="w-4 h-4 text-muted-foreground" />
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1 hover:bg-secondary/50 rounded-full transition-colors">
+                    <MoreVertical className="w-5 h-5 text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem
+                    onClick={() => onTogglePin(conv.id)}
+                    className="gap-2"
+                  >
+                    <Pin className="w-4 h-4" />
+                    {conv.isPinned ? "Désépingler" : "Épingler"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onArchive(conv.id)}
+                    className="gap-2"
+                  >
+                    <Archive className="w-4 h-4" />
+                    Archiver
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onDelete(conv.id)}
+                    className="gap-2 text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
