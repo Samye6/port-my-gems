@@ -54,6 +54,17 @@ const Scenarios = () => {
       ),
     },
     {
+      id: "celebrity2",
+      title: "Korinna Kopfa",
+      description: "Collaboration vérifiée",
+      icon: (
+        <div className="relative">
+          <UserRound className="w-6 h-6" />
+          <BadgeCheck className="w-3 h-3 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" />
+        </div>
+      ),
+    },
+    {
       id: "colleague",
       title: "Collègue",
       description: "Tension au bureau",
