@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X } from "lucide-react";
+import { getRandomAvatar } from "@/utils/avatars";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -120,6 +121,7 @@ const Scenarios = () => {
             characterName,
             characterAge,
             characterGender,
+            avatarUrl: getRandomAvatar(),
             writingStyle: {
               shortSuggestive,
               softDetailed,
