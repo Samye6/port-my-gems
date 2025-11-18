@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNotification } from "@/contexts/NotificationContext";
+import { useMessages } from "@/hooks/useMessages";
 import { ArrowLeft, Send, MoreVertical, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,12 +22,16 @@ const ChatConversation = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const { showNotification } = useNotification();
-  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Get conversation ID from params (for saved conversations) or use 'new' for new ones
+  const conversationId = id !== 'new' && id !== 'demo-tamara' ? id || null : null;
+  const { messages: dbMessages, loading, sendMessage } = useMessages(conversationId);
 
   // Get preferences from location state or use default
   const preferences = location.state?.preferences || {};
@@ -47,21 +52,34 @@ const ChatConversation = () => {
       }
     );
 
-    const isDemoConversation = id === "demo-tamara";
-    const initialText = isDemoConversation
-      ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
-      : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
+    // Si c'est une conversation demo ou nouvelle, initialiser avec un message de bienvenue
+    if (id === "demo-tamara" || id === "new") {
+      const isDemoConversation = id === "demo-tamara";
+      const initialText = isDemoConversation
+        ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
+        : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
 
-    const initialMessage: Message = {
-      id: "1",
-      text: initialText,
-      sender: "ai",
-      timestamp: new Date(),
-    };
-    setMessages([initialMessage]);
+      const initialMessage: Message = {
+        id: "1",
+        text: initialText,
+        sender: "ai",
+        timestamp: new Date(),
+      };
+      setLocalMessages([initialMessage]);
+    }
 
     return () => subscription.unsubscribe();
   }, [id]);
+
+  // Convertir les messages de la DB au format local
+  const displayMessages = conversationId 
+    ? dbMessages.map(msg => ({
+        id: msg.id,
+        text: msg.content,
+        sender: msg.sender,
+        timestamp: new Date(msg.created_at)
+      }))
+    : localMessages;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -69,7 +87,7 @@ const ChatConversation = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isTyping]);
+  }, [displayMessages, isTyping]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -86,19 +104,47 @@ const ChatConversation = () => {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    // Sauvegarder dans la DB si c'est une conversation persistante
+    if (conversationId) {
+      try {
+        await sendMessage(inputValue, "user");
+      } catch (error) {
+        console.error("Error sending message:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible d'envoyer le message",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Sinon stocker localement
+      setLocalMessages((prev) => [...prev, userMessage]);
+    }
+
     setInputValue("");
     setMessageCount((prev) => prev + 1);
     setIsTyping(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "C'est intéressant ce que tu dis... Tu sais que j'ai toujours apprécié nos échanges.",
         sender: "ai",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, aiMessage]);
+
+      // Sauvegarder la réponse de l'IA
+      if (conversationId) {
+        try {
+          await sendMessage(aiMessage.text, "ai");
+        } catch (error) {
+          console.error("Error sending AI message:", error);
+        }
+      } else {
+        setLocalMessages((prev) => [...prev, aiMessage]);
+      }
+      
       setIsTyping(false);
       
       // Show notification for AI message
@@ -161,7 +207,7 @@ const ChatConversation = () => {
       {/* Messages WhatsApp-style */}
       <div className="flex-1 overflow-y-auto p-4 bg-[hsl(var(--background))]">
         <div className="max-w-4xl mx-auto space-y-2">
-          {messages.map((message) => (
+          {displayMessages.map((message) => (
             <div
               key={message.id}
               className={`flex ${

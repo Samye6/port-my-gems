@@ -17,6 +17,9 @@ import {
 import PageHeader from "@/components/PageHeader";
 import BottomNav from "@/components/BottomNav";
 import { useSoundSettings } from "@/hooks/useSoundSettings";
+import { useConversations } from "@/hooks/useConversations";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface Conversation {
   id: string;
@@ -38,6 +41,7 @@ const Conversations = () => {
   const [showArchived, setShowArchived] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { isMuted, toggleMute } = useSoundSettings();
+  const { conversations: dbConversations, updateConversation, deleteConversation: deleteConv, loading } = useConversations();
   
   const demoConversation: Conversation = {
     id: "demo-tamara",
@@ -50,36 +54,22 @@ const Conversations = () => {
     avatarUrl: avatar1,
   };
 
-  const authenticatedConversations: Conversation[] = [
-    {
-      id: "1",
-      name: "Sarah",
-      lastMessage: "Je t'attends dans mon bureau...",
-      time: "15:32",
-      unread: 2,
-      isPinned: true,
-      isRead: false,
-    },
-    {
-      id: "2",
-      name: "Emma",
-      lastMessage: "Tu as aimé notre conversation ?",
-      time: "14:20",
-      isPinned: false,
-      isRead: true,
-    },
-    {
-      id: "3",
-      name: "Sofia",
-      lastMessage: "À ce soir alors... 😘",
-      time: "12:45",
-      isPinned: true,
-      isRead: false,
-      unread: 1,
-    },
-  ];
-
-  const [conversations, setConversations] = useState<Conversation[]>([demoConversation]);
+  // Convertir les conversations de la DB au format local
+  const conversations: Conversation[] = isAuthenticated 
+    ? dbConversations.map(conv => ({
+        id: conv.id,
+        name: conv.character_name,
+        lastMessage: conv.last_message || "",
+        time: conv.last_message_time 
+          ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
+          : "",
+        unread: conv.unread_count,
+        isPinned: conv.is_pinned,
+        isRead: conv.unread_count === 0,
+        isArchived: conv.is_archived,
+        avatarUrl: conv.character_avatar || undefined,
+      }))
+    : [demoConversation];
 
   // Calculate and update unread count whenever conversations change
   useEffect(() => {
@@ -93,11 +83,6 @@ const Conversations = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
-      if (session) {
-        setConversations(authenticatedConversations);
-      } else {
-        setConversations([demoConversation]);
-      }
     };
 
     checkAuth();
@@ -105,43 +90,31 @@ const Conversations = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setIsAuthenticated(!!session);
-        if (session) {
-          setConversations(authenticatedConversations);
-        } else {
-          setConversations([demoConversation]);
-        }
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const togglePin = (id: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === id ? { ...conv, isPinned: !conv.isPinned } : conv
-      )
-    );
+  const togglePin = async (id: string) => {
+    const conversation = conversations.find((c) => c.id === id);
+    if (conversation && id !== "demo-tamara") {
+      await updateConversation(id, { is_pinned: !conversation.isPinned });
+    }
   };
 
-  const archiveConversation = (id: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === id ? { ...conv, isArchived: true } : conv
-      )
-    );
+  const toggleArchive = async (id: string) => {
+    const conversation = conversations.find((c) => c.id === id);
+    if (conversation && id !== "demo-tamara") {
+      await updateConversation(id, { is_archived: !conversation.isArchived });
+    }
+    setShowArchived(false);
   };
 
-  const unarchiveConversation = (id: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === id ? { ...conv, isArchived: false } : conv
-      )
-    );
-  };
-
-  const deleteConversation = (id: string) => {
-    setConversations((prev) => prev.filter((conv) => conv.id !== id));
+  const deleteConversation = async (id: string) => {
+    if (id !== "demo-tamara") {
+      await deleteConv(id);
+    }
   };
 
   const filteredConversations = conversations.filter((conv) => {
@@ -243,8 +216,8 @@ const Conversations = () => {
               conversations={sortedConversations}
               navigate={navigate}
               onTogglePin={togglePin}
-              onArchive={archiveConversation}
-              onUnarchive={unarchiveConversation}
+              onArchive={toggleArchive}
+              onUnarchive={toggleArchive}
               onDelete={deleteConversation}
               showArchived={showArchived}
               isAuthenticated={isAuthenticated}
@@ -263,8 +236,8 @@ const Conversations = () => {
               conversations={sortedConversations}
               navigate={navigate}
               onTogglePin={togglePin}
-              onArchive={archiveConversation}
-              onUnarchive={unarchiveConversation}
+              onArchive={toggleArchive}
+              onUnarchive={toggleArchive}
               onDelete={deleteConversation}
               showArchived={showArchived}
               isAuthenticated={isAuthenticated}
