@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import Conversations from "./Conversations";
 import ChatConversation from "./ChatConversation";
+import BottomNav from "@/components/BottomNav";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const MessagesLayout = () => {
@@ -9,7 +10,12 @@ const MessagesLayout = () => {
 
   // Sur mobile, si aucune conversation n'est sélectionnée, afficher seulement la liste
   if (isMobile && !id) {
-    return <Conversations />;
+    return (
+      <>
+        <Conversations />
+        <BottomNav />
+      </>
+    );
   }
 
   // Sur mobile, si une conversation est sélectionnée, afficher seulement le chat
