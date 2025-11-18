@@ -325,7 +325,7 @@ const Scenarios = () => {
                   {/* Back Face */}
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/30 p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
                     <div className="text-center space-y-2">
-                      <p className="text-xs text-foreground leading-relaxed font-semibold">
+                      <p className="text-sm text-foreground leading-relaxed font-semibold">
                         {scenario.detailedDescription}
                       </p>
                       <div className="space-y-1 pt-2">
