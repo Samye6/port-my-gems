@@ -49,9 +49,10 @@ const Onboarding = () => {
             </div>
             <div className="space-y-3">
               {[
-                { value: "soft", label: "Doux", desc: "Romantique et subtil" },
-                { value: "sensuel", label: "Sensuel", desc: "Équilibré et suggestif" },
-                { value: "hot", label: "Intense", desc: "Passionné et direct" },
+                { value: "coquine", label: "Conversation coquine", desc: "" },
+                { value: "amoureuse", label: "Conversation amoureuse", desc: "" },
+                { value: "secrete", label: "Conversation secrète", desc: "" },
+                { value: "autre", label: "Conversation autre", desc: "" },
               ].map((option) => (
                 <button
                   key={option.value}
