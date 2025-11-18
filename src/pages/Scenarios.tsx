@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +25,21 @@ interface Scenario {
 const Scenarios = () => {
   const navigate = useNavigate();
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
-  const [situation, setSituation] = useState("");
+  
+  // Form state
+  const [userNickname, setUserNickname] = useState("");
+  const [characterName, setCharacterName] = useState("");
+  const [characterAge, setCharacterAge] = useState("");
+  const [characterGender, setCharacterGender] = useState("");
+  const [shortSuggestive, setShortSuggestive] = useState(false);
+  const [softDetailed, setSoftDetailed] = useState(false);
+  const [teasingTone, setTeasingTone] = useState(false);
+  const [romanticTone, setRomanticTone] = useState(false);
+  const [intenseTone, setIntenseTone] = useState(false);
+  const [withEmojis, setWithEmojis] = useState(false);
+  const [withoutEmojis, setWithoutEmojis] = useState(false);
+  const [intensity, setIntensity] = useState("doux");
+  const [responseRhythm, setResponseRhythm] = useState("natural");
 
   const scenarios: Scenario[] = [
     {
@@ -64,9 +81,28 @@ const Scenarios = () => {
   ];
 
   const handleStartChat = () => {
-    if (situation.trim() && selectedScenario) {
+    if (selectedScenario && userNickname && characterName) {
       navigate("/chat/new", {
-        state: { scenario: selectedScenario.id, situation },
+        state: { 
+          scenario: selectedScenario.id,
+          preferences: {
+            userNickname,
+            characterName,
+            characterAge,
+            characterGender,
+            writingStyle: {
+              shortSuggestive,
+              softDetailed,
+              teasingTone,
+              romanticTone,
+              intenseTone,
+              withEmojis,
+              withoutEmojis,
+            },
+            intensity,
+            responseRhythm,
+          }
+        },
       });
     }
   };
@@ -112,23 +148,208 @@ const Scenarios = () => {
 
       {/* Dialog */}
       <Dialog open={!!selectedScenario} onOpenChange={() => setSelectedScenario(null)}>
-        <DialogContent className="bg-card border-border">
+        <DialogContent className="bg-card border-border max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Décrivez la situation</DialogTitle>
+            <DialogTitle className="text-foreground">Configurer la conversation</DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              En une ou deux phrases, décrivez le contexte de votre rencontre
+              Personnalisez votre expérience
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              value={situation}
-              onChange={(e) => setSituation(e.target.value)}
-              placeholder="Ex: Je suis son stagiaire, elle me convoque dans son bureau après les heures de travail..."
-              className="min-h-[120px] bg-secondary border-border resize-none"
-            />
+          
+          <div className="space-y-6">
+            {/* Style d'écriture */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-foreground">Style d'écriture</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="userNickname" className="text-foreground">Nom par lequel je veux être appelé</Label>
+                <Input
+                  id="userNickname"
+                  value={userNickname}
+                  onChange={(e) => setUserNickname(e.target.value)}
+                  placeholder="Ex: Marc"
+                  className="bg-secondary border-border"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="characterName" className="text-foreground">Nom du personnage</Label>
+                <Input
+                  id="characterName"
+                  value={characterName}
+                  onChange={(e) => setCharacterName(e.target.value)}
+                  placeholder="Ex: Sophie"
+                  className="bg-secondary border-border"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="characterAge" className="text-foreground">Âge du personnage</Label>
+                <Input
+                  id="characterAge"
+                  value={characterAge}
+                  onChange={(e) => setCharacterAge(e.target.value)}
+                  placeholder="Ex: 28"
+                  className="bg-secondary border-border"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="characterGender" className="text-foreground">Sexe du personnage</Label>
+                <Input
+                  id="characterGender"
+                  value={characterGender}
+                  onChange={(e) => setCharacterGender(e.target.value)}
+                  placeholder="Ex: Femme"
+                  className="bg-secondary border-border"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-foreground">Style de messages</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="shortSuggestive"
+                      checked={shortSuggestive}
+                      onCheckedChange={(checked) => setShortSuggestive(checked as boolean)}
+                    />
+                    <Label htmlFor="shortSuggestive" className="text-sm text-muted-foreground cursor-pointer">
+                      Messages courts et suggestifs
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="softDetailed"
+                      checked={softDetailed}
+                      onCheckedChange={(checked) => setSoftDetailed(checked as boolean)}
+                    />
+                    <Label htmlFor="softDetailed" className="text-sm text-muted-foreground cursor-pointer">
+                      Messages doux et détaillés
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="teasingTone"
+                      checked={teasingTone}
+                      onCheckedChange={(checked) => setTeasingTone(checked as boolean)}
+                    />
+                    <Label htmlFor="teasingTone" className="text-sm text-muted-foreground cursor-pointer">
+                      Ton taquin
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="romanticTone"
+                      checked={romanticTone}
+                      onCheckedChange={(checked) => setRomanticTone(checked as boolean)}
+                    />
+                    <Label htmlFor="romanticTone" className="text-sm text-muted-foreground cursor-pointer">
+                      Ton romantique
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="intenseTone"
+                      checked={intenseTone}
+                      onCheckedChange={(checked) => setIntenseTone(checked as boolean)}
+                    />
+                    <Label htmlFor="intenseTone" className="text-sm text-muted-foreground cursor-pointer">
+                      Ton intense
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="withEmojis"
+                      checked={withEmojis}
+                      onCheckedChange={(checked) => setWithEmojis(checked as boolean)}
+                    />
+                    <Label htmlFor="withEmojis" className="text-sm text-muted-foreground cursor-pointer">
+                      Avec emojis
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="withoutEmojis"
+                      checked={withoutEmojis}
+                      onCheckedChange={(checked) => setWithoutEmojis(checked as boolean)}
+                    />
+                    <Label htmlFor="withoutEmojis" className="text-sm text-muted-foreground cursor-pointer">
+                      Sans emojis
+                    </Label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Intensité de l'échange */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                🔥 Intensité de l'échange
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Plus le niveau est élevé, plus les échanges peuvent devenir suggestifs dans le ton et l'ambiance.
+              </p>
+              <RadioGroup value={intensity} onValueChange={setIntensity}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="amical" id="amical" />
+                  <Label htmlFor="amical" className="text-sm text-muted-foreground cursor-pointer">Amical</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="doux" id="doux" />
+                  <Label htmlFor="doux" className="text-sm text-muted-foreground cursor-pointer">Doux</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="intime" id="intime" />
+                  <Label htmlFor="intime" className="text-sm text-muted-foreground cursor-pointer">Intime</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="audacieux" id="audacieux" />
+                  <Label htmlFor="audacieux" className="text-sm text-muted-foreground cursor-pointer">Audacieux</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="tres-audacieux" id="tres-audacieux" />
+                  <Label htmlFor="tres-audacieux" className="text-sm text-muted-foreground cursor-pointer">Très audacieux</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Rythme de réponse */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                ⏳ Rythme de réponse
+              </h3>
+              <RadioGroup value={responseRhythm} onValueChange={setResponseRhythm}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="instant" id="instant" />
+                  <Label htmlFor="instant" className="text-sm text-muted-foreground cursor-pointer">
+                    Réponse instantanée (10s-30s)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="quick" id="quick" />
+                  <Label htmlFor="quick" className="text-sm text-muted-foreground cursor-pointer">
+                    Réponse rapide (10s-1min)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="natural" id="natural" />
+                  <Label htmlFor="natural" className="text-sm text-muted-foreground cursor-pointer">
+                    Réponse naturelle (10s-5min)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="free" id="free" />
+                  <Label htmlFor="free" className="text-sm text-muted-foreground cursor-pointer">
+                    Mode libre
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
             <Button
               onClick={handleStartChat}
-              disabled={!situation.trim()}
+              disabled={!userNickname || !characterName}
               className="w-full bg-primary hover:bg-primary/90"
             >
               Commencer la conversation
