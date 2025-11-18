@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,10 +43,15 @@ const Scenarios = () => {
 
   const scenarios: Scenario[] = [
     {
-      id: "boss",
-      title: "La Patronne",
-      description: "Une supérieure qui aime le pouvoir",
-      icon: <Briefcase className="w-6 h-6" />,
+      id: "celebrity",
+      title: "Sophie Marceau",
+      description: "Collaboration vérifiée",
+      icon: (
+        <div className="relative">
+          <UserRound className="w-6 h-6" />
+          <BadgeCheck className="w-3 h-3 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" />
+        </div>
+      ),
     },
     {
       id: "colleague",
@@ -73,10 +78,10 @@ const Scenarios = () => {
       icon: <Crown className="w-6 h-6" />,
     },
     {
-      id: "celebrity",
-      title: "Célébrité",
-      description: "Rencontre avec une star",
-      icon: <Star className="w-6 h-6" />,
+      id: "boss",
+      title: "La Patronne",
+      description: "Une supérieure qui aime le pouvoir",
+      icon: <Briefcase className="w-6 h-6" />,
     },
   ];
 
