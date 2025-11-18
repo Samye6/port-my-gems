@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,24 @@ const Scenarios = () => {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "verified" | "general">("all");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsAuthenticated(!!session);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
   
   // Form state
   const [userNickname, setUserNickname] = useState("");
@@ -226,10 +245,16 @@ const Scenarios = () => {
           {filteredScenarios.map((scenario, index) => (
             <button
               key={scenario.id}
-              onClick={() => setSelectedScenario(scenario)}
-              className="aspect-square rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary transition-all hover:scale-105 animate-fade-in"
+              onClick={() => isAuthenticated ? setSelectedScenario(scenario) : null}
+              disabled={!isAuthenticated}
+              className={`relative aspect-square rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary transition-all hover:scale-105 animate-fade-in ${!isAuthenticated ? "opacity-50 cursor-not-allowed" : ""}`}
               style={{ animationDelay: `${index * 50}ms` }}
             >
+              {!isAuthenticated && (
+                <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
+                  <Lock className="w-3 h-3 text-muted-foreground" />
+                </div>
+              )}
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 {scenario.icon}
               </div>

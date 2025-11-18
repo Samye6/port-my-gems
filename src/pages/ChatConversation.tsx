@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Send, MoreVertical, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,9 +18,12 @@ const ChatConversation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [messageCount, setMessageCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Get preferences from location state or use default
@@ -27,14 +32,34 @@ const ChatConversation = () => {
   const avatarUrl = preferences.avatarUrl;
 
   useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsAuthenticated(!!session);
+      }
+    );
+
+    const isDemoConversation = id === "demo-tamara";
+    const initialText = isDemoConversation
+      ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
+      : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
+
     const initialMessage: Message = {
       id: "1",
-      text: "Hey... je voulais te parler de quelque chose. Tu as un moment ?",
+      text: initialText,
       sender: "ai",
       timestamp: new Date(),
     };
     setMessages([initialMessage]);
-  }, []);
+
+    return () => subscription.unsubscribe();
+  }, [id]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,6 +72,11 @@ const ChatConversation = () => {
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
+    const isDemoConversation = id === "demo-tamara";
+    if (!isAuthenticated && isDemoConversation && messageCount >= 10) {
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
@@ -56,6 +86,7 @@ const ChatConversation = () => {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
+    setMessageCount((prev) => prev + 1);
     setIsTyping(true);
 
     setTimeout(() => {
@@ -172,6 +203,20 @@ const ChatConversation = () => {
 
       {/* Input WhatsApp-style */}
       <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3">
+        {!isAuthenticated && id === "demo-tamara" && messageCount >= 10 && (
+          <div className="max-w-4xl mx-auto mb-3 bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center animate-fade-in">
+            <p className="text-sm text-foreground mb-3">
+              Créer un compte ou connecte toi pour continuer à chater avec Tamara!
+            </p>
+            <Button
+              onClick={() => navigate("/auth")}
+              size="sm"
+              className="w-full"
+            >
+              Se connecter / S'inscrire
+            </Button>
+          </div>
+        )}
         <div className="max-w-4xl mx-auto flex items-end gap-2">
           <Button
             size="icon"
@@ -202,7 +247,7 @@ const ChatConversation = () => {
             onClick={handleSend}
             size="icon"
             className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 mb-1"
-            disabled={!inputValue.trim()}
+            disabled={!inputValue.trim() || (!isAuthenticated && id === "demo-tamara" && messageCount >= 10)}
           >
             <Send className="w-5 h-5" />
           </Button>
