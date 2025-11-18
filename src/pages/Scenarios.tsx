@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import BottomNav from "@/components/BottomNav";
 
 interface Scenario {
   id: string;
@@ -71,7 +72,7 @@ const Scenarios = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-4 py-4 flex items-center gap-4">
@@ -90,11 +91,12 @@ const Scenarios = () => {
       {/* Scenarios Grid */}
       <div className="p-4">
         <div className="grid grid-cols-2 gap-4">
-          {scenarios.map((scenario) => (
+          {scenarios.map((scenario, index) => (
             <button
               key={scenario.id}
               onClick={() => setSelectedScenario(scenario)}
-              className="aspect-square rounded-2xl bg-gradient-to-br from-card to-secondary border border-border p-4 flex flex-col items-center justify-center gap-3 hover:border-primary transition-all hover:scale-105"
+              className="aspect-square rounded-2xl bg-gradient-to-br from-card to-secondary border border-border p-4 flex flex-col items-center justify-center gap-3 hover:border-primary transition-all hover:scale-105 animate-fade-in"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 {scenario.icon}
@@ -134,6 +136,8 @@ const Scenarios = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <BottomNav />
     </div>
   );
 };

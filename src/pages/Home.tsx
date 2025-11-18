@@ -1,120 +1,79 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Plus } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { MessageCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-interface Conversation {
-  id: string;
-  name: string;
-  lastMessage: string;
-  time: string;
-  unread?: number;
-}
+import PageHeader from "@/components/PageHeader";
+import BottomNav from "@/components/BottomNav";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const conversations: Conversation[] = [
+  const quickActions = [
     {
-      id: "1",
-      name: "Sarah",
-      lastMessage: "Je t'attends dans mon bureau...",
-      time: "Il y a 5 min",
-      unread: 2,
+      icon: MessageCircle,
+      title: "Nouvelle conversation",
+      description: "Choisissez un scénario et commencez",
+      action: () => navigate("/scenarios"),
+      gradient: "from-primary/20 to-primary/5",
     },
     {
-      id: "2",
-      name: "Emma",
-      lastMessage: "Tu as aimé notre conversation ?",
-      time: "Il y a 1h",
+      icon: Sparkles,
+      title: "Mes conversations",
+      description: "Reprendre là où vous vous êtes arrêté",
+      action: () => navigate("/conversations"),
+      gradient: "from-accent/20 to-accent/5",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-foreground">Lydia</h1>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => navigate("/scenarios")}
-              className="rounded-full"
-            >
-              <Plus className="w-6 h-6" />
-            </Button>
-          </div>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher une conversation..."
-              className="pl-10 bg-secondary border-border"
-            />
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background flex flex-col pb-24">
+      <PageHeader />
 
-      {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto">
-        {conversations.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Plus className="w-10 h-10 text-primary" />
+      {/* Hero Section */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8">
+        <div className="text-center space-y-4 animate-fade-in">
+          <div className="relative mx-auto w-24 h-24">
+            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse" />
+            <div className="relative bg-primary/10 p-6 rounded-2xl border border-primary/20">
+              <MessageCircle className="w-12 h-12 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              Aucune conversation
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              Commencez une nouvelle conversation pour découvrir Lydia
-            </p>
-            <Button
-              onClick={() => navigate("/scenarios")}
-              className="bg-primary hover:bg-primary/90"
-            >
-              Nouvelle conversation
-            </Button>
           </div>
-        ) : (
-          <div>
-            {conversations.map((conv) => (
+          <h1 className="text-4xl font-bold text-foreground">Bienvenue sur Lydia</h1>
+          <p className="text-lg text-muted-foreground max-w-md">
+            Des conversations immersives et sensuelles avec une IA réaliste
+          </p>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="w-full max-w-md space-y-4">
+          {quickActions.map((action, index) => {
+            const Icon = action.icon;
+            return (
               <button
-                key={conv.id}
-                onClick={() => navigate(`/chat/${conv.id}`)}
-                className="w-full p-4 flex items-center gap-4 border-b border-border hover:bg-secondary/50 transition-colors"
+                key={index}
+                onClick={action.action}
+                className={`w-full p-6 rounded-2xl bg-gradient-to-br ${action.gradient} border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 text-left animate-fade-in`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Avatar className="w-14 h-14">
-                  <AvatarFallback className="bg-primary/20 text-primary text-lg">
-                    {conv.name[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 text-left">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-foreground">{conv.name}</h3>
-                    <span className="text-xs text-muted-foreground">{conv.time}</span>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-primary" />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground truncate max-w-[200px]">
-                      {conv.lastMessage}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      {action.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {action.description}
                     </p>
-                    {conv.unread && (
-                      <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-full">
-                        {conv.unread}
-                      </span>
-                    )}
                   </div>
                 </div>
               </button>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 };
