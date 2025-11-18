@@ -53,7 +53,12 @@ const ChatConversation = () => {
   const avatarUrl = preferences.avatarUrl;
 
   useEffect(() => {
+    let hasRun = false;
+
     const checkAuth = async () => {
+      if (hasRun) return;
+      hasRun = true;
+
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       
@@ -134,7 +139,7 @@ const ChatConversation = () => {
     }
 
     return () => subscription.unsubscribe();
-  }, [id, isAuthenticated, persistedConversationId, characterName, avatarUrl, preferences, createConversation, sendMessage]);
+  }, [id]);
 
   // Convertir les messages de la DB au format local
   const displayMessages = actualConversationId 
@@ -203,9 +208,13 @@ const ChatConversation = () => {
 
   // Sauvegarder les messages locaux dans localStorage pour les visiteurs
   useEffect(() => {
-    if (!isAuthenticated && !actualConversationId && localMessages.length > 0) {
+    if (!isAuthenticated && !actualConversationId && localMessages.length > 0 && id) {
       const storageKey = `conversation_${id}`;
-      localStorage.setItem(storageKey, JSON.stringify(localMessages));
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(localMessages));
+      } catch (error) {
+        console.error("Error saving messages to localStorage:", error);
+      }
     }
   }, [localMessages, isAuthenticated, actualConversationId, id]);
 
