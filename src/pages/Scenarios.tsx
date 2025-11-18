@@ -380,6 +380,16 @@ const Scenarios = () => {
 
                   {/* Back Face */}
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/30 p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                    {!shouldShowLock && (
+                      <button
+                        onClick={(e) => toggleFavorite(e, scenario.id)}
+                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10 hover:bg-background transition-colors"
+                      >
+                        <Heart 
+                          className={`w-3 h-3 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
+                        />
+                      </button>
+                    )}
                     <div className="text-center space-y-2">
                       <p className="text-sm text-foreground leading-relaxed font-semibold">
                         {scenario.detailedDescription}
