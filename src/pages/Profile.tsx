@@ -62,6 +62,7 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -75,6 +76,17 @@ const Profile = () => {
 
   useEffect(() => {
     loadProfile();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsAuthenticated(!!session);
+        if (session) {
+          loadProfile();
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const loadProfile = async () => {
@@ -83,6 +95,14 @@ const Profile = () => {
         data: { user },
       } = await supabase.auth.getUser();
 
+      if (!user) {
+        setIsAuthenticated(false);
+        setLoading(false);
+        return;
+      }
+
+      setIsAuthenticated(true);
+      
       if (user) {
         const { data: profile } = await supabase
           .from("profiles")
@@ -240,8 +260,63 @@ const Profile = () => {
       <PageHeader />
 
       <div className="p-4 space-y-6">
-        {/* User Identity Card */}
-        <Card className="p-6 bg-card border-border animate-fade-in">
+        {!isAuthenticated ? (
+          <div className="space-y-6 animate-fade-in">
+            <Card className="p-6 bg-card border-border">
+              <div className="flex items-center gap-2 mb-4">
+                <User className="w-5 h-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">
+                  Identité
+                </h3>
+              </div>
+              <p className="text-muted-foreground mb-6">
+                Créez un compte ou connectez-vous pour accéder à votre profil complet et débloquer toutes les fonctionnalités.
+              </p>
+              <div className="space-y-3">
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="w-full"
+                  size="lg"
+                >
+                  Se connecter
+                </Button>
+                <Button
+                  onClick={() => navigate("/auth")}
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                >
+                  S'inscrire
+                </Button>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-card/30 border-border/50">
+              <h3 className="font-semibold text-lg mb-4">Pourquoi créer un compte ?</h3>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  <span>Conversations illimitées avec tous les personnages</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  <span>Historique de conversations sauvegardé</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  <span>Personnalisation complète de votre profil</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  <span>Accès aux scénarios premium</span>
+                </li>
+              </ul>
+            </Card>
+          </div>
+        ) : (
+          <>
+            {/* User Identity Card */}
+            <Card className="p-6 bg-card border-border animate-fade-in">
           <div className="flex items-center gap-2 mb-4">
             <User className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">
@@ -456,6 +531,8 @@ const Profile = () => {
             </AlertDialogContent>
           </AlertDialog>
         </div>
+        </>
+        )}
       </div>
 
       <BottomNav />

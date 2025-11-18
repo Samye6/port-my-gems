@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Search, MoreVertical, Pin, Archive, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -29,7 +30,19 @@ const Conversations = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [showArchived, setShowArchived] = useState(false);
-  const [conversations, setConversations] = useState<Conversation[]>([
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  const demoConversation: Conversation = {
+    id: "demo-tamara",
+    name: "Tamara",
+    lastMessage: "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?",
+    time: "Maintenant",
+    unread: 1,
+    isPinned: false,
+    isRead: false,
+  };
+
+  const authenticatedConversations: Conversation[] = [
     {
       id: "1",
       name: "Sarah",
@@ -56,7 +69,36 @@ const Conversations = () => {
       isRead: false,
       unread: 1,
     },
-  ]);
+  ];
+
+  const [conversations, setConversations] = useState<Conversation[]>([demoConversation]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      if (session) {
+        setConversations(authenticatedConversations);
+      } else {
+        setConversations([demoConversation]);
+      }
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsAuthenticated(!!session);
+        if (session) {
+          setConversations(authenticatedConversations);
+        } else {
+          setConversations([demoConversation]);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const togglePin = (id: string) => {
     setConversations((prev) =>
