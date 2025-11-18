@@ -63,6 +63,24 @@ const Scenarios = () => {
   const [intensity, setIntensity] = useState("doux");
   const [responseRhythm, setResponseRhythm] = useState("natural");
 
+  const handleScenarioClick = (scenario: Scenario) => {
+    if (!isAuthenticated) {
+      // Scénarios accessibles pour les visiteurs qui redirigent vers la connexion
+      if (scenario.id === "colleague" || scenario.id === "doctor") {
+        navigate("/auth");
+        return;
+      }
+      // Autres scénarios verrouillés
+      return;
+    }
+    // Utilisateur authentifié - ouvrir le dialog de configuration
+    setSelectedScenario(scenario);
+  };
+
+  const isScenarioUnlocked = (scenarioId: string) => {
+    return scenarioId === "colleague" || scenarioId === "doctor";
+  };
+
   const scenarios: Scenario[] = [
     {
       id: "celebrity",
@@ -242,19 +260,24 @@ const Scenarios = () => {
       {/* Scenarios Grid */}
       <div className="p-4">
         <div className="grid grid-cols-3 gap-3">
-          {filteredScenarios.map((scenario, index) => (
-            <button
-              key={scenario.id}
-              onClick={() => isAuthenticated ? setSelectedScenario(scenario) : null}
-              disabled={!isAuthenticated}
-              className={`relative aspect-square rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary transition-all hover:scale-105 animate-fade-in ${!isAuthenticated ? "opacity-50 cursor-not-allowed" : ""}`}
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              {!isAuthenticated && (
-                <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
-                  <Lock className="w-3 h-3 text-muted-foreground" />
-                </div>
-              )}
+          {filteredScenarios.map((scenario, index) => {
+            const isUnlocked = isScenarioUnlocked(scenario.id);
+            const shouldShowLock = !isAuthenticated && !isUnlocked;
+            const isClickable = isAuthenticated || isUnlocked;
+            
+            return (
+              <button
+                key={scenario.id}
+                onClick={() => handleScenarioClick(scenario)}
+                disabled={!isClickable}
+                className={`relative aspect-square rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 hover:border-primary transition-all hover:scale-105 animate-fade-in ${!isClickable ? "opacity-50 cursor-not-allowed" : ""}`}
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {shouldShowLock && (
+                  <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
+                    <Lock className="w-3 h-3 text-muted-foreground" />
+                  </div>
+                )}
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 {scenario.icon}
               </div>
@@ -263,7 +286,8 @@ const Scenarios = () => {
                 <p className="text-xs text-muted-foreground">{scenario.description}</p>
               </div>
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
 
