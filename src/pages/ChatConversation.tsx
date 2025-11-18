@@ -99,21 +99,36 @@ const ChatConversation = () => {
     );
 
     // Si c'est une conversation demo ou nouvelle ET que l'utilisateur n'est pas authentifié,
-    // initialiser avec un message de bienvenue local
+    // charger les messages depuis localStorage ou initialiser avec un message de bienvenue
     if (!isAuthenticated && (id === "demo-tamara" || id === "new")) {
-      const isDemoConversation = id === "demo-tamara";
-      const initialText = isDemoConversation
-        ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
-        : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
+      const storageKey = `conversation_${id}`;
+      const savedMessages = localStorage.getItem(storageKey);
+      
+      if (savedMessages) {
+        try {
+          const parsed = JSON.parse(savedMessages);
+          setLocalMessages(parsed.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          })));
+        } catch (error) {
+          console.error("Error parsing saved messages:", error);
+        }
+      } else {
+        const isDemoConversation = id === "demo-tamara";
+        const initialText = isDemoConversation
+          ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
+          : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
 
-      const initialMessage: Message = {
-        id: "1",
-        text: initialText,
-        sender: "ai",
-        timestamp: new Date(),
-        read: false,
-      };
-      setLocalMessages([initialMessage]);
+        const initialMessage: Message = {
+          id: "1",
+          text: initialText,
+          sender: "ai",
+          timestamp: new Date(),
+          read: false,
+        };
+        setLocalMessages([initialMessage]);
+      }
     }
 
     return () => subscription.unsubscribe();
@@ -183,6 +198,14 @@ const ChatConversation = () => {
   useEffect(() => {
     scrollToBottom();
   }, [displayMessages, isTyping]);
+
+  // Sauvegarder les messages locaux dans localStorage pour les visiteurs
+  useEffect(() => {
+    if (!isAuthenticated && !actualConversationId && localMessages.length > 0) {
+      const storageKey = `conversation_${id}`;
+      localStorage.setItem(storageKey, JSON.stringify(localMessages));
+    }
+  }, [localMessages, isAuthenticated, actualConversationId, id]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
