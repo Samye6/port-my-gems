@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MessageCircle, Sparkles, Lock } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
@@ -71,15 +71,9 @@ const Home = () => {
               <button
                 key={index}
                 onClick={action.action}
-                disabled={!isAuthenticated && index === 0}
-                className={`relative w-full p-6 rounded-2xl bg-gradient-to-br ${action.gradient} border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 text-left animate-fade-in ${!isAuthenticated && index === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`w-full p-6 rounded-2xl bg-gradient-to-br ${action.gradient} border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 text-left animate-fade-in`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                {!isAuthenticated && index === 0 && (
-                  <div className="absolute top-3 left-3 bg-background/80 backdrop-blur-sm p-2 rounded-lg">
-                    <Lock className="w-4 h-4 text-muted-foreground" />
-                  </div>
-                )}
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
                     <Icon className="w-6 h-6 text-primary" />
