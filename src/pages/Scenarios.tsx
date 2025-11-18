@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,6 +93,18 @@ const Scenarios = () => {
       title: "La Patronne",
       description: "Une supérieure qui aime le pouvoir",
       icon: <Briefcase className="w-6 h-6" />,
+    },
+    {
+      id: "doctor",
+      title: "Docteure",
+      description: "Consultation privée",
+      icon: <Stethoscope className="w-6 h-6" />,
+    },
+    {
+      id: "secretary",
+      title: "Secrétaire",
+      description: "Assistante dévouée",
+      icon: <ClipboardList className="w-6 h-6" />,
     },
   ];
 
