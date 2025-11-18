@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNotification } from "@/contexts/NotificationContext";
 import { useMessages } from "@/hooks/useMessages";
+import { useConversations } from "@/hooks/useConversations";
 import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,11 +37,13 @@ const ChatConversation = () => {
   const [aiResponseCount, setAiResponseCount] = useState(0);
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const [isMuted, setIsMuted] = useState(false);
+  const [persistedConversationId, setPersistedConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // Get conversation ID from params (for saved conversations) or use 'new' for new ones
-  const conversationId = id !== 'new' && id !== 'demo-tamara' ? id || null : null;
-  const { messages: dbMessages, loading, sendMessage } = useMessages(conversationId);
+  // Get conversation ID - use persisted ID if available, otherwise original ID
+  const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' ? id || null : null);
+  const { messages: dbMessages, loading, sendMessage } = useMessages(actualConversationId);
+  const { createConversation } = useConversations();
 
   // Get preferences from location state or use default
   const preferences = location.state?.preferences || {};
@@ -51,6 +54,40 @@ const ChatConversation = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
+      
+      // Créer automatiquement une conversation persistante pour les utilisateurs authentifiés
+      if (session && (id === "demo-tamara" || id === "new") && !persistedConversationId) {
+        try {
+          const isDemoConversation = id === "demo-tamara";
+          const initialText = isDemoConversation
+            ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
+            : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
+          
+          const conversationData = {
+            character_name: isDemoConversation ? "Tamara" : characterName,
+            character_avatar: avatarUrl || null,
+            scenario_id: null,
+            preferences: preferences,
+          };
+          
+          const newConv = await createConversation(conversationData);
+          if (newConv) {
+            setPersistedConversationId(newConv.id);
+            
+            // Envoyer le message initial
+            setTimeout(async () => {
+              try {
+                await sendMessage(initialText, "ai");
+              } catch (error) {
+                console.error("Error sending initial message:", error);
+              }
+            }, 100);
+          }
+          
+        } catch (error) {
+          console.error("Error creating conversation:", error);
+        }
+      }
     };
 
     checkAuth();
@@ -61,8 +98,9 @@ const ChatConversation = () => {
       }
     );
 
-    // Si c'est une conversation demo ou nouvelle, initialiser avec un message de bienvenue
-    if (id === "demo-tamara" || id === "new") {
+    // Si c'est une conversation demo ou nouvelle ET que l'utilisateur n'est pas authentifié,
+    // initialiser avec un message de bienvenue local
+    if (!isAuthenticated && (id === "demo-tamara" || id === "new")) {
       const isDemoConversation = id === "demo-tamara";
       const initialText = isDemoConversation
         ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
@@ -79,10 +117,10 @@ const ChatConversation = () => {
     }
 
     return () => subscription.unsubscribe();
-  }, [id]);
+  }, [id, isAuthenticated, persistedConversationId, characterName, avatarUrl, preferences, createConversation, sendMessage]);
 
   // Convertir les messages de la DB au format local
-  const displayMessages = conversationId 
+  const displayMessages = actualConversationId 
     ? dbMessages.map(msg => ({
         id: msg.id,
         text: msg.content,
@@ -163,7 +201,7 @@ const ChatConversation = () => {
     };
 
     // Sauvegarder dans la DB si c'est une conversation persistante
-    if (conversationId) {
+    if (actualConversationId) {
       try {
         await sendMessage(inputValue, "user");
       } catch (error) {
@@ -190,7 +228,7 @@ const ChatConversation = () => {
     const readDelay = Math.max(0, responseDelay - 10000);
     
     setTimeout(() => {
-      if (!conversationId) {
+      if (!actualConversationId) {
         setLocalMessages((prev) =>
           prev.map((msg) =>
             msg.id === userMessage.id ? { ...msg, read: true } : msg
@@ -211,7 +249,7 @@ const ChatConversation = () => {
       };
 
       // Sauvegarder la réponse de l'IA
-      if (conversationId) {
+      if (actualConversationId) {
         try {
           await sendMessage(aiMessage.text, "ai");
         } catch (error) {
