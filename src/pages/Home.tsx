@@ -59,7 +59,7 @@ const Home = () => {
           </div>
           <h1 className="text-4xl font-bold text-foreground">Bienvenue sur Lydia</h1>
           <p className="text-lg text-muted-foreground max-w-md">
-            Des conversations immersives et sensuelles avec une IA réaliste
+            Des conversations immersives et sensuelles
           </p>
         </div>
 
