@@ -278,9 +278,9 @@ const ChatConversation = () => {
                     })}
                   </span>
                   {message.sender === "user" && (
-                    <div className="relative flex items-center">
-                      <Check className={`w-3 h-3 absolute -left-0.5 ${message.read ? 'text-blue-400' : 'text-white/50'}`} />
-                      <Check className={`w-3 h-3 ${message.read ? 'text-blue-400' : 'text-white/50'}`} />
+                    <div className="relative flex items-center ml-1">
+                      <Check className={`w-[14px] h-[14px] absolute left-[2px] ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                      <Check className={`w-[14px] h-[14px] ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
                     </div>
                   )}
                 </div>
