@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      conversations: {
+        Row: {
+          character_avatar: string | null
+          character_name: string
+          created_at: string
+          id: string
+          is_archived: boolean | null
+          is_pinned: boolean | null
+          last_message: string | null
+          last_message_time: string | null
+          preferences: Json | null
+          scenario_id: string | null
+          unread_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          character_avatar?: string | null
+          character_name: string
+          created_at?: string
+          id?: string
+          is_archived?: boolean | null
+          is_pinned?: boolean | null
+          last_message?: string | null
+          last_message_time?: string | null
+          preferences?: Json | null
+          scenario_id?: string | null
+          unread_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          character_avatar?: string | null
+          character_name?: string
+          created_at?: string
+          id?: string
+          is_archived?: boolean | null
+          is_pinned?: boolean | null
+          last_message?: string | null
+          last_message_time?: string | null
+          preferences?: Json | null
+          scenario_id?: string | null
+          unread_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age: number | null
