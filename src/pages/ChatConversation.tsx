@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNotification } from "@/contexts/NotificationContext";
 import { useMessages } from "@/hooks/useMessages";
-import { ArrowLeft, Send, MoreVertical, Paperclip, Smile } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,7 @@ interface Message {
   text: string;
   sender: "user" | "ai";
   timestamp: Date;
+  read?: boolean;
 }
 
 const ChatConversation = () => {
@@ -65,6 +66,7 @@ const ChatConversation = () => {
         text: initialText,
         sender: "ai",
         timestamp: new Date(),
+        read: false,
       };
       setLocalMessages([initialMessage]);
     }
@@ -78,7 +80,8 @@ const ChatConversation = () => {
         id: msg.id,
         text: msg.content,
         sender: msg.sender,
-        timestamp: new Date(msg.created_at)
+        timestamp: new Date(msg.created_at),
+        read: false
       }))
     : localMessages;
 
@@ -116,6 +119,7 @@ const ChatConversation = () => {
       text: inputValue,
       sender: "user",
       timestamp: new Date(),
+      read: false,
     };
 
     // Sauvegarder dans la DB si c'est une conversation persistante
@@ -142,6 +146,19 @@ const ChatConversation = () => {
 
     const isDemoTamara = id === "demo-tamara";
     const responseDelay = isDemoTamara ? getTamaraResponseDelay(aiResponseCount) : 2000;
+    
+    // Marquer le message comme lu 10 secondes avant la réponse
+    const readDelay = Math.max(0, responseDelay - 10000);
+    
+    setTimeout(() => {
+      if (!conversationId) {
+        setLocalMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === userMessage.id ? { ...msg, read: true } : msg
+          )
+        );
+      }
+    }, readDelay);
 
     setTimeout(async () => {
       const aiMessage: Message = {
@@ -149,6 +166,7 @@ const ChatConversation = () => {
         text: "C'est intéressant ce que tu dis... Tu sais que j'ai toujours apprécié nos échanges.",
         sender: "ai",
         timestamp: new Date(),
+        read: false,
       };
 
       // Sauvegarder la réponse de l'IA
@@ -245,18 +263,26 @@ const ChatConversation = () => {
                 <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
                   {message.text}
                 </p>
-                <span
-                  className={`text-[10px] mt-1 block text-right ${
-                    message.sender === "user"
-                      ? "text-white/70"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {message.timestamp.toLocaleTimeString("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+                <div className="flex items-center justify-end gap-1 mt-1">
+                  <span
+                    className={`text-[10px] ${
+                      message.sender === "user"
+                        ? "text-white/70"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {message.timestamp.toLocaleTimeString("fr-FR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  {message.sender === "user" && (
+                    <div className="relative flex items-center">
+                      <Check className={`w-3 h-3 absolute -left-0.5 ${message.read ? 'text-blue-400' : 'text-white/50'}`} />
+                      <Check className={`w-3 h-3 ${message.read ? 'text-blue-400' : 'text-white/50'}`} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
