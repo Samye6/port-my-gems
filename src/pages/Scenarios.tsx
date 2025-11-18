@@ -324,16 +324,18 @@ const Scenarios = () => {
 
                   {/* Back Face */}
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/30 p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                    <p className="text-[10px] text-foreground text-center leading-tight mb-2 line-clamp-4">
-                      {scenario.detailedDescription}
-                    </p>
-                    <div className="text-center space-y-1 mt-auto">
-                      <p className="text-[9px] text-muted-foreground">
-                        📸 {scenario.photos} photos
+                    <div className="text-center space-y-2">
+                      <p className="text-xs text-foreground leading-relaxed">
+                        {scenario.detailedDescription}
                       </p>
-                      <p className="text-[9px] text-muted-foreground">
-                        🎬 {scenario.videos} vidéos
-                      </p>
+                      <div className="space-y-1 pt-2">
+                        <p className="text-xs text-muted-foreground">
+                          📸 {scenario.photos} photos
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          🎬 {scenario.videos} vidéos
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </button>
