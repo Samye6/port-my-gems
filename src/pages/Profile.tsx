@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, Crown, LogOut, Sliders, Camera, User } from "lucide-react";
+import { Settings, Crown, LogOut, Camera, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -50,8 +48,6 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [sensuality, setSensuality] = useState([2]);
-  const [writingStyle, setWritingStyle] = useState("balanced");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -353,71 +349,6 @@ const Profile = () => {
             </form>
           </Form>
         </Card>
-
-        {/* AI Preferences */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold text-foreground">
-              Préférences IA
-            </h3>
-          </div>
-
-          <Card
-            className="p-6 bg-card border-border space-y-6 animate-fade-in"
-            style={{ animationDelay: "100ms" }}
-          >
-            <div className="space-y-3">
-              <Label className="text-foreground">Style d'écriture</Label>
-              <Select value={writingStyle} onValueChange={setWritingStyle}>
-                <SelectTrigger className="bg-secondary border-border">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border">
-                  <SelectItem value="concise">Concis</SelectItem>
-                  <SelectItem value="balanced">Équilibré</SelectItem>
-                  <SelectItem value="descriptive">Descriptif</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <Label className="text-foreground">Niveau de sensualité</Label>
-                <span className="text-sm text-primary font-semibold">
-                  {sensuality[0]}/3
-                </span>
-              </div>
-              <Slider
-                value={sensuality}
-                onValueChange={setSensuality}
-                max={3}
-                min={0}
-                step={1}
-                className="py-4"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Doux</span>
-                <span>Sensuel</span>
-                <span>Intense</span>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <Label className="text-foreground">Fréquence de réponse</Label>
-              <Select defaultValue="normal">
-                <SelectTrigger className="bg-secondary border-border">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border">
-                  <SelectItem value="instant">Instantané</SelectItem>
-                  <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="slow">Réaliste</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </Card>
-        </div>
 
         {/* Account Actions */}
         <div className="space-y-3">
