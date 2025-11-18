@@ -14,8 +14,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import PageHeader from "@/components/PageHeader";
-import BottomNav from "@/components/BottomNav";
 import { useSoundSettings } from "@/hooks/useSoundSettings";
 import { useConversations } from "@/hooks/useConversations";
 import { format } from "date-fns";
@@ -147,9 +145,10 @@ const Conversations = () => {
   const archivedCount = conversations.filter((conv) => conv.isArchived).length;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-24">
-      <PageHeader 
-        rightAction={
+    <div className="h-full bg-background flex flex-col overflow-hidden">
+      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="px-3 py-2 flex items-center justify-between">
+          <h1 className="text-xl font-semibold text-foreground">Mes conversations</h1>
           <button
             onClick={toggleMute}
             className="p-2 rounded-full hover:bg-secondary/80 transition-colors"
@@ -160,8 +159,8 @@ const Conversations = () => {
               <Bell className="w-5 h-5 text-primary" />
             )}
           </button>
-        }
-      />
+        </div>
+      </div>
 
       {/* Search Bar */}
       <div className="px-4 py-3 bg-card/30">
@@ -245,8 +244,6 @@ const Conversations = () => {
           </TabsContent>
         </Tabs>
       </div>
-
-      <BottomNav />
     </div>
   );
 };
