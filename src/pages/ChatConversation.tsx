@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNotification } from "@/contexts/NotificationContext";
 import { ArrowLeft, Send, MoreVertical, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ const ChatConversation = () => {
   const location = useLocation();
   const { id } = useParams();
   const { toast } = useToast();
+  const { showNotification } = useNotification();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -98,6 +100,13 @@ const ChatConversation = () => {
       };
       setMessages((prev) => [...prev, aiMessage]);
       setIsTyping(false);
+      
+      // Show notification for AI message
+      showNotification({
+        name: characterName,
+        message: aiMessage.text,
+        avatar: avatarUrl,
+      });
     }, 2000);
   };
 
