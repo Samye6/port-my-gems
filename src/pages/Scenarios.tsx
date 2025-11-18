@@ -266,38 +266,42 @@ const Scenarios = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="characterName" className="text-foreground">Nom du personnage</Label>
-                <Input
-                  id="characterName"
-                  value={characterName}
-                  onChange={(e) => setCharacterName(e.target.value)}
-                  placeholder="Ex: Sophie"
-                  className="bg-secondary border-border"
-                />
-              </div>
+              {selectedScenario?.id !== "celebrity" && selectedScenario?.id !== "celebrity2" && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="characterName" className="text-foreground">Nom du personnage</Label>
+                    <Input
+                      id="characterName"
+                      value={characterName}
+                      onChange={(e) => setCharacterName(e.target.value)}
+                      placeholder="Ex: Sophie"
+                      className="bg-secondary border-border"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="characterAge" className="text-foreground">Âge du personnage</Label>
-                <Input
-                  id="characterAge"
-                  value={characterAge}
-                  onChange={(e) => setCharacterAge(e.target.value)}
-                  placeholder="Ex: 28"
-                  className="bg-secondary border-border"
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="characterAge" className="text-foreground">Âge du personnage</Label>
+                    <Input
+                      id="characterAge"
+                      value={characterAge}
+                      onChange={(e) => setCharacterAge(e.target.value)}
+                      placeholder="Ex: 28"
+                      className="bg-secondary border-border"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="characterGender" className="text-foreground">Sexe du personnage</Label>
-                <Input
-                  id="characterGender"
-                  value={characterGender}
-                  onChange={(e) => setCharacterGender(e.target.value)}
-                  placeholder="Ex: Femme"
-                  className="bg-secondary border-border"
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="characterGender" className="text-foreground">Sexe du personnage</Label>
+                    <Input
+                      id="characterGender"
+                      value={characterGender}
+                      onChange={(e) => setCharacterGender(e.target.value)}
+                      placeholder="Ex: Femme"
+                      className="bg-secondary border-border"
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="space-y-3">
                 <Label className="text-foreground">Style de messages</Label>
