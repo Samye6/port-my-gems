@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import BottomNav from "@/components/BottomNav";
 
 const Premium = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const Premium = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-4 py-4 flex items-center gap-4">
@@ -68,8 +69,8 @@ const Premium = () => {
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-6 pb-20">
-        <div className="text-center space-y-2">
+      <div className="p-4 space-y-6">
+        <div className="text-center space-y-2 animate-fade-in">
           <div className="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center">
             <Crown className="w-8 h-8 text-primary" />
           </div>
@@ -82,14 +83,15 @@ const Premium = () => {
         </div>
 
         <div className="space-y-4">
-          {plans.map((plan) => (
+          {plans.map((plan, index) => (
             <Card
               key={plan.id}
               className={`p-6 border-2 ${
                 plan.popular
                   ? "border-primary bg-gradient-to-br from-card to-primary/5 scale-105"
                   : "border-border bg-card"
-              } relative`}
+              } relative animate-fade-in`}
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-semibold">
@@ -137,6 +139,8 @@ const Premium = () => {
           <p>Essai gratuit de 7 jours disponible</p>
         </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 };

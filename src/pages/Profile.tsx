@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Settings, Crown, LogOut, Sliders } from "lucide-react";
+import { Settings, Crown, LogOut, Sliders } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -12,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import PageHeader from "@/components/PageHeader";
+import BottomNav from "@/components/BottomNav";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -19,29 +22,18 @@ const Profile = () => {
   const [writingStyle, setWritingStyle] = useState("balanced");
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-4 py-4 flex items-center gap-4">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => navigate("/home")}
-            className="rounded-full"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <h1 className="text-xl font-semibold text-foreground">Profil</h1>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background pb-24">
+      <PageHeader />
 
       <div className="p-4 space-y-6">
         {/* User Info */}
-        <Card className="p-6 bg-card border-border">
+        <Card className="p-6 bg-card border-border animate-fade-in">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-              <User className="w-8 h-8 text-primary" />
-            </div>
+            <Avatar className="w-16 h-16">
+              <AvatarFallback className="bg-primary/20 text-primary text-xl font-bold">
+                U
+              </AvatarFallback>
+            </Avatar>
             <div className="flex-1">
               <h2 className="text-xl font-bold text-foreground">Utilisateur</h2>
               <p className="text-sm text-muted-foreground">Compte gratuit</p>
@@ -50,6 +42,7 @@ const Profile = () => {
               variant="outline"
               size="sm"
               className="border-primary text-primary hover:bg-primary/10"
+              onClick={() => navigate("/premium")}
             >
               <Crown className="w-4 h-4 mr-2" />
               Premium
@@ -64,7 +57,7 @@ const Profile = () => {
             <h3 className="text-lg font-semibold text-foreground">Préférences IA</h3>
           </div>
 
-          <Card className="p-6 bg-card border-border space-y-6">
+          <Card className="p-6 bg-card border-border space-y-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
             <div className="space-y-3">
               <Label className="text-foreground">Style d'écriture</Label>
               <Select value={writingStyle} onValueChange={setWritingStyle}>
@@ -119,22 +112,22 @@ const Profile = () => {
         <div className="space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground"
+            className="w-full justify-start text-foreground hover:bg-secondary/70"
             onClick={() => navigate("/shop")}
           >
             <Crown className="w-5 h-5 mr-3" />
-            Abonnement Premium
+            Boutique
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground"
+            className="w-full justify-start text-foreground hover:bg-secondary/70"
           >
             <Settings className="w-5 h-5 mr-3" />
             Paramètres
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-destructive"
+            className="w-full justify-start text-destructive hover:bg-destructive/10"
           >
             <LogOut className="w-5 h-5 mr-3" />
             Déconnexion
@@ -148,6 +141,8 @@ const Profile = () => {
           <p>Mentions légales • Confidentialité</p>
         </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 };
