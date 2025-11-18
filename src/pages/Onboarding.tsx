@@ -91,7 +91,7 @@ const Onboarding = () => {
           disabled={step === 2 && !style}
           className="w-full py-6 text-lg bg-primary hover:bg-primary/90"
         >
-          {step === 3 ? "Créer mon compte" : "Continuer"}
+          {step === 3 ? "Commencer" : "Continuer"}
         </Button>
         <div className="flex justify-center gap-2">
           {[1, 2, 3].map((i) => (
