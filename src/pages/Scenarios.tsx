@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -329,11 +329,13 @@ const Scenarios = () => {
                         {scenario.detailedDescription}
                       </p>
                       <div className="space-y-1 pt-2">
-                        <p className="text-xs text-muted-foreground">
-                          📸 {scenario.photos} photos
+                        <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                          <Camera className="w-3 h-3 text-primary" />
+                          {scenario.photos} photos
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          🎬 {scenario.videos} vidéos
+                        <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                          <Video className="w-3 h-3 text-primary" />
+                          {scenario.videos} vidéos
                         </p>
                       </div>
                     </div>
