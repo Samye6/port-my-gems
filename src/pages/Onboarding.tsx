@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MessageCircle, Shield, Sparkles } from "lucide-react";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [style, setStyle] = useState<string | null>(null);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   const handleNext = () => {
     if (step < 3) {
@@ -86,9 +89,41 @@ const Onboarding = () => {
       </div>
 
       <div className="w-full max-w-md space-y-4">
+        {step === 3 && (
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="age-confirm"
+                checked={ageConfirmed}
+                onCheckedChange={(checked) => setAgeConfirmed(checked === true)}
+                className="mt-1"
+              />
+              <label
+                htmlFor="age-confirm"
+                className="text-sm text-foreground leading-tight cursor-pointer"
+              >
+                Je confirme avoir 18+ ans
+              </label>
+            </div>
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="privacy-accept"
+                checked={privacyAccepted}
+                onCheckedChange={(checked) => setPrivacyAccepted(checked === true)}
+                className="mt-1"
+              />
+              <label
+                htmlFor="privacy-accept"
+                className="text-sm text-foreground leading-tight cursor-pointer"
+              >
+                J'accepte la politique de confidentialité
+              </label>
+            </div>
+          </div>
+        )}
         <Button
           onClick={handleNext}
-          disabled={step === 2 && !style}
+          disabled={step === 2 ? !style : step === 3 ? !ageConfirmed || !privacyAccepted : false}
           className="w-full py-6 text-lg bg-primary hover:bg-primary/90"
         >
           {step === 3 ? "Commencer" : "Continuer"}
