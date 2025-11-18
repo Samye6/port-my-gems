@@ -260,11 +260,9 @@ const ChatConversation = () => {
               <h2 className="font-semibold text-foreground truncate">
                 {characterName}
               </h2>
-              {isTyping && (
-                <p className="text-xs text-primary animate-pulse">
-                  En train d'écrire...
-                </p>
-              )}
+              <p className={`text-xs ${isTyping ? 'text-primary animate-pulse' : 'text-muted-foreground'}`}>
+                {isTyping ? "est en train d'écrire..." : "en ligne"}
+              </p>
             </div>
           </div>
           <Button
