@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -359,12 +359,14 @@ const Scenarios = () => {
                         </p>
                       </div>
                       <div className="flex items-center justify-center gap-4 pt-2">
-                        <span className="text-sm font-semibold">
-                          👍 {scenario.likes}
-                        </span>
-                        <span className="text-sm font-semibold">
-                          👎 {scenario.dislikes}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <ThumbsUp className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">{scenario.likes}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <ThumbsDown className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-semibold">{scenario.dislikes}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
