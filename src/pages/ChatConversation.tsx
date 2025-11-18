@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNotification } from "@/contexts/NotificationContext";
 import { useMessages } from "@/hooks/useMessages";
 import { useConversations } from "@/hooks/useConversations";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ const ChatConversation = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const { showNotification } = useNotification();
+  const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -312,14 +314,16 @@ const ChatConversation = () => {
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => navigate("/conversations")}
-              className="rounded-full flex-shrink-0"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+            {isMobile && (
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => navigate("/conversations")}
+                className="rounded-full flex-shrink-0"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            )}
             <Avatar className="w-10 h-10 flex-shrink-0">
               {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
               <AvatarFallback className="bg-primary/20 text-primary">
