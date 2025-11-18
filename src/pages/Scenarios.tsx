@@ -16,6 +16,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import BottomNav from "@/components/BottomNav";
+import { useConversations } from "@/hooks/useConversations";
+import { useToast } from "@/hooks/use-toast";
 
 interface Scenario {
   id: string;
@@ -31,6 +33,8 @@ interface Scenario {
 
 const Scenarios = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { createConversation } = useConversations();
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "verified" | "general" | "favorites">("all");
@@ -215,31 +219,52 @@ const Scenarios = () => {
     },
   ];
 
-  const handleStartChat = () => {
+  const handleStartChat = async () => {
     if (selectedScenario && userNickname && characterName) {
-      navigate("/chat/new", {
-        state: { 
-          scenario: selectedScenario.id,
-          preferences: {
-            userNickname,
-            characterName,
-            characterAge,
-            characterGender,
-            avatarUrl: getRandomAvatar(),
-            writingStyle: {
-              shortSuggestive,
-              softDetailed,
-              teasingTone,
-              romanticTone,
-              intenseTone,
-              withEmojis,
-              withoutEmojis,
-            },
-            intensity,
-            responseRhythm,
-          }
-        },
-      });
+      try {
+        const avatarUrl = getRandomAvatar();
+        const preferences = {
+          userNickname,
+          characterName,
+          characterAge,
+          characterGender,
+          avatarUrl,
+          writingStyle: {
+            shortSuggestive,
+            softDetailed,
+            teasingTone,
+            romanticTone,
+            intenseTone,
+            withEmojis,
+            withoutEmojis,
+          },
+          intensity,
+          responseRhythm,
+        };
+
+        // Créer la conversation dans la base de données
+        const conversation = await createConversation({
+          character_name: characterName,
+          character_avatar: avatarUrl,
+          scenario_id: selectedScenario.id,
+          preferences,
+        });
+
+        // Naviguer vers la conversation
+        navigate(`/chat/${conversation.id}`, {
+          state: { 
+            scenario: selectedScenario.id,
+            preferences,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating conversation:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de créer la conversation",
+          variant: "destructive",
+        });
+      }
     }
   };
 
