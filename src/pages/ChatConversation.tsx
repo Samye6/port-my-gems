@@ -142,7 +142,6 @@ const ChatConversation = () => {
 
     setInputValue("");
     setMessageCount((prev) => prev + 1);
-    setIsTyping(true);
 
     const isDemoTamara = id === "demo-tamara";
     const responseDelay = isDemoTamara ? getTamaraResponseDelay(aiResponseCount) : 2000;
@@ -158,6 +157,8 @@ const ChatConversation = () => {
           )
         );
       }
+      // Commencer à "écrire" juste après que le message soit lu
+      setIsTyping(true);
     }, readDelay);
 
     setTimeout(async () => {
