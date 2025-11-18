@@ -5,6 +5,7 @@ import { Search, MoreVertical, Pin, Archive, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatar1 from "@/assets/avatars/avatar-1.jpg";
+import { useUnread } from "@/contexts/UnreadContext";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   DropdownMenu,
@@ -29,6 +30,7 @@ interface Conversation {
 
 const Conversations = () => {
   const navigate = useNavigate();
+  const { setUnreadCount } = useUnread();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [showArchived, setShowArchived] = useState(false);
@@ -75,6 +77,14 @@ const Conversations = () => {
   ];
 
   const [conversations, setConversations] = useState<Conversation[]>([demoConversation]);
+
+  // Calculate and update unread count whenever conversations change
+  useEffect(() => {
+    const totalUnread = conversations.reduce((sum, conv) => {
+      return sum + (conv.unread || 0);
+    }, 0);
+    setUnreadCount(totalUnread);
+  }, [conversations, setUnreadCount]);
 
   useEffect(() => {
     const checkAuth = async () => {
