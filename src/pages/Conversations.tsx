@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, MoreVertical, Pin, Archive, Trash2 } from "lucide-react";
+import { Search, MoreVertical, Pin, Archive, Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatar1 from "@/assets/avatars/avatar-1.jpg";
 import { useUnread } from "@/contexts/UnreadContext";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   DropdownMenu,
@@ -231,6 +232,7 @@ const Conversations = () => {
               onUnarchive={unarchiveConversation}
               onDelete={deleteConversation}
               showArchived={showArchived}
+              isAuthenticated={isAuthenticated}
             />
           </TabsContent>
 
@@ -250,6 +252,7 @@ const Conversations = () => {
               onUnarchive={unarchiveConversation}
               onDelete={deleteConversation}
               showArchived={showArchived}
+              isAuthenticated={isAuthenticated}
             />
           </TabsContent>
         </Tabs>
@@ -268,6 +271,7 @@ interface ConversationListProps {
   onUnarchive: (id: string) => void;
   onDelete: (id: string) => void;
   showArchived: boolean;
+  isAuthenticated: boolean;
 }
 
 const ConversationList = ({
@@ -278,6 +282,7 @@ const ConversationList = ({
   onUnarchive,
   onDelete,
   showArchived,
+  isAuthenticated,
 }: ConversationListProps) => {
   if (conversations.length === 0) {
     return (
@@ -384,6 +389,19 @@ const ConversationList = ({
           </div>
         </div>
       ))}
+      
+      {!isAuthenticated && (
+        <div className="flex justify-center py-6 animate-fade-in">
+          <Button
+            onClick={() => navigate("/auth")}
+            size="lg"
+            className="w-full max-w-xs bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Nouvelle conversation
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
