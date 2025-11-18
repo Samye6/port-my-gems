@@ -4,10 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNotification } from "@/contexts/NotificationContext";
 import { useMessages } from "@/hooks/useMessages";
-import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Message {
   id: string;
@@ -29,6 +35,7 @@ const ChatConversation = () => {
   const [messageCount, setMessageCount] = useState(0);
   const [aiResponseCount, setAiResponseCount] = useState(0);
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
+  const [isMuted, setIsMuted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Get conversation ID from params (for saved conversations) or use 'new' for new ones
@@ -220,12 +227,14 @@ const ChatConversation = () => {
         setAiResponseCount((prev) => prev + 1);
       }
       
-      // Show notification for AI message
-      showNotification({
-        name: characterName,
-        message: aiMessage.text,
-        avatar: avatarUrl,
-      });
+      // Show notification for AI message (only if not muted)
+      if (!isMuted) {
+        showNotification({
+          name: characterName,
+          message: aiMessage.text,
+          avatar: avatarUrl,
+        });
+      }
     }, responseDelay);
   };
 
@@ -265,13 +274,58 @@ const ChatConversation = () => {
               </p>
             </div>
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="rounded-full flex-shrink-0"
-          >
-            <MoreVertical className="w-5 h-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="rounded-full flex-shrink-0"
+              >
+                <MoreVertical className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-card border-border">
+              <DropdownMenuItem
+                onClick={() => {
+                  const newName = prompt("Nouveau nom de la conversation:", characterName);
+                  if (newName && newName.trim()) {
+                    toast({
+                      title: "Conversation renommée",
+                      description: `Renommée en "${newName}"`,
+                    });
+                  }
+                }}
+                className="cursor-pointer"
+              >
+                <Edit2 className="w-4 h-4 mr-2" />
+                Renommer
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setIsMuted(!isMuted);
+                  toast({
+                    title: isMuted ? "Notifications activées" : "Notifications désactivées",
+                    description: isMuted 
+                      ? "Vous recevrez à nouveau les notifications" 
+                      : "Vous ne recevrez plus de notifications pour cette conversation",
+                  });
+                }}
+                className="cursor-pointer"
+              >
+                {isMuted ? (
+                  <>
+                    <Bell className="w-4 h-4 mr-2" />
+                    Activer les notifications
+                  </>
+                ) : (
+                  <>
+                    <BellOff className="w-4 h-4 mr-2" />
+                    Mettre en sourdine
+                  </>
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
