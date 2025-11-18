@@ -1,10 +1,12 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, MessageCircle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUnread } from "@/contexts/UnreadContext";
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { unreadCount } = useUnread();
 
   const navItems = [
     {
@@ -47,7 +49,7 @@ const BottomNav = () => {
             >
               <div
                 className={cn(
-                  "p-2 rounded-xl transition-colors duration-300",
+                  "relative p-2 rounded-xl transition-colors duration-300",
                   active ? "bg-primary/10" : ""
                 )}
               >
@@ -58,6 +60,11 @@ const BottomNav = () => {
                   )}
                   strokeWidth={active ? 2.5 : 2}
                 />
+                {item.path === "/conversations" && unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 animate-pulse">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
               </div>
               <span
                 className={cn(
