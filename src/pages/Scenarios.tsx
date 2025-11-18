@@ -251,7 +251,7 @@ const Scenarios = () => {
         });
 
         // Naviguer vers la conversation
-        navigate(`/chat/${conversation.id}`, {
+        navigate(`/conversations/${conversation.id}`, {
           state: { 
             scenario: selectedScenario.id,
             preferences,

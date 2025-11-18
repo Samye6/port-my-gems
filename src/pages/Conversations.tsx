@@ -289,7 +289,7 @@ const ConversationList = ({
         >
           <div className="flex items-center gap-3 p-3">
             <button
-              onClick={() => navigate(`/chat/${conv.id}`, { 
+              onClick={() => navigate(`/conversations/${conv.id}`, { 
                 state: { 
                   preferences: { 
                     characterName: conv.name,

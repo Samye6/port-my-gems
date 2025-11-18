@@ -9,9 +9,8 @@ import MessageNotification from "@/components/MessageNotification";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import Home from "./pages/Home";
-import Conversations from "./pages/Conversations";
+import MessagesLayout from "./pages/MessagesLayout";
 import Scenarios from "./pages/Scenarios";
-import ChatConversation from "./pages/ChatConversation";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
@@ -33,9 +32,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/conversations" element={<Conversations />} />
+          <Route path="/conversations" element={<MessagesLayout />} />
+          <Route path="/conversations/:id" element={<MessagesLayout />} />
+          <Route path="/chat/:id" element={<MessagesLayout />} />
           <Route path="/scenarios" element={<Scenarios />} />
-          <Route path="/chat/:id" element={<ChatConversation />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />
