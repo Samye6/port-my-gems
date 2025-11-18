@@ -21,12 +21,14 @@ interface Conversation {
   unread?: number;
   isPinned?: boolean;
   isRead?: boolean;
+  isArchived?: boolean;
 }
 
 const Conversations = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [showArchived, setShowArchived] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: "1",
@@ -65,7 +67,19 @@ const Conversations = () => {
   };
 
   const archiveConversation = (id: string) => {
-    setConversations((prev) => prev.filter((conv) => conv.id !== id));
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === id ? { ...conv, isArchived: true } : conv
+      )
+    );
+  };
+
+  const unarchiveConversation = (id: string) => {
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === id ? { ...conv, isArchived: false } : conv
+      )
+    );
   };
 
   const deleteConversation = (id: string) => {
@@ -76,10 +90,17 @@ const Conversations = () => {
     const matchesSearch = conv.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    if (activeTab === "unread") {
-      return matchesSearch && !conv.isRead;
+    
+    // Si on affiche les archivées, montrer seulement les archivées
+    if (showArchived) {
+      return matchesSearch && conv.isArchived;
     }
-    return matchesSearch;
+    
+    // Sinon, ne montrer que les non-archivées
+    if (activeTab === "unread") {
+      return matchesSearch && !conv.isRead && !conv.isArchived;
+    }
+    return matchesSearch && !conv.isArchived;
   });
 
   const pinnedConversations = filteredConversations
@@ -91,6 +112,8 @@ const Conversations = () => {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const sortedConversations = [...pinnedConversations, ...unpinnedConversations];
+
+  const archivedCount = conversations.filter((conv) => conv.isArchived).length;
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-24">
@@ -127,28 +150,51 @@ const Conversations = () => {
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex items-center gap-2 mt-3 mb-2 ml-1">
+          <button
+            onClick={() => setShowArchived(!showArchived)}
+            className="flex items-center gap-2 mt-3 mb-2 ml-1 hover:opacity-80 transition-opacity"
+          >
             <Archive className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Archivées</span>
-          </div>
+            <span className="text-sm text-muted-foreground">
+              Archivées {archivedCount > 0 && `(${archivedCount})`}
+            </span>
+          </button>
 
           <TabsContent value="all" className="mt-0">
+            {showArchived && (
+              <div className="mb-3 px-1">
+                <p className="text-sm text-muted-foreground">
+                  Conversations archivées
+                </p>
+              </div>
+            )}
             <ConversationList
               conversations={sortedConversations}
               onNavigate={navigate}
               onTogglePin={togglePin}
               onArchive={archiveConversation}
+              onUnarchive={unarchiveConversation}
               onDelete={deleteConversation}
+              showArchived={showArchived}
             />
           </TabsContent>
 
           <TabsContent value="unread" className="mt-0">
+            {showArchived && (
+              <div className="mb-3 px-1">
+                <p className="text-sm text-muted-foreground">
+                  Conversations archivées
+                </p>
+              </div>
+            )}
             <ConversationList
               conversations={sortedConversations}
               onNavigate={navigate}
               onTogglePin={togglePin}
               onArchive={archiveConversation}
+              onUnarchive={unarchiveConversation}
               onDelete={deleteConversation}
+              showArchived={showArchived}
             />
           </TabsContent>
         </Tabs>
@@ -164,7 +210,9 @@ interface ConversationListProps {
   onNavigate: (path: string) => void;
   onTogglePin: (id: string) => void;
   onArchive: (id: string) => void;
+  onUnarchive: (id: string) => void;
   onDelete: (id: string) => void;
+  showArchived: boolean;
 }
 
 const ConversationList = ({
@@ -172,7 +220,9 @@ const ConversationList = ({
   onNavigate,
   onTogglePin,
   onArchive,
+  onUnarchive,
   onDelete,
+  showArchived,
 }: ConversationListProps) => {
   if (conversations.length === 0) {
     return (
@@ -242,19 +292,21 @@ const ConversationList = ({
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  {!showArchived && (
+                    <DropdownMenuItem
+                      onClick={() => onTogglePin(conv.id)}
+                      className="gap-2"
+                    >
+                      <Pin className="w-4 h-4" />
+                      {conv.isPinned ? "Désépingler" : "Épingler"}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem
-                    onClick={() => onTogglePin(conv.id)}
-                    className="gap-2"
-                  >
-                    <Pin className="w-4 h-4" />
-                    {conv.isPinned ? "Désépingler" : "Épingler"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onArchive(conv.id)}
+                    onClick={() => showArchived ? onUnarchive(conv.id) : onArchive(conv.id)}
                     className="gap-2"
                   >
                     <Archive className="w-4 h-4" />
-                    Archiver
+                    {showArchived ? "Désarchiver" : "Archiver"}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDelete(conv.id)}
