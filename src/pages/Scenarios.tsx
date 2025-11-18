@@ -126,7 +126,7 @@ const Scenarios = () => {
 
       {/* Scenarios Grid */}
       <div className="p-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {scenarios.map((scenario, index) => (
             <button
               key={scenario.id}
