@@ -26,6 +26,7 @@ const ChatConversation = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
+  const [aiResponseCount, setAiResponseCount] = useState(0);
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -85,6 +86,19 @@ const ChatConversation = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const getTamaraResponseDelay = (responseCount: number): number => {
+    const delays = [15000, 10000, 20000, 5000, 30000];
+    
+    if (responseCount < delays.length) {
+      return delays[responseCount];
+    }
+    
+    // Aléatoire entre 10s et 1 minute pour les réponses suivantes
+    const minDelay = 10000;
+    const maxDelay = 60000;
+    return Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [displayMessages, isTyping]);
@@ -126,6 +140,9 @@ const ChatConversation = () => {
     setMessageCount((prev) => prev + 1);
     setIsTyping(true);
 
+    const isDemoTamara = id === "demo-tamara";
+    const responseDelay = isDemoTamara ? getTamaraResponseDelay(aiResponseCount) : 2000;
+
     setTimeout(async () => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -147,13 +164,17 @@ const ChatConversation = () => {
       
       setIsTyping(false);
       
+      if (isDemoTamara) {
+        setAiResponseCount((prev) => prev + 1);
+      }
+      
       // Show notification for AI message
       showNotification({
         name: characterName,
         message: aiMessage.text,
         avatar: avatarUrl,
       });
-    }, 2000);
+    }, responseDelay);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
