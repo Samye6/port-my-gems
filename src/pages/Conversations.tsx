@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, MoreVertical, Pin, Archive, Trash2, Plus } from "lucide-react";
+import { Search, MoreVertical, Pin, Archive, Trash2, Plus, Bell, BellOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatar1 from "@/assets/avatars/avatar-1.jpg";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import PageHeader from "@/components/PageHeader";
 import BottomNav from "@/components/BottomNav";
+import { useSoundSettings } from "@/hooks/useSoundSettings";
 
 interface Conversation {
   id: string;
@@ -36,6 +37,7 @@ const Conversations = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [showArchived, setShowArchived] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isMuted, toggleMute } = useSoundSettings();
   
   const demoConversation: Conversation = {
     id: "demo-tamara",
@@ -173,7 +175,20 @@ const Conversations = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-24">
-      <PageHeader />
+      <PageHeader 
+        rightAction={
+          <button
+            onClick={toggleMute}
+            className="p-2 rounded-full hover:bg-secondary/80 transition-colors"
+          >
+            {isMuted ? (
+              <BellOff className="w-5 h-5 text-muted-foreground" />
+            ) : (
+              <Bell className="w-5 h-5 text-primary" />
+            )}
+          </button>
+        }
+      />
 
       {/* Search Bar */}
       <div className="px-4 py-3 bg-card/30">
