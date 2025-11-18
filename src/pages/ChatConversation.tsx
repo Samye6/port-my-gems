@@ -280,6 +280,22 @@ const ChatConversation = () => {
       {/* Messages WhatsApp-style */}
       <div className="flex-1 overflow-y-auto p-4 bg-[hsl(var(--background))]">
         <div className="max-w-4xl mx-auto space-y-2">
+          {/* New conversation header for Tamara */}
+          {id === "demo-tamara" && (
+            <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
+              <Avatar className="w-32 h-32 mb-4 ring-4 ring-border">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
+                <AvatarFallback className="bg-primary/20 text-primary text-4xl">
+                  {characterName[0]}
+                </AvatarFallback>
+              </Avatar>
+              <h3 className="text-xl font-semibold text-foreground mb-1">{characterName}</h3>
+              <p className="text-sm text-muted-foreground">
+                {characterName} a démarré une discussion
+              </p>
+            </div>
+          )}
+          
           {displayMessages.map((message, index) => (
             <div key={message.id}>
               {/* Date separator */}
