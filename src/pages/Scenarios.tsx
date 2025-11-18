@@ -25,6 +25,8 @@ interface Scenario {
   detailedDescription: string;
   photos: number;
   videos: number;
+  likes: number;
+  dislikes: number;
 }
 
 const Scenarios = () => {
@@ -92,6 +94,8 @@ const Scenarios = () => {
       detailedDescription: "Une star internationale qui cherche quelqu'un qui la comprend vraiment...",
       photos: 150,
       videos: 25,
+      likes: 1250,
+      dislikes: 45,
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -106,6 +110,8 @@ const Scenarios = () => {
       detailedDescription: "Une influenceuse qui partage ses moments les plus intimes avec toi...",
       photos: 200,
       videos: 30,
+      likes: 1580,
+      dislikes: 38,
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -120,6 +126,8 @@ const Scenarios = () => {
       detailedDescription: "Cette collègue qui te regarde différemment depuis la dernière réunion...",
       photos: 45,
       videos: 8,
+      likes: 890,
+      dislikes: 52,
       icon: <Users className="w-6 h-6" />,
     },
     {
@@ -129,6 +137,8 @@ const Scenarios = () => {
       detailedDescription: "Cette mystérieuse inconnue croisée dans un bar qui n'arrête pas de te sourire...",
       photos: 32,
       videos: 5,
+      likes: 720,
+      dislikes: 68,
       icon: <Sparkles className="w-6 h-6" />,
     },
     {
@@ -138,6 +148,8 @@ const Scenarios = () => {
       detailedDescription: "Ton ex qui revient dans ta vie avec de nouvelles intentions...",
       photos: 60,
       videos: 12,
+      likes: 1120,
+      dislikes: 95,
       icon: <Heart className="w-6 h-6" />,
     },
     {
@@ -147,6 +159,8 @@ const Scenarios = () => {
       detailedDescription: "Une femme mariée qui cherche l'excitation que son couple ne lui offre plus...",
       photos: 38,
       videos: 7,
+      likes: 950,
+      dislikes: 120,
       icon: <Crown className="w-6 h-6" />,
     },
     {
@@ -156,6 +170,8 @@ const Scenarios = () => {
       detailedDescription: "Ta patronne autoritaire qui aime mélanger travail et plaisir...",
       photos: 55,
       videos: 10,
+      likes: 1050,
+      dislikes: 78,
       icon: <Briefcase className="w-6 h-6" />,
     },
     {
@@ -165,6 +181,8 @@ const Scenarios = () => {
       detailedDescription: "Une docteure qui propose des consultations très... personnalisées...",
       photos: 42,
       videos: 9,
+      likes: 840,
+      dislikes: 61,
       icon: <Stethoscope className="w-6 h-6" />,
     },
     {
@@ -174,6 +192,8 @@ const Scenarios = () => {
       detailedDescription: "Ta secrétaire qui ferait n'importe quoi pour te satisfaire...",
       photos: 48,
       videos: 11,
+      likes: 920,
+      dislikes: 55,
       icon: <ClipboardList className="w-6 h-6" />,
     },
   ];
@@ -337,6 +357,14 @@ const Scenarios = () => {
                           <Video className="w-4 h-4 text-primary" />
                           {scenario.videos} vidéos
                         </p>
+                      </div>
+                      <div className="flex items-center justify-center gap-4 pt-2">
+                        <span className="text-sm font-semibold">
+                          👍 {scenario.likes}
+                        </span>
+                        <span className="text-sm font-semibold">
+                          👎 {scenario.dislikes}
+                        </span>
                       </div>
                     </div>
                   </div>
