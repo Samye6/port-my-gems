@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +25,8 @@ interface Scenario {
 const Scenarios = () => {
   const navigate = useNavigate();
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "verified" | "general">("all");
   
   // Form state
   const [userNickname, setUserNickname] = useState("");
@@ -135,6 +137,18 @@ const Scenarios = () => {
     }
   };
 
+  // Filter scenarios based on search and filter
+  const filteredScenarios = scenarios.filter((scenario) => {
+    const matchesSearch = scenario.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         scenario.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (filter === "all") return matchesSearch;
+    if (filter === "verified") return matchesSearch && (scenario.id === "celebrity" || scenario.id === "celebrity2");
+    if (filter === "general") return matchesSearch && scenario.id !== "celebrity" && scenario.id !== "celebrity2";
+    
+    return matchesSearch;
+  });
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
@@ -152,10 +166,62 @@ const Scenarios = () => {
         </div>
       </div>
 
+      {/* Search and Filter Bar */}
+      <div className="p-4 space-y-3 border-b border-border bg-card/30">
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Rechercher un scénario..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10 bg-background border-border"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Filter Buttons */}
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant={filter === "all" ? "default" : "outline"}
+            onClick={() => setFilter("all")}
+            className="flex-1"
+          >
+            Tous
+          </Button>
+          <Button
+            size="sm"
+            variant={filter === "verified" ? "default" : "outline"}
+            onClick={() => setFilter("verified")}
+            className="flex-1"
+          >
+            <BadgeCheck className="w-3 h-3 mr-1" />
+            Vérifiés
+          </Button>
+          <Button
+            size="sm"
+            variant={filter === "general" ? "default" : "outline"}
+            onClick={() => setFilter("general")}
+            className="flex-1"
+          >
+            Général
+          </Button>
+        </div>
+      </div>
+
       {/* Scenarios Grid */}
       <div className="p-4">
         <div className="grid grid-cols-3 gap-3">
-          {scenarios.map((scenario, index) => (
+          {filteredScenarios.map((scenario, index) => (
             <button
               key={scenario.id}
               onClick={() => setSelectedScenario(scenario)}
