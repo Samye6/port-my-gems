@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ArrowLeft, Send, MoreVertical, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Message {
   id: string;
@@ -14,13 +14,17 @@ interface Message {
 
 const ChatConversation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const characterName = "Sarah";
+  // Get preferences from location state or use default
+  const preferences = location.state?.preferences || {};
+  const characterName = preferences.characterName || "Sarah";
+  const avatarUrl = preferences.avatarUrl;
 
   useEffect(() => {
     const initialMessage: Message = {
@@ -88,6 +92,7 @@ const ChatConversation = () => {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <Avatar className="w-10 h-10 flex-shrink-0">
+              {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
               <AvatarFallback className="bg-primary/20 text-primary">
                 {characterName[0]}
               </AvatarFallback>
