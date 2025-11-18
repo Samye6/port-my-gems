@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, MoreVertical, Pin, Archive, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import avatar1 from "@/assets/avatars/avatar-1.jpg";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ interface Conversation {
   isPinned?: boolean;
   isRead?: boolean;
   isArchived?: boolean;
+  avatarUrl?: string;
 }
 
 const Conversations = () => {
@@ -40,6 +42,7 @@ const Conversations = () => {
     unread: 1,
     isPinned: false,
     isRead: false,
+    avatarUrl: avatar1,
   };
 
   const authenticatedConversations: Conversation[] = [
@@ -212,7 +215,7 @@ const Conversations = () => {
             )}
             <ConversationList
               conversations={sortedConversations}
-              onNavigate={navigate}
+              navigate={navigate}
               onTogglePin={togglePin}
               onArchive={archiveConversation}
               onUnarchive={unarchiveConversation}
@@ -231,7 +234,7 @@ const Conversations = () => {
             )}
             <ConversationList
               conversations={sortedConversations}
-              onNavigate={navigate}
+              navigate={navigate}
               onTogglePin={togglePin}
               onArchive={archiveConversation}
               onUnarchive={unarchiveConversation}
@@ -249,7 +252,7 @@ const Conversations = () => {
 
 interface ConversationListProps {
   conversations: Conversation[];
-  onNavigate: (path: string) => void;
+  navigate: ReturnType<typeof useNavigate>;
   onTogglePin: (id: string) => void;
   onArchive: (id: string) => void;
   onUnarchive: (id: string) => void;
@@ -259,7 +262,7 @@ interface ConversationListProps {
 
 const ConversationList = ({
   conversations,
-  onNavigate,
+  navigate,
   onTogglePin,
   onArchive,
   onUnarchive,
@@ -283,10 +286,18 @@ const ConversationList = ({
         >
           <div className="flex items-center gap-3 p-3">
             <button
-              onClick={() => onNavigate(`/chat/${conv.id}`)}
+              onClick={() => navigate(`/chat/${conv.id}`, { 
+                state: { 
+                  preferences: { 
+                    characterName: conv.name,
+                    avatarUrl: conv.avatarUrl
+                  } 
+                } 
+              })}
               className="flex items-center gap-3 flex-1 min-w-0"
             >
               <Avatar className="w-12 h-12 flex-shrink-0">
+                {conv.avatarUrl && <AvatarImage src={conv.avatarUrl} alt={conv.name} />}
                 <AvatarFallback className="bg-primary/20 text-primary text-base">
                   {conv.name[0]}
                 </AvatarFallback>
