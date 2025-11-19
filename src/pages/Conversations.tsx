@@ -325,7 +325,7 @@ const ConversationList = ({
                   >
                     {conv.lastMessage}
                   </p>
-                  {conv.unread && (
+                  {conv.unread && conv.unread > 0 && (
                     <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-full min-w-[20px] text-center flex-shrink-0">
                       {conv.unread}
                     </span>
