@@ -482,6 +482,7 @@ const Scenarios = () => {
               <CountdownTimer />
               <p className="text-sm text-muted-foreground font-medium">Accès limité – ambiance exceptionnelle</p>
               <p className="text-xs text-amber-400 font-medium">Contenu premium • Ne laisse pas passer</p>
+              <p className="text-2xl font-bold text-foreground mt-2">Sophie Raino</p>
             </div>
             <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <ChevronRight className="w-6 h-6 text-amber-400" />
