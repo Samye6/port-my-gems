@@ -5,8 +5,16 @@ Ce dossier contient les photos éphémères que l'IA peut envoyer dans les conve
 ## Photos disponibles
 
 ### La Fit Girl
-- `fitgirl-1.jpg` - Photo en tenue de sport (turquoise)
-- `fitgirl-2.jpg` - Photo dans la salle de sport
+- `fitgirl-1.jpg` - Photo en tenue de sport (turquoise) - Corps entier de dos
+- `fitgirl-2.jpg` - Photo dans la salle de sport - Miroir face avant
+- `fitgirl-3.jpg` - Photo de dos en short turquoise
+- `fitgirl-4.jpg` - Photo de dos avec vue latérale
+- `fitgirl-5.jpg` - Photo de face montrant abdos
+- `fitgirl-6.jpg` - Photo de dos en tenue turquoise
+- `fitgirl-7.jpg` - Photo dans la salle - Position planche
+- `fitgirl-8.jpg` - Photo de dos en tenue blanche et turquoise
+- `fitgirl-9.jpg` - Photo salle de sport - Position planche sur tapis
+- `fitgirl-10.jpg` - Photo salle de sport - Position planche latérale
 
 ## Comment ajouter des photos
 
