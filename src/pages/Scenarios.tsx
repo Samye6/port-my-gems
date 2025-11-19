@@ -23,6 +23,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import BottomNav from "@/components/BottomNav";
+import CountdownTimer from "@/components/CountdownTimer";
 import { useConversations } from "@/hooks/useConversations";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,12 +31,15 @@ interface Scenario {
   id: string;
   title: string;
   description: string;
+  emotionalSubtitle: string;
   icon: React.ReactNode;
   detailedDescription: string;
   photos: number;
   videos: number;
   likes: number;
   dislikes: number;
+  badge?: string;
+  gradient: string;
 }
 
 const Scenarios = () => {
@@ -119,11 +123,14 @@ const Scenarios = () => {
       id: "celebrity",
       title: "Mio Khalifo",
       description: "Collaboration vérifiée",
+      emotionalSubtitle: "Célébrité accessible",
       detailedDescription: "Une star internationale qui cherche quelqu'un qui la comprend vraiment...",
       photos: 150,
       videos: 25,
       likes: 1250,
       dislikes: 45,
+      badge: "🔥 Top 1 aujourd'hui",
+      gradient: "from-rose-500/20 via-pink-500/10 to-fuchsia-500/20",
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -135,11 +142,14 @@ const Scenarios = () => {
       id: "celebrity2",
       title: "Korinna Kopfa",
       description: "Collaboration vérifiée",
+      emotionalSubtitle: "Influenceuse intime",
       detailedDescription: "Une influenceuse qui partage ses moments les plus intimes avec toi...",
       photos: 200,
       videos: 30,
       likes: 1580,
       dislikes: 38,
+      badge: "💬 Très populaire",
+      gradient: "from-violet-500/20 via-purple-500/10 to-pink-500/20",
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -151,77 +161,98 @@ const Scenarios = () => {
       id: "colleague",
       title: "Collègue",
       description: "Tension au bureau",
+      emotionalSubtitle: "Jeux de regards complices",
       detailedDescription: "Cette collègue qui te regarde différemment depuis la dernière réunion...",
       photos: 45,
       videos: 8,
       likes: 890,
       dislikes: 52,
+      badge: "⭐ Tendance",
+      gradient: "from-amber-500/20 via-orange-500/10 to-red-500/20",
       icon: <Users className="w-6 h-6" />,
     },
     {
       id: "stranger",
       title: "Inconnue",
       description: "Rencontre inattendue",
+      emotionalSubtitle: "Magnétisme instantané",
       detailedDescription: "Cette mystérieuse inconnue croisée dans un bar qui n'arrête pas de te sourire...",
       photos: 32,
       videos: 5,
       likes: 720,
       dislikes: 68,
+      badge: "✨ Premium",
+      gradient: "from-blue-500/20 via-indigo-500/10 to-purple-500/20",
       icon: <Sparkles className="w-6 h-6" />,
     },
     {
       id: "ex",
       title: "L'Ex",
       description: "Le passé qui revient",
+      emotionalSubtitle: "Ambiguïté retrouvée",
       detailedDescription: "Ton ex qui revient dans ta vie avec de nouvelles intentions...",
       photos: 60,
       videos: 12,
       likes: 1120,
       dislikes: 95,
+      badge: "💬 Très populaire",
+      gradient: "from-red-500/20 via-rose-500/10 to-pink-500/20",
       icon: <Heart className="w-6 h-6" />,
     },
     {
       id: "married",
       title: "Femme Mariée",
       description: "Relation interdite",
+      emotionalSubtitle: "Passion clandestine",
       detailedDescription: "Une femme mariée qui cherche l'excitation que son couple ne lui offre plus...",
       photos: 38,
       videos: 7,
       likes: 950,
       dislikes: 120,
+      badge: "🎭 Rôle dramatique",
+      gradient: "from-purple-500/20 via-fuchsia-500/10 to-pink-500/20",
       icon: <Crown className="w-6 h-6" />,
     },
     {
       id: "boss",
       title: "La Patronne",
       description: "Une supérieure qui aime le pouvoir",
+      emotionalSubtitle: "Autorité séduisante",
       detailedDescription: "Ta patronne autoritaire qui aime mélanger travail et plaisir...",
       photos: 55,
       videos: 10,
       likes: 1050,
       dislikes: 78,
+      badge: "🔥 Top 3 aujourd'hui",
+      gradient: "from-slate-500/20 via-gray-500/10 to-zinc-500/20",
       icon: <Briefcase className="w-6 h-6" />,
     },
     {
       id: "doctor",
       title: "Docteure",
       description: "Consultation privée",
+      emotionalSubtitle: "Soins personnalisés",
       detailedDescription: "Une docteure qui propose des consultations très... personnalisées...",
       photos: 42,
       videos: 9,
       likes: 840,
       dislikes: 61,
+      badge: "⭐ Tendance",
+      gradient: "from-teal-500/20 via-cyan-500/10 to-blue-500/20",
       icon: <Stethoscope className="w-6 h-6" />,
     },
     {
       id: "secretary",
       title: "Secrétaire",
       description: "Assistante dévouée",
+      emotionalSubtitle: "Dévouement absolu",
       detailedDescription: "Ta secrétaire qui ferait n'importe quoi pour te satisfaire...",
       photos: 48,
       videos: 11,
       likes: 920,
       dislikes: 55,
+      badge: "🕒 Nouveau",
+      gradient: "from-emerald-500/20 via-green-500/10 to-lime-500/20",
       icon: <ClipboardList className="w-6 h-6" />,
     },
   ];
@@ -328,25 +359,28 @@ const Scenarios = () => {
           </div>
 
           {/* Right: Expérience exclusive */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 p-4 hover:border-amber-400/50 transition-all cursor-pointer group">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 p-4 hover:border-amber-400/50 transition-all cursor-pointer group hover:scale-105">
             <div className="absolute top-2 right-2">
-              <div className="bg-amber-500 text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Crown className="w-3 h-3" />
+              <div className="bg-gradient-to-r from-amber-400 to-amber-600 text-black text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg animate-pulse">
+                <Crown className="w-4 h-4" />
                 VIP
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-400 animate-pulse" />
+                <Zap className="w-6 h-6 text-amber-400 animate-pulse" />
                 <h3 className="text-lg font-bold text-foreground">Expérience exclusive</h3>
               </div>
-              <p className="text-sm text-muted-foreground">Disponible encore 24h</p>
-              <p className="text-xs text-amber-400 font-medium">Contenu premium • Accès limité</p>
+              <CountdownTimer />
+              <p className="text-sm text-muted-foreground font-medium">Accès limité – ambiance exceptionnelle</p>
+              <p className="text-xs text-amber-400 font-medium">Contenu premium • Ne laisse pas passer</p>
             </div>
             <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <ChevronRight className="w-5 h-5 text-amber-400" />
+              <ChevronRight className="w-6 h-6 text-amber-400" />
             </div>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            {/* Glow effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-400/20 via-amber-600/20 to-amber-400/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
           </div>
         </div>
 
@@ -429,7 +463,17 @@ const Scenarios = () => {
                   className={`relative w-full h-full [transform-style:preserve-3d] transition-all duration-500 group-hover:[transform:rotateY(180deg)] ${!isClickable ? "cursor-not-allowed" : ""}`}
                 >
                   {/* Front Face */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-card via-card to-secondary/50 border border-border p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] shadow-lg hover:shadow-primary/20 transition-shadow ${!isClickable ? "opacity-50" : ""}`}>
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${scenario.gradient} border border-border p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] shadow-lg hover:shadow-xl transition-shadow ${!isClickable ? "opacity-50" : ""} overflow-hidden`}>
+                    {/* Visual background effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Badge */}
+                    {scenario.badge && (
+                      <div className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-bold text-foreground shadow-md z-10 border border-primary/20">
+                        {scenario.badge}
+                      </div>
+                    )}
+                    
                     {shouldShowLock ? (
                       <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 shadow-md">
                         <Lock className="w-4 h-4 text-muted-foreground" />
@@ -444,12 +488,13 @@ const Scenarios = () => {
                         />
                       </button>
                     )}
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-primary shadow-lg">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary shadow-lg z-10 ring-2 ring-primary/20">
                       {scenario.icon}
                     </div>
-                    <div className="text-center">
+                    <div className="text-center z-10">
                       <h3 className="font-bold text-foreground text-base mb-1">{scenario.title}</h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{scenario.description}</p>
+                      <p className="text-xs text-primary font-semibold mb-1">{scenario.emotionalSubtitle}</p>
+                      <p className="text-[10px] text-muted-foreground leading-relaxed">{scenario.description}</p>
                     </div>
                   </div>
 
