@@ -150,7 +150,10 @@ const Profile = () => {
 
       if (error) throw error;
 
-      toast.success("Profil mis à jour avec succès");
+      // Reset form state to mark it as not dirty
+      form.reset(values);
+      
+      toast.success("Profil enregistré avec succès");
     } catch (error: any) {
       console.error("Error updating profile:", error);
       toast.error(error.message || "Erreur lors de la mise à jour du profil");
@@ -465,7 +468,7 @@ const Profile = () => {
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90"
               >
-                Enregistrer
+                {form.formState.isDirty ? "Enregistrer" : "Modifier"}
               </Button>
             </form>
           </Form>
