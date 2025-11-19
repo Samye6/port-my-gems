@@ -12,14 +12,18 @@ export const UnreadProvider = ({ children }: { children: ReactNode }) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
+    let isSubscribed = true;
+
     // Fonction pour calculer le total des messages non lus
     const fetchUnreadCount = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
         // Utilisateur non connecté : 1 message de Tamara
-        setUnreadCount(1);
-        localStorage.setItem("unreadCount", "1");
+        if (isSubscribed) {
+          setUnreadCount(1);
+          localStorage.setItem("unreadCount", "1");
+        }
         return;
       }
 
@@ -31,9 +35,11 @@ export const UnreadProvider = ({ children }: { children: ReactNode }) => {
 
         if (error) throw error;
 
-        const total = data?.reduce((sum, conv) => sum + (conv.unread_count || 0), 0) || 0;
-        setUnreadCount(total);
-        localStorage.setItem("unreadCount", total.toString());
+        const total = data?.reduce((sum, conv) => sum + (conv.unread_count ?? 0), 0) || 0;
+        if (isSubscribed) {
+          setUnreadCount(total);
+          localStorage.setItem("unreadCount", total.toString());
+        }
       } catch (error) {
         console.error('Error fetching unread count:', error);
       }
@@ -56,15 +62,16 @@ export const UnreadProvider = ({ children }: { children: ReactNode }) => {
 
     // Écouter les changements en temps réel dans la table conversations
     const conversationsChannel = supabase
-      .channel('conversations-unread-changes')
+      .channel('conversations-unread-global')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'UPDATE',
           schema: 'public',
           table: 'conversations'
         },
-        () => {
+        (payload) => {
+          console.log('Unread count changed:', payload);
           // Recalculer le total à chaque changement
           fetchUnreadCount();
         }
@@ -72,6 +79,7 @@ export const UnreadProvider = ({ children }: { children: ReactNode }) => {
       .subscribe();
 
     return () => {
+      isSubscribed = false;
       authSubscription.unsubscribe();
       supabase.removeChannel(conversationsChannel);
     };
