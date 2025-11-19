@@ -349,18 +349,20 @@ const Scenarios = () => {
                 </h3>
                 <div className="space-y-1.5">
                   {[
-                    { rank: 1, name: "Mio Khalifo", emoji: "🔥" },
-                    { rank: 2, name: "Korinna Kopfa", emoji: "💕" },
-                    { rank: 3, name: "Star mystérieuse", emoji: "✨" },
-                    { rank: 4, name: "Influenceuse X", emoji: "💫" },
-                    { rank: 5, name: "Célébrité VIP", emoji: "⭐" },
+                    { rank: 1, name: "Mio Khalifo", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 2, name: "Korinna Kopfa", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 3, name: "Star mystérieuse", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 4, name: "Influenceuse X", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 5, name: "Célébrité VIP", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
                   ].map((item) => (
                     <div
                       key={item.rank}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 hover:border-primary/40 transition-all hover:scale-105 cursor-pointer"
                     >
                       <span className="text-xs font-bold text-primary w-4">{item.rank}</span>
-                      <span className="text-sm">{item.emoji}</span>
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                        {item.icon}
+                      </div>
                       <span className="text-xs font-medium text-foreground truncate">{item.name}</span>
                     </div>
                   ))}
@@ -375,18 +377,20 @@ const Scenarios = () => {
                 </h3>
                 <div className="space-y-1.5">
                   {[
-                    { rank: 1, name: "Collègue ambiguë", emoji: "👔" },
-                    { rank: 2, name: "Ex qui revient", emoji: "💔" },
-                    { rank: 3, name: "Inconnue séduisante", emoji: "✨" },
-                    { rank: 4, name: "La Patronne", emoji: "💼" },
-                    { rank: 5, name: "Docteure", emoji: "🩺" },
+                    { rank: 1, name: "Collègue ambiguë", icon: <Users className="w-4 h-4" /> },
+                    { rank: 2, name: "Ex qui revient", icon: <Heart className="w-4 h-4" /> },
+                    { rank: 3, name: "Inconnue séduisante", icon: <Sparkles className="w-4 h-4" /> },
+                    { rank: 4, name: "La Patronne", icon: <Briefcase className="w-4 h-4" /> },
+                    { rank: 5, name: "Docteure", icon: <Stethoscope className="w-4 h-4" /> },
                   ].map((item) => (
                     <div
                       key={item.rank}
                       className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 hover:border-accent/40 transition-all hover:scale-105 cursor-pointer"
                     >
                       <span className="text-xs font-bold text-accent w-4">{item.rank}</span>
-                      <span className="text-sm">{item.emoji}</span>
+                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+                        {item.icon}
+                      </div>
                       <span className="text-xs font-medium text-foreground truncate">{item.name}</span>
                     </div>
                   ))}
