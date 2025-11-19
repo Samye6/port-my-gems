@@ -4,6 +4,7 @@ interface NotificationData {
   name: string;
   message: string;
   avatar?: string;
+  conversationId?: string;
 }
 
 interface NotificationContextType {
