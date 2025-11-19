@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, MoreVertical, Pin, Archive, Trash2, Plus, Bell, BellOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,7 @@ interface Conversation {
 
 const Conversations = () => {
   const navigate = useNavigate();
+  const { id: activeConversationId } = useParams();
   const { setUnreadCount } = useUnread();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -220,6 +221,7 @@ const Conversations = () => {
               onDelete={deleteConversation}
               showArchived={showArchived}
               isAuthenticated={isAuthenticated}
+              activeConversationId={activeConversationId}
             />
           </TabsContent>
 
@@ -240,6 +242,7 @@ const Conversations = () => {
               onDelete={deleteConversation}
               showArchived={showArchived}
               isAuthenticated={isAuthenticated}
+              activeConversationId={activeConversationId}
             />
           </TabsContent>
         </Tabs>
@@ -257,6 +260,7 @@ interface ConversationListProps {
   onDelete: (id: string) => void;
   showArchived: boolean;
   isAuthenticated: boolean;
+  activeConversationId?: string;
 }
 
 const ConversationList = ({
@@ -268,6 +272,7 @@ const ConversationList = ({
   onDelete,
   showArchived,
   isAuthenticated,
+  activeConversationId,
 }: ConversationListProps) => {
   if (conversations.length === 0) {
     return (
@@ -279,10 +284,16 @@ const ConversationList = ({
 
   return (
     <div className="space-y-1">
-      {conversations.map((conv) => (
+      {conversations.map((conv) => {
+        const isActive = activeConversationId === conv.id;
+        return (
         <div
           key={conv.id}
-          className="rounded-2xl bg-card/30 hover:bg-[hsl(var(--conversation-hover))] transition-colors duration-200 animate-fade-in"
+          className={`rounded-2xl transition-colors duration-200 animate-fade-in ${
+            isActive 
+              ? 'bg-primary/10 border border-primary/20' 
+              : 'bg-card/30 hover:bg-[hsl(var(--conversation-hover))]'
+          }`}
         >
           <div className="flex items-center gap-3 p-3">
             <button
@@ -373,7 +384,8 @@ const ConversationList = ({
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
       
       {/* Bouton Nouvelle conversation - toujours visible */}
       <div className="flex justify-center py-6 animate-fade-in">
