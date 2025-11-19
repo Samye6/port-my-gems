@@ -408,9 +408,9 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col pb-16">
       {/* Header WhatsApp-style */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b border-border bg-card/50 backdrop-blur-sm z-10">
         <div className="px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             {isMobile && (
@@ -607,7 +607,7 @@ const ChatConversation = () => {
       </div>
 
       {/* Input WhatsApp-style */}
-      <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3 flex-shrink-0 z-10">
+      <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3 flex-shrink-0 z-20 mb-16">
         {!isAuthenticated && id === "demo-tamara" && messageCount >= 10 && (
           <div className="max-w-4xl mx-auto mb-3 bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center animate-fade-in">
             <p className="text-sm text-foreground mb-3">
