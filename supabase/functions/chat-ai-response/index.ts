@@ -26,18 +26,71 @@ serve(async (req) => {
     const characterAge = preferences?.characterAge || "25";
     const characterGender = preferences?.characterGender || "femme";
     const userNickname = preferences?.userNickname || "";
-    const intensity = preferences?.intensity || "doux";
-    const responseRhythm = preferences?.responseRhythm || "natural";
     
-    // Analyser le style d'écriture (objet)
-    const writingStyle = preferences?.writingStyle || {};
-    const shortSuggestive = writingStyle.shortSuggestive || false;
-    const softDetailed = writingStyle.softDetailed || false;
-    const withEmojis = writingStyle.withEmojis || false;
-    const withoutEmojis = writingStyle.withoutEmojis || false;
-    const teasingTone = writingStyle.teasingTone || false;
-    const romanticTone = writingStyle.romanticTone || false;
-    const intenseTone = writingStyle.intenseTone || false;
+    // Gérer le nouveau format d'intensité (1-5) ou l'ancien (string)
+    let intensity = preferences?.intensity || "doux";
+    if (typeof intensity === 'number') {
+      const intensityMap = ["amical", "doux", "intime", "audacieux", "tres-audacieux"];
+      intensity = intensityMap[intensity - 1] || "doux";
+    }
+    
+    // Gérer le nouveau format de rythme
+    const rhythmMap: Record<string, string> = {
+      "instant": "instant",
+      "quick": "quick",
+      "natural": "natural",
+      "free": "free"
+    };
+    const responseRhythm = rhythmMap[preferences?.rhythm] || preferences?.responseRhythm || "natural";
+    
+    // Analyser le style d'écriture (nouveau format ou ancien)
+    let writingStyle = preferences?.writingStyle;
+    let shortSuggestive = false;
+    let softDetailed = false;
+    let withEmojis = false;
+    let withoutEmojis = false;
+    let teasingTone = false;
+    let romanticTone = false;
+    let intenseTone = false;
+    let flirtyTone = false;
+    
+    if (typeof writingStyle === 'string') {
+      // Nouveau format
+      shortSuggestive = writingStyle === 'suggestive';
+      softDetailed = writingStyle === 'detailed';
+      
+      // Gérer le ton
+      const tone = preferences?.tone;
+      teasingTone = tone === 'playful';
+      romanticTone = tone === 'romantic';
+      intenseTone = tone === 'intense';
+      flirtyTone = tone === 'flirty';
+      
+      // Gérer les emojis
+      withEmojis = preferences?.useEmojis === true;
+      withoutEmojis = preferences?.useEmojis === false;
+    } else if (typeof writingStyle === 'object') {
+      // Ancien format (objet)
+      shortSuggestive = writingStyle?.shortSuggestive || false;
+      softDetailed = writingStyle?.softDetailed || false;
+      withEmojis = writingStyle?.withEmojis || false;
+      withoutEmojis = writingStyle?.withoutEmojis || false;
+      teasingTone = writingStyle?.teasingTone || false;
+      romanticTone = writingStyle?.romanticTone || false;
+      intenseTone = writingStyle?.intenseTone || false;
+    }
+    
+    console.log("Processed preferences:", { 
+      intensity, 
+      responseRhythm, 
+      shortSuggestive, 
+      softDetailed, 
+      teasingTone, 
+      romanticTone, 
+      intenseTone,
+      flirtyTone,
+      withEmojis 
+    });
     
     let systemPrompt = `Tu es ${characterName}, ${characterGender === "homme" ? "un homme" : "une femme"} de ${characterAge} ans.`;
     
@@ -67,6 +120,9 @@ serve(async (req) => {
     }
     if (intenseTone) {
       systemPrompt += `\n- Sois passionné(e) et intense`;
+    }
+    if (flirtyTone) {
+      systemPrompt += `\n- Sois coquin(e) et séducteur(trice)`;
     }
     
     // Emojis
