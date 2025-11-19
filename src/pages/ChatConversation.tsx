@@ -45,7 +45,7 @@ const ChatConversation = () => {
   // Get conversation ID - use persisted ID if available, otherwise original ID
   const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' ? id || null : null);
   const { messages: dbMessages, loading, sendMessage } = useMessages(actualConversationId);
-  const { createConversation } = useConversations();
+  const { createConversation, refetch } = useConversations();
 
   // Get preferences from location state or use default
   const preferences = location.state?.preferences || {};
@@ -286,6 +286,10 @@ const ChatConversation = () => {
       if (actualConversationId) {
         try {
           await sendMessage(aiMessage.text, "ai");
+          // Forcer un refetch après un court délai pour s'assurer que la liste est à jour
+          setTimeout(() => {
+            refetch();
+          }, 200);
         } catch (error) {
           console.error("Error sending AI message:", error);
         }
