@@ -351,9 +351,9 @@ const Scenarios = () => {
                   {[
                     { rank: 1, name: "Mio Khalifo", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
                     { rank: 2, name: "Korinna Kopfa", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
-                    { rank: 3, name: "Star mystérieuse", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
-                    { rank: 4, name: "Influenceuse X", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
-                    { rank: 5, name: "Célébrité VIP", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 3, name: "Bonnio Blue", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 4, name: "Sophie Raino", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
+                    { rank: 5, name: "Bella Thorno", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
                   ].map((item) => (
                     <div
                       key={item.rank}
