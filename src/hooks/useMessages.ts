@@ -80,12 +80,26 @@ export const useMessages = (conversationId: string | null) => {
       if (error) throw error;
 
       // Mettre à jour le dernier message de la conversation
+      const updateData: any = {
+        last_message: content,
+        last_message_time: new Date().toISOString()
+      };
+      
+      // Si c'est l'IA qui envoie, incrémenter le compteur de messages non lus
+      if (sender === 'ai') {
+        // Récupérer le compteur actuel
+        const { data: conv } = await supabase
+          .from('conversations')
+          .select('unread_count')
+          .eq('id', conversationId)
+          .single();
+        
+        updateData.unread_count = (conv?.unread_count || 0) + 1;
+      }
+      
       await supabase
         .from('conversations')
-        .update({
-          last_message: content,
-          last_message_time: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', conversationId);
 
       return data;
