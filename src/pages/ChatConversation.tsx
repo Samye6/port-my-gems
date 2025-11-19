@@ -274,42 +274,99 @@ const ChatConversation = () => {
     }, readDelay);
 
     setTimeout(async () => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "C'est intéressant ce que tu dis... Tu sais que j'ai toujours apprécié nos échanges.",
-        sender: "ai",
-        timestamp: new Date(),
-        read: false,
-      };
-
-      // Sauvegarder la réponse de l'IA
-      if (actualConversationId) {
-        try {
-          await sendMessage(aiMessage.text, "ai");
-          // Forcer un refetch après un court délai pour s'assurer que la liste est à jour
-          setTimeout(() => {
-            refetch();
-          }, 200);
-        } catch (error) {
-          console.error("Error sending AI message:", error);
-        }
-      } else {
-        setLocalMessages((prev) => [...prev, aiMessage]);
-      }
-      
-      setIsTyping(false);
-      
-      if (isDemoTamara) {
-        setAiResponseCount((prev) => prev + 1);
-      }
-      
-      // Show notification for AI message (only if not muted)
-      if (!isMuted) {
-        showNotification({
-          name: characterName,
-          message: aiMessage.text,
-          avatar: avatarUrl,
+      try {
+        // Préparer l'historique des messages pour l'IA
+        const conversationHistory = displayMessages.slice(-10).map(msg => ({
+          sender: msg.sender,
+          text: msg.text
+        }));
+        
+        // Ajouter le message de l'utilisateur qui vient d'être envoyé
+        conversationHistory.push({
+          sender: "user",
+          text: userMessage.text
         });
+
+        console.log("Calling AI with preferences:", preferences);
+        console.log("Conversation history:", conversationHistory);
+
+        // Appeler l'edge function pour générer la réponse
+        const { data: aiResponse, error: aiError } = await supabase.functions.invoke('chat-ai-response', {
+          body: { 
+            messages: conversationHistory,
+            preferences: preferences
+          }
+        });
+
+        if (aiError) {
+          console.error("Error calling AI function:", aiError);
+          throw aiError;
+        }
+
+        const aiText = aiResponse?.text || "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
+
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: aiText,
+          sender: "ai",
+          timestamp: new Date(),
+          read: false,
+        };
+
+        // Sauvegarder la réponse de l'IA
+        if (actualConversationId) {
+          try {
+            await sendMessage(aiMessage.text, "ai");
+            // Forcer un refetch après un court délai pour s'assurer que la liste est à jour
+            setTimeout(() => {
+              refetch();
+            }, 200);
+          } catch (error) {
+            console.error("Error sending AI message:", error);
+          }
+        } else {
+          setLocalMessages((prev) => [...prev, aiMessage]);
+        }
+        
+        setIsTyping(false);
+        
+        if (isDemoTamara) {
+          setAiResponseCount((prev) => prev + 1);
+        }
+        
+        // Show notification for AI message (only if not muted)
+        if (!isMuted) {
+          showNotification({
+            name: characterName,
+            message: aiMessage.text,
+            avatar: avatarUrl,
+          });
+        }
+      } catch (error) {
+        console.error("Error generating AI response:", error);
+        setIsTyping(false);
+        
+        // Fallback message en cas d'erreur
+        const fallbackMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "Désolé, je rencontre un petit problème technique. Peux-tu réessayer ?",
+          sender: "ai",
+          timestamp: new Date(),
+          read: false,
+        };
+        
+        if (actualConversationId) {
+          try {
+            await sendMessage(fallbackMessage.text, "ai");
+            setTimeout(() => {
+              refetch();
+            }, 200);
+          } catch (err) {
+            console.error("Error sending fallback message:", err);
+          }
+        } else {
+          setLocalMessages((prev) => [...prev, fallbackMessage]);
+        }
       }
     }, responseDelay);
   };
