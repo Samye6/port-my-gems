@@ -1,6 +1,24 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, Crown, LogOut, Camera, User, Trash2 } from "lucide-react";
+import { 
+  LogOut, 
+  Camera, 
+  User, 
+  Trash2, 
+  Crown,
+  MessageCircle,
+  Heart,
+  Users,
+  Calendar,
+  Clock,
+  Shield,
+  Bell,
+  Palette,
+  CreditCard,
+  Lock,
+  HelpCircle,
+  Sparkles
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -262,279 +280,399 @@ const Profile = () => {
     <div className="min-h-screen bg-background pb-24">
       <PageHeader />
 
-      <div className="p-4 space-y-6">
+      {/* Gradient Background */}
+      <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[#FF4D8D]/20 via-purple-500/10 to-transparent pointer-events-none" />
+
+      <div className="relative p-4 space-y-6 max-w-2xl mx-auto">
         {!isAuthenticated ? (
           <div className="space-y-6 animate-fade-in">
-            <Card className="p-6 bg-card border-border">
+            <Card className="p-6 bg-card border-border rounded-2xl shadow-lg">
               <div className="flex items-center gap-2 mb-4">
                 <User className="w-5 h-5 text-primary" />
                 <h3 className="text-lg font-semibold text-foreground">
                   Identité
                 </h3>
               </div>
-              <p className="text-muted-foreground mb-6">
-                Créez un compte ou connectez-vous pour accéder à votre profil complet et débloquer toutes les fonctionnalités.
-              </p>
-              <div className="space-y-3">
-                <Button
-                  onClick={() => navigate("/auth")}
-                  className="w-full"
-                  size="lg"
+              
+              <div className="text-center space-y-4">
+                <p className="text-muted-foreground">
+                  Connecte-toi pour accéder à ton profil
+                </p>
+                
+                <div className="flex gap-3 justify-center">
+                  <Button 
+                    onClick={() => navigate("/auth")}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    Se connecter
+                  </Button>
+                  <Button 
+                    onClick={() => navigate("/auth")}
+                    variant="outline"
+                  >
+                    S'inscrire
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            {/* Premium Section for Non-Authenticated */}
+            <Card className="p-6 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-amber-600/20 border-amber-500/30 rounded-2xl shadow-xl">
+              <div className="text-center space-y-3">
+                <div className="flex justify-center">
+                  <Crown className="w-12 h-12 text-amber-400" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground">
+                  Passe Premium
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Débloque les scénarios exclusifs, les collaborations vérifiées et les expériences limitées.
+                </p>
+                <Button 
+                  onClick={() => navigate("/premium")}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-semibold"
                 >
-                  Se connecter
+                  Découvrir Premium
                 </Button>
-                <Button
-                  onClick={() => navigate("/auth")}
-                  variant="outline"
-                  className="w-full"
-                  size="lg"
+              </div>
+            </Card>
+          </div>
+        ) : (
+          <div className="space-y-6 animate-fade-in">
+            {/* 1. IDENTITÉ */}
+            <Card className="p-8 bg-card border-border rounded-2xl shadow-lg">
+              <div className="flex flex-col items-center space-y-4">
+                {/* Avatar avec halo rose */}
+                <div className="relative group">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#FF4D8D] to-pink-400 blur-xl opacity-50 group-hover:opacity-70 transition-opacity" />
+                  <Avatar className="relative w-32 h-32 border-4 border-[#FF4D8D]/30">
+                    {avatarUrl && (
+                      <AvatarImage
+                        src={avatarUrl}
+                        alt="Profile"
+                        className="object-cover"
+                      />
+                    )}
+                    <AvatarFallback className="bg-primary/20 text-primary text-4xl">
+                      {form.getValues("username")?.[0]?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <label
+                    htmlFor="avatar-upload"
+                    className="absolute bottom-0 right-0 p-2 bg-primary rounded-full cursor-pointer hover:bg-primary/90 transition-colors shadow-lg"
+                  >
+                    <Camera className="w-5 h-5 text-white" />
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={uploadAvatar}
+                      disabled={uploading}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                {/* Form Fields */}
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">Pseudonyme</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="Ton pseudonyme"
+                              className="bg-background border-border text-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="age"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">Âge</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              placeholder="18+"
+                              className="bg-background border-border text-foreground"
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? parseInt(e.target.value) : undefined
+                                )
+                              }
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">Genre</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-background border-border text-foreground">
+                                <SelectValue placeholder="Sélectionner" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="homme">Homme</SelectItem>
+                              <SelectItem value="femme">Femme</SelectItem>
+                              <SelectItem value="non-binaire">Non-binaire</SelectItem>
+                              <SelectItem value="autre">Autre</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="sexual_orientation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">Orientation</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-background border-border text-foreground">
+                                <SelectValue placeholder="Sélectionner" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="hetero">Hétérosexuel(le)</SelectItem>
+                              <SelectItem value="gay">Gay</SelectItem>
+                              <SelectItem value="bi">Bisexuel(le)</SelectItem>
+                              <SelectItem value="pan">Pansexuel(le)</SelectItem>
+                              <SelectItem value="autre">Autre</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-primary hover:bg-primary/90"
+                      disabled={!form.formState.isDirty}
+                    >
+                      {form.formState.isDirty ? "Enregistrer" : "Modifié"}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
+            </Card>
+
+            {/* 2. SECTION PREMIUM */}
+            <Card className="p-6 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-amber-600/20 border-amber-500/30 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow">
+              <div className="text-center space-y-3">
+                <div className="flex justify-center">
+                  <div className="p-3 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full">
+                    <Crown className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-foreground">
+                  Passe Premium
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Débloque les scénarios exclusifs, les collaborations vérifiées et les expériences limitées.
+                </p>
+                <Button 
+                  onClick={() => navigate("/premium")}
+                  className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-semibold shadow-lg"
                 >
-                  S'inscrire
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Découvrir Premium
                 </Button>
               </div>
             </Card>
 
-            <Card className="p-6 bg-card/30 border-border/50">
-              <h3 className="font-semibold text-lg mb-4">Pourquoi créer un compte ?</h3>
-              <ul className="space-y-3 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>Conversations illimitées avec tous les personnages</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>Historique de conversations sauvegardé</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>Personnalisation complète de votre profil</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>Accès aux scénarios premium</span>
-                </li>
-              </ul>
+            {/* 3. STATISTIQUES DU COMPTE */}
+            <Card className="p-6 bg-card border-border rounded-2xl shadow-lg">
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Statistiques du compte
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageCircle className="w-4 h-4 text-primary" />
+                    <span className="text-2xl font-bold text-foreground">12</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Conversations créées</p>
+                </div>
+
+                <div className="p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Heart className="w-4 h-4 text-primary" />
+                    <span className="text-2xl font-bold text-foreground">8</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Scénarios explorés</p>
+                </div>
+
+                <div className="p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-4 h-4 text-primary" />
+                    <span className="text-2xl font-bold text-foreground">5</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Personnages essayés</p>
+                </div>
+
+                <div className="p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Heart className="w-4 h-4 text-primary fill-primary" />
+                    <span className="text-2xl font-bold text-foreground">3</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Scénarios favoris</p>
+                </div>
+
+                <div className="p-4 bg-background/50 rounded-xl border border-border/50 col-span-2">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Dernière activité</p>
+                      <p className="text-xs text-muted-foreground">Il y a 2 heures</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-background/50 rounded-xl border border-border/50 col-span-2">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Membre depuis</p>
+                      <p className="text-xs text-muted-foreground">Janvier 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </Card>
-          </div>
-        ) : (
-          <>
-            {/* User Identity Card */}
-            <Card className="p-6 bg-card border-border animate-fade-in">
-          <div className="flex items-center gap-2 mb-4">
-            <User className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold text-foreground">
-              Identité
-            </h3>
-          </div>
 
-          <div className="flex flex-col items-center gap-4 mb-6">
-            <div className="relative">
-              <Avatar className="w-24 h-24">
-                {avatarUrl && <AvatarImage src={avatarUrl} />}
-                <AvatarFallback className="bg-primary/20 text-primary text-2xl">
-                  {form.watch("username")?.[0]?.toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <label
-                htmlFor="avatar-upload"
-                className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors"
-              >
-                <Camera className="w-4 h-4 text-primary-foreground" />
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={uploadAvatar}
-                  disabled={uploading}
-                  className="hidden"
-                />
-              </label>
-            </div>
-            {uploading && (
-              <p className="text-xs text-muted-foreground">
-                Téléchargement...
-              </p>
-            )}
-          </div>
+            {/* 4. PARAMÈTRES DU COMPTE */}
+            <Card className="p-6 bg-card border-border rounded-2xl shadow-lg">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Paramètres du compte
+              </h3>
+              
+              <div className="space-y-3">
+                <button className="w-full p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-background transition-all flex items-center gap-3 group">
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground font-medium">Sécurité</span>
+                </button>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pseudonyme</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Votre pseudonyme"
-                        {...field}
-                        className="bg-secondary border-border"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <button className="w-full p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-background transition-all flex items-center gap-3 group">
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <Bell className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground font-medium">Notifications</span>
+                </button>
 
-              <FormField
-                control={form.control}
-                name="age"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Âge (18+ requis)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Votre âge"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? parseInt(e.target.value) : undefined
-                          )
-                        }
-                        value={field.value || ""}
-                        className="bg-secondary border-border"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <button className="w-full p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-background transition-all flex items-center gap-3 group">
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <Palette className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground font-medium">Apparence</span>
+                </button>
 
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sexe / Genre</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="bg-secondary border-border">
-                          <SelectValue placeholder="Sélectionnez" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-card border-border">
-                        <SelectItem value="homme">Homme</SelectItem>
-                        <SelectItem value="femme">Femme</SelectItem>
-                        <SelectItem value="non-binaire">Non-binaire</SelectItem>
-                        <SelectItem value="autre">Autre</SelectItem>
-                        <SelectItem value="prefer-not-to-say">
-                          Préfère ne pas dire
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="sexual_orientation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Orientation & préférences</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="bg-secondary border-border">
-                          <SelectValue placeholder="Sélectionnez" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-card border-border">
-                        <SelectItem value="hetero">Hétérosexuel(le)</SelectItem>
-                        <SelectItem value="gay">Gay</SelectItem>
-                        <SelectItem value="lesbian">Lesbienne</SelectItem>
-                        <SelectItem value="bi">Bisexuel(le)</SelectItem>
-                        <SelectItem value="pan">Pansexuel(le)</SelectItem>
-                        <SelectItem value="queer">Queer</SelectItem>
-                        <SelectItem value="prefer-not-to-say">
-                          Préfère ne pas dire
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90"
-              >
-                {form.formState.isDirty ? "Enregistrer" : "Modifier"}
-              </Button>
-            </form>
-          </Form>
-        </Card>
-
-        {/* Account Actions */}
-        <div className="space-y-3">
-          <Button
-            variant="outline"
-            className="w-full justify-start border-border hover:bg-secondary/50"
-            onClick={() => navigate("/premium")}
-          >
-            <Crown className="w-5 h-5 mr-3 text-primary" />
-            Passer Premium
-          </Button>
-
-          <Button
-            variant="outline"
-            className="w-full justify-start border-border hover:bg-secondary/50"
-          >
-            <Settings className="w-5 h-5 mr-3" />
-            Paramètres
-          </Button>
-
-          <Button
-            variant="outline"
-            className="w-full justify-start border-destructive text-destructive hover:bg-destructive/10"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Se déconnecter
-          </Button>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start border-destructive text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="w-5 h-5 mr-3" />
-                Supprimer mon compte
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="bg-card border-border">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                <AlertDialogDescription className="text-muted-foreground">
-                  Cette action est irréversible. Toutes vos données, conversations
-                  et paramètres seront définitivement supprimés.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel className="border-border">
-                  Annuler
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteAccount}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                <button 
+                  onClick={() => navigate("/premium")}
+                  className="w-full p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-background transition-all flex items-center gap-3 group"
                 >
-                  Supprimer définitivement
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-        </>
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <CreditCard className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground font-medium">Paiements & abonnements</span>
+                </button>
+
+                <button className="w-full p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-background transition-all flex items-center gap-3 group">
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <Lock className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground font-medium">Confidentialité</span>
+                </button>
+
+                <button className="w-full p-4 bg-background/50 rounded-xl border border-border/50 hover:border-primary/30 hover:bg-background transition-all flex items-center gap-3 group">
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <HelpCircle className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-foreground font-medium">Centre d'aide</span>
+                </button>
+              </div>
+            </Card>
+
+            {/* 5. DANGER ZONE */}
+            <div className="space-y-3 pt-4">
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="w-full border-muted-foreground/20 text-muted-foreground hover:bg-muted/50"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Se déconnecter
+              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full border-destructive/30 text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Supprimer mon compte
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-card border-border">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-foreground">
+                      Êtes-vous absolument sûr ?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-muted-foreground">
+                      Cette action est irréversible. Toutes vos données seront
+                      définitivement supprimées.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
+                      Annuler
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Supprimer définitivement
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
         )}
       </div>
 
