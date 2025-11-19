@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
+import exclusiveModel from "@/assets/exclusive-model.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -461,13 +462,19 @@ const Scenarios = () => {
 
           {/* Right: Expérience exclusive */}
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 p-4 hover:border-amber-400/50 transition-all cursor-pointer group hover:scale-105">
-            <div className="absolute top-2 right-2">
+            {/* Image de fond positionnée à droite du milieu */}
+            <img 
+              src={exclusiveModel} 
+              alt="Exclusive" 
+              className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto object-cover opacity-60"
+            />
+            <div className="absolute top-2 right-2 z-10">
               <div className="bg-gradient-to-r from-amber-400 to-amber-600 text-black text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg animate-pulse">
                 <Crown className="w-4 h-4" />
                 VIP
               </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 relative z-10">
               <div className="flex items-center gap-2">
                 <Zap className="w-6 h-6 text-amber-400 animate-pulse" />
                 <h3 className="text-lg font-bold text-foreground">Expérience exclusive</h3>
@@ -476,10 +483,10 @@ const Scenarios = () => {
               <p className="text-sm text-muted-foreground font-medium">Accès limité – ambiance exceptionnelle</p>
               <p className="text-xs text-amber-400 font-medium">Contenu premium • Ne laisse pas passer</p>
             </div>
-            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <ChevronRight className="w-6 h-6 text-amber-400" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 z-[5]"></div>
             {/* Glow effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-amber-400/20 via-amber-600/20 to-amber-400/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
           </div>
