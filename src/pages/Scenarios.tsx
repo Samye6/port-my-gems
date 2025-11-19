@@ -467,21 +467,22 @@ const Scenarios = () => {
                     {/* Visual background effect */}
                     <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
-                    {/* Badge */}
+                    {/* Badge à gauche */}
                     {scenario.badge && (
-                      <div className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-bold text-foreground shadow-md z-10 border border-primary/20">
+                      <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-bold text-foreground shadow-md z-10 border border-primary/20">
                         {scenario.badge}
                       </div>
                     )}
                     
+                    {/* Cœur ou Lock à droite */}
                     {shouldShowLock ? (
-                      <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 shadow-md">
+                      <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 shadow-md">
                         <Lock className="w-4 h-4 text-muted-foreground" />
                       </div>
                     ) : (
                       <button
                         onClick={(e) => toggleFavorite(e, scenario.id)}
-                        className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 hover:bg-background transition-colors shadow-md"
+                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 hover:bg-background transition-colors shadow-md"
                       >
                         <Heart 
                           className={`w-4 h-4 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
