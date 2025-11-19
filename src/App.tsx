@@ -8,7 +8,6 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import MessageNotification from "@/components/MessageNotification";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
-import Home from "./pages/Home";
 import MessagesLayout from "./pages/MessagesLayout";
 import Scenarios from "./pages/Scenarios";
 import Shop from "./pages/Shop";
@@ -29,9 +28,8 @@ const App = () => (
           <BrowserRouter>
             <MessageNotification />
             <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Scenarios />} />
           <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/home" element={<Home />} />
           <Route path="/conversations" element={<MessagesLayout />} />
           <Route path="/conversations/:id" element={<MessagesLayout />} />
           <Route path="/chat/:id" element={<MessagesLayout />} />

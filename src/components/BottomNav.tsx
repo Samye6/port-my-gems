@@ -12,7 +12,7 @@ const BottomNav = () => {
     {
       icon: Home,
       label: "Home",
-      path: "/home",
+      path: "/",
       activeColor: "text-primary",
     },
     {

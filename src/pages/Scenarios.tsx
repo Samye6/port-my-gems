@@ -291,22 +291,9 @@ const Scenarios = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-4 py-4 flex items-center gap-4 bg-gradient-to-r from-card via-card/80 to-card">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => navigate("/home")}
-            className="rounded-full hover:bg-primary/10"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Choisir un scénario
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Découvrez nos expériences premium</p>
-          </div>
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+        <div className="container flex h-16 items-center px-6">
+          <h1 className="text-xl font-semibold text-foreground">Home</h1>
         </div>
       </div>
 
