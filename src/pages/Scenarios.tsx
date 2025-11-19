@@ -484,14 +484,44 @@ const Scenarios = () => {
               {selectedScenario?.id !== "celebrity" && selectedScenario?.id !== "celebrity2" && (
                 <>
                   <div className="space-y-2">
+                    <Label htmlFor="characterGender" className="text-foreground">Sexe du personnage</Label>
+                    <Select value={characterGender} onValueChange={setCharacterGender}>
+                      <SelectTrigger className="bg-secondary border-border">
+                        <SelectValue placeholder="Sélectionnez le sexe" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-border">
+                        <SelectItem value="homme">Homme</SelectItem>
+                        <SelectItem value="femme">Femme</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="characterName" className="text-foreground">Nom du personnage</Label>
-                    <Input
-                      id="characterName"
-                      value={characterName}
-                      onChange={(e) => setCharacterName(e.target.value)}
-                      placeholder="Ex: Sophie"
-                      className="bg-secondary border-border"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="characterName"
+                        value={characterName}
+                        onChange={(e) => setCharacterName(e.target.value)}
+                        placeholder="Ex: Sophie"
+                        className="bg-secondary border-border flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const maleNames = ["Lucas", "Thomas", "Hugo", "Théo", "Louis", "Raphaël", "Arthur", "Alexandre", "Antoine", "Maxime", "Nathan", "Julien", "Pierre", "Paul", "Marc", "Nicolas", "Vincent", "David", "Sébastien", "Guillaume"];
+                          const femaleNames = ["Emma", "Léa", "Chloé", "Manon", "Camille", "Sarah", "Marie", "Laura", "Julie", "Sophie", "Clara", "Lucie", "Charlotte", "Alice", "Inès", "Jade", "Lisa", "Océane", "Eva", "Nina"];
+                          
+                          const names = characterGender === "homme" ? maleNames : femaleNames;
+                          const randomName = names[Math.floor(Math.random() * names.length)];
+                          setCharacterName(randomName);
+                        }}
+                        className="border-border hover:bg-secondary/50 whitespace-nowrap"
+                      >
+                        Aléatoire
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -508,17 +538,6 @@ const Scenarios = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="characterGender" className="text-foreground">Sexe du personnage</Label>
-                    <Input
-                      id="characterGender"
-                      value={characterGender}
-                      onChange={(e) => setCharacterGender(e.target.value)}
-                      placeholder="Ex: Femme"
-                      className="bg-secondary border-border"
-                    />
                   </div>
                 </>
               )}
