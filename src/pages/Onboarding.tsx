@@ -91,31 +91,31 @@ const Onboarding = () => {
 
       <div className="w-full max-w-md space-y-4">
         {step === 3 && (
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
+          <div className="space-y-5 bg-card/30 p-5 rounded-xl border border-border/50">
+            <div className="flex items-start space-x-4">
               <Checkbox
                 id="age-confirm"
                 checked={ageConfirmed}
                 onCheckedChange={(checked) => setAgeConfirmed(checked === true)}
-                className="mt-1"
+                className="mt-1 h-5 w-5 border-2 border-primary"
               />
               <label
                 htmlFor="age-confirm"
-                className="text-sm text-foreground leading-tight cursor-pointer"
+                className="text-base text-foreground leading-tight cursor-pointer flex-1"
               >
                 Je confirme avoir 18+ ans
               </label>
             </div>
-            <div className="flex items-start space-x-3">
+            <div className="flex items-start space-x-4">
               <Checkbox
                 id="privacy-accept"
                 checked={privacyAccepted}
                 onCheckedChange={(checked) => setPrivacyAccepted(checked === true)}
-                className="mt-1"
+                className="mt-1 h-5 w-5 border-2 border-primary"
               />
               <label
                 htmlFor="privacy-accept"
-                className="text-sm text-foreground leading-tight cursor-pointer"
+                className="text-base text-foreground leading-tight cursor-pointer flex-1"
               >
                 J'accepte la politique de confidentialité
               </label>
