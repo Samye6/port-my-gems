@@ -108,6 +108,39 @@ const ChatConversation = () => {
       }
     );
 
+    return () => subscription.unsubscribe();
+  }, [id]);
+
+  // Réinitialiser le compteur de messages non lus quand on ouvre la conversation
+  useEffect(() => {
+    const resetUnreadCount = async () => {
+      if (!actualConversationId) return;
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      try {
+        await supabase
+          .from('conversations')
+          .update({ unread_count: 0 })
+          .eq('id', actualConversationId);
+        
+        console.log('Unread count reset for conversation:', actualConversationId);
+      } catch (error) {
+        console.error("Error resetting unread count:", error);
+      }
+    };
+
+    resetUnreadCount();
+  }, [actualConversationId]);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsAuthenticated(!!session);
+      }
+    );
+
     // Si c'est une conversation demo ou nouvelle ET que l'utilisateur n'est pas authentifié,
     // charger les messages depuis localStorage ou initialiser avec un message de bienvenue
     if (!isAuthenticated && (id === "demo-tamara" || id === "new")) {
