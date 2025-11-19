@@ -404,7 +404,7 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header WhatsApp-style */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-3 py-2 flex items-center justify-between">
