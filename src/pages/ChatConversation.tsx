@@ -435,16 +435,10 @@ const ChatConversation = () => {
 
         let aiText = aiResponse?.text || "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
         
-        console.log("AI Response:", aiText);
-        console.log("Conversation scenarioId:", conversationData?.scenarioId);
-        console.log("Location state scenarioId:", location.state?.scenarioId);
-        
         // Détecter et traiter les photos éphémères
         const ephemeralPhotoMatches = aiText.match(/\[SEND_EPHEMERAL_PHOTO\]/g);
         const hasEphemeralPhotos = ephemeralPhotoMatches !== null;
         const photoCount = ephemeralPhotoMatches ? ephemeralPhotoMatches.length : 0;
-        
-        console.log("Has ephemeral photos:", hasEphemeralPhotos, "Count:", photoCount);
         
         // Retirer les marqueurs du texte
         const cleanedText = aiText.replace(/\[SEND_EPHEMERAL_PHOTO\]/g, '').trim();
@@ -472,16 +466,12 @@ const ChatConversation = () => {
         
         // Envoyer les photos éphémères si demandées
         const currentScenarioId = conversationData?.scenarioId || location.state?.scenarioId;
-        console.log("Current scenario ID for photo check:", currentScenarioId);
         
         if (hasEphemeralPhotos && currentScenarioId === 'fitgirl') {
-          console.log("Sending ephemeral photos...");
           for (let i = 0; i < photoCount; i++) {
             // Sélectionner une photo aléatoire
             const randomIndex = Math.floor(Math.random() * fitgirlPhotos.length);
             const photoUrl = fitgirlPhotos[randomIndex];
-            
-            console.log("Sending photo:", photoUrl);
             
             // Petit délai entre chaque photo
             if (i > 0) {
@@ -506,8 +496,6 @@ const ChatConversation = () => {
               }]);
             }
           }
-        } else if (hasEphemeralPhotos) {
-          console.log("Has ephemeral photos but scenario is not fitgirl:", currentScenarioId);
         }
         
         // Forcer un refetch après l'envoi de tous les messages
