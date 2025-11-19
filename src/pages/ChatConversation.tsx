@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
+import { ConversationSettings } from "@/components/ConversationSettings";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +45,7 @@ const ChatConversation = () => {
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [conversationData, setConversationData] = useState<{
     characterName: string;
     avatarUrl?: string;
@@ -392,7 +394,7 @@ const ChatConversation = () => {
         const { data: aiResponse, error: aiError } = await supabase.functions.invoke('chat-ai-response', {
           body: { 
             messages: conversationHistory,
-            preferences: preferences
+            preferences: conversationData?.preferences || preferences
           }
         });
 
@@ -478,7 +480,9 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col pb-16">
+    <div className="h-screen bg-background flex pb-16">
+      {/* Chat Area */}
+      <div className={`flex flex-col ${showSettings ? 'flex-[0_0_60%]' : 'flex-1'} transition-all`}>
       {/* Header WhatsApp-style */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm z-10">
         <div className="px-3 py-2 flex items-center justify-between">
@@ -503,7 +507,10 @@ const ChatConversation = () => {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-foreground truncate">
+              <h2 
+                className="font-semibold text-foreground truncate cursor-pointer hover:text-primary transition-colors"
+                onClick={() => setShowSettings(!showSettings)}
+              >
                 {characterName}
               </h2>
               <p className={`text-xs ${isTyping ? 'text-primary animate-pulse' : 'text-muted-foreground'}`}>
@@ -733,7 +740,25 @@ const ChatConversation = () => {
             <Send className="w-5 h-5" />
           </Button>
         </div>
+        </div>
       </div>
+
+      {/* Settings Panel */}
+      {showSettings && actualConversationId && (
+        <div className="flex-[0_0_40%] min-w-[300px] max-w-[400px]">
+          <ConversationSettings
+            conversationId={actualConversationId}
+            onClose={() => setShowSettings(false)}
+            preferences={conversationData?.preferences || {}}
+            onPreferencesUpdate={(newPrefs) => {
+              setConversationData((prev: any) => ({
+                ...prev,
+                preferences: newPrefs
+              }));
+            }}
+          />
+        </div>
+      )}
 
       <ProfileImageModal
         isOpen={showProfileModal}
