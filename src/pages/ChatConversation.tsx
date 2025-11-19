@@ -163,9 +163,13 @@ const ChatConversation = () => {
   };
 
   const handleScroll = () => {
-    if (!messagesContainerRef.current) return;
+    if (!messagesContainerRef.current) {
+      console.log('No messages container ref');
+      return;
+    }
     
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    console.log('Scroll event:', { scrollTop, scrollHeight, clientHeight, distanceFromBottom: scrollHeight - (scrollTop + clientHeight) });
     const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
     
     // Si l'utilisateur est à plus de 100px du bas, on considère qu'il scrolle
@@ -404,7 +408,7 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-screen bg-background flex flex-col">
       {/* Header WhatsApp-style */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-3 py-2 flex items-center justify-between">
