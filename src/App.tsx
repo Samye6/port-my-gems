@@ -24,11 +24,11 @@ const App = () => (
     <TooltipProvider>
       <UnreadProvider>
         <NotificationProvider>
-          <MessageNotification />
           <Toaster />
           <Sonner />
           <BrowserRouter>
-        <Routes>
+            <MessageNotification />
+            <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/home" element={<Home />} />
