@@ -9,6 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -489,13 +496,18 @@ const Scenarios = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="characterAge" className="text-foreground">Âge du personnage</Label>
-                    <Input
-                      id="characterAge"
-                      value={characterAge}
-                      onChange={(e) => setCharacterAge(e.target.value)}
-                      placeholder="Ex: 28"
-                      className="bg-secondary border-border"
-                    />
+                    <Select value={characterAge} onValueChange={setCharacterAge}>
+                      <SelectTrigger className="bg-secondary border-border">
+                        <SelectValue placeholder="Sélectionnez un âge (18+)" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-border max-h-60">
+                        {Array.from({ length: 82 }, (_, i) => i + 18).map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age} ans
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="space-y-2">
