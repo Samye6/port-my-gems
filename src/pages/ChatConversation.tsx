@@ -6,7 +6,7 @@ import { useNotification } from "@/contexts/NotificationContext";
 import { useMessages } from "@/hooks/useMessages";
 import { useConversations } from "@/hooks/useConversations";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, Edit2 } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, Edit2, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,7 +40,10 @@ const ChatConversation = () => {
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const [isMuted, setIsMuted] = useState(false);
   const [persistedConversationId, setPersistedConversationId] = useState<string | null>(null);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   
   // Get conversation ID - use persisted ID if available, otherwise original ID
   const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' ? id || null : null);
@@ -152,8 +155,27 @@ const ChatConversation = () => {
       }))
     : localMessages;
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (force = false) => {
+    if (force || !isUserScrolling) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      setShowScrollButton(false);
+    }
+  };
+
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
+    
+    // Si l'utilisateur est à plus de 100px du bas, on considère qu'il scrolle
+    if (distanceFromBottom > 100) {
+      setIsUserScrolling(true);
+      setShowScrollButton(true);
+    } else {
+      setIsUserScrolling(false);
+      setShowScrollButton(false);
+    }
   };
 
   const getDateLabel = (date: Date): string => {
@@ -203,8 +225,11 @@ const ChatConversation = () => {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [displayMessages, isTyping]);
+    // Seulement scroller automatiquement si l'utilisateur n'est pas en train de regarder l'historique
+    if (!isUserScrolling) {
+      scrollToBottom();
+    }
+  }, [displayMessages, isTyping, isUserScrolling]);
 
   // Sauvegarder les messages locaux dans localStorage pour les visiteurs
   useEffect(() => {
@@ -465,7 +490,11 @@ const ChatConversation = () => {
       </div>
 
       {/* Messages WhatsApp-style */}
-      <div className="flex-1 overflow-y-auto p-4 bg-[hsl(var(--background))]">
+      <div 
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto p-4 bg-[hsl(var(--background))] relative"
+      >
         <div className="max-w-4xl mx-auto space-y-2">
           {/* New conversation header for Tamara */}
           {id === "demo-tamara" && (
@@ -562,6 +591,17 @@ const ChatConversation = () => {
 
           <div ref={messagesEndRef} />
         </div>
+        
+        {/* Bouton pour revenir en bas */}
+        {showScrollButton && (
+          <button
+            onClick={() => scrollToBottom(true)}
+            className="fixed bottom-24 right-6 z-20 w-12 h-12 rounded-full bg-card border-2 border-border shadow-lg flex items-center justify-center hover:bg-accent transition-all duration-200 animate-fade-in"
+            aria-label="Revenir en bas"
+          >
+            <ArrowDown className="w-5 h-5 text-foreground" />
+          </button>
+        )}
       </div>
 
       {/* Input WhatsApp-style */}
