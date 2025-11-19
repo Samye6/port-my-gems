@@ -663,6 +663,7 @@ const ChatConversation = () => {
                     photoUrl={message.text.replace('ephemeral_photo:', '')}
                     isViewed={viewedEphemeralPhotos.has(message.id)}
                     onView={handleViewEphemeralPhoto}
+                    timestamp={message.timestamp}
                   />
                 ) : (
                   // Regular text message
