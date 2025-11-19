@@ -12,23 +12,69 @@ export const UnreadProvider = ({ children }: { children: ReactNode }) => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    // Load initial count from localStorage
-    const storedCount = localStorage.getItem("unreadCount");
-    if (storedCount) {
-      setUnreadCount(parseInt(storedCount, 10));
-    }
+    // Fonction pour calculer le total des messages non lus
+    const fetchUnreadCount = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // Utilisateur non connecté : 1 message de Tamara
+        setUnreadCount(1);
+        localStorage.setItem("unreadCount", "1");
+        return;
+      }
 
-    // Reset count when user logs out
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      // Utilisateur connecté : récupérer le total depuis la DB
+      try {
+        const { data, error } = await supabase
+          .from('conversations')
+          .select('unread_count');
+
+        if (error) throw error;
+
+        const total = data?.reduce((sum, conv) => sum + (conv.unread_count || 0), 0) || 0;
+        setUnreadCount(total);
+        localStorage.setItem("unreadCount", total.toString());
+      } catch (error) {
+        console.error('Error fetching unread count:', error);
+      }
+    };
+
+    // Charger le compteur initial
+    fetchUnreadCount();
+
+    // Écouter les changements d'authentification
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (!session && event === "SIGNED_OUT") {
-          setUnreadCount(1); // Demo conversation with Tamara has 1 unread
+          setUnreadCount(1); // Demo conversation avec Tamara a 1 non lu
           localStorage.setItem("unreadCount", "1");
+        } else if (session) {
+          fetchUnreadCount();
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    // Écouter les changements en temps réel dans la table conversations
+    const conversationsChannel = supabase
+      .channel('conversations-unread-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'conversations'
+        },
+        () => {
+          // Recalculer le total à chaque changement
+          fetchUnreadCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      authSubscription.unsubscribe();
+      supabase.removeChannel(conversationsChannel);
+    };
   }, []);
 
   const updateUnreadCount = (count: number) => {
