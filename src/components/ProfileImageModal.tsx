@@ -27,9 +27,9 @@ const ProfileImageModal = ({ isOpen, onClose, imageUrl, name }: ProfileImageModa
         className="relative max-w-2xl max-h-[80vh] p-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <Avatar className="w-full h-full rounded-2xl">
+        <Avatar className="w-full h-full rounded-full">
           {imageUrl && <AvatarImage src={imageUrl} alt={name} className="object-cover" />}
-          <AvatarFallback className="bg-primary/20 text-primary text-9xl rounded-2xl">
+          <AvatarFallback className="bg-primary/20 text-primary text-9xl rounded-full">
             {name[0]}
           </AvatarFallback>
         </Avatar>
