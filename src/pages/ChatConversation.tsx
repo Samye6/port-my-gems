@@ -44,6 +44,11 @@ const ChatConversation = () => {
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [conversationData, setConversationData] = useState<{
+    characterName: string;
+    avatarUrl?: string;
+    preferences?: any;
+  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   
@@ -52,10 +57,39 @@ const ChatConversation = () => {
   const { messages: dbMessages, loading, sendMessage } = useMessages(actualConversationId);
   const { createConversation, refetch } = useConversations();
 
-  // Get preferences from location state or use default
-  const preferences = location.state?.preferences || {};
-  const characterName = preferences.characterName || "Sarah";
-  const avatarUrl = preferences.avatarUrl;
+  // Get character info from conversation data or location state
+  const characterName = conversationData?.characterName || location.state?.preferences?.characterName || "Sarah";
+  const avatarUrl = conversationData?.avatarUrl || location.state?.preferences?.avatarUrl;
+  const preferences = conversationData?.preferences || location.state?.preferences || {};
+
+  // Load conversation data from database if we have a conversation ID
+  useEffect(() => {
+    const loadConversation = async () => {
+      if (actualConversationId && actualConversationId !== 'new' && actualConversationId !== 'demo-tamara') {
+        try {
+          const { data, error } = await supabase
+            .from('conversations')
+            .select('character_name, character_avatar, preferences')
+            .eq('id', actualConversationId)
+            .single();
+          
+          if (error) throw error;
+          
+          if (data) {
+            setConversationData({
+              characterName: data.character_name,
+              avatarUrl: data.character_avatar || undefined,
+              preferences: data.preferences,
+            });
+          }
+        } catch (error) {
+          console.error('Error loading conversation:', error);
+        }
+      }
+    };
+
+    loadConversation();
+  }, [actualConversationId]);
 
   useEffect(() => {
     let hasRun = false;
