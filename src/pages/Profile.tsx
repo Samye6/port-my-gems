@@ -401,20 +401,23 @@ const Profile = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-foreground">Âge</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="number"
-                              placeholder="18+"
-                              className="bg-background border-border text-foreground"
-                              onChange={(e) =>
-                                field.onChange(
-                                  e.target.value ? parseInt(e.target.value) : undefined
-                                )
-                              }
-                              value={field.value || ""}
-                            />
-                          </FormControl>
+                          <Select
+                            onValueChange={(value) => field.onChange(parseInt(value))}
+                            value={field.value?.toString()}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-background border-border text-foreground">
+                                <SelectValue placeholder="Sélectionner ton âge" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-card border-border max-h-[300px] z-50">
+                              {Array.from({ length: 83 }, (_, i) => i + 18).map((age) => (
+                                <SelectItem key={age} value={age.toString()}>
+                                  {age} ans
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
