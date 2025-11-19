@@ -607,7 +607,7 @@ const ChatConversation = () => {
       </div>
 
       {/* Input WhatsApp-style */}
-      <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3">
+      <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3 flex-shrink-0 z-10">
         {!isAuthenticated && id === "demo-tamara" && messageCount >= 10 && (
           <div className="max-w-4xl mx-auto mb-3 bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center animate-fade-in">
             <p className="text-sm text-foreground mb-3">
