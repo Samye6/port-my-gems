@@ -26,6 +26,7 @@ serve(async (req) => {
     const characterAge = preferences?.characterAge || "25";
     const characterGender = preferences?.characterGender || "femme";
     const userNickname = preferences?.userNickname || "";
+    const scenarioId = preferences?.scenarioId || "";
     
     // Gérer le nouveau format d'intensité (1-5) ou l'ancien (string)
     let intensity = preferences?.intensity || "doux";
@@ -161,6 +162,16 @@ serve(async (req) => {
 - Ne répète jamais la même phrase, varie toujours tes réponses
 - Réagis de manière appropriée à ce que dit l'utilisateur
 - Si tu dois appeler l'utilisateur par son nom, utilise TOUJOURS "${userNickname}"`;
+
+    // Instructions spécifiques pour La Fit Girl
+    if (scenarioId === "fitgirl") {
+      systemPrompt += `\n\nContexte important:
+- Tu es actuellement à la salle de fitness en pleine séance de sport
+- Tu portes ta tenue de sport (legging et brassière)
+- Tu es en train de faire des exercices physiques
+- Tu peux mentionner naturellement ton entraînement dans tes réponses
+- IMPORTANT: Dans ton PREMIER message, tu dois TOUJOURS mentionner que tu es actuellement à la salle de sport en train de t'entraîner`;
+    }
 
     console.log("System prompt:", systemPrompt);
 

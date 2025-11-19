@@ -51,6 +51,7 @@ const ChatConversation = () => {
   const [conversationData, setConversationData] = useState<{
     characterName: string;
     avatarUrl?: string;
+    scenarioId?: string;
     preferences?: any;
   } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -73,7 +74,7 @@ const ChatConversation = () => {
         try {
           const { data, error } = await supabase
             .from('conversations')
-            .select('character_name, character_avatar, preferences')
+            .select('character_name, character_avatar, scenario_id, preferences')
             .eq('id', actualConversationId)
             .single();
           
@@ -83,6 +84,7 @@ const ChatConversation = () => {
             setConversationData({
               characterName: data.character_name,
               avatarUrl: data.character_avatar || undefined,
+              scenarioId: data.scenario_id || undefined,
               preferences: data.preferences,
             });
           }
@@ -411,11 +413,17 @@ const ChatConversation = () => {
         console.log("Calling AI with preferences:", preferences);
         console.log("Conversation history:", conversationHistory);
 
+        // Préparer les préférences avec le scenarioId
+        const preferencesWithScenario = {
+          ...(conversationData?.preferences || preferences),
+          scenarioId: conversationData?.scenarioId || location.state?.scenarioId
+        };
+
         // Appeler l'edge function pour générer la réponse
         const { data: aiResponse, error: aiError } = await supabase.functions.invoke('chat-ai-response', {
           body: { 
             messages: conversationHistory,
-            preferences: conversationData?.preferences || preferences
+            preferences: preferencesWithScenario
           }
         });
 
