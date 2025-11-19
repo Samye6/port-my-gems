@@ -402,6 +402,7 @@ const ChatConversation = () => {
             name: characterName,
             message: aiMessage.text,
             avatar: avatarUrl,
+            conversationId: actualConversationId || id || undefined,
           });
         }
       } catch (error) {

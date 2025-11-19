@@ -1,11 +1,19 @@
 import { useNotification } from "@/contexts/NotificationContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const MessageNotification = () => {
   const { notification, isVisible } = useNotification();
+  const navigate = useNavigate();
 
   if (!notification) return null;
+
+  const handleClick = () => {
+    if (notification.conversationId) {
+      navigate(`/conversations/${notification.conversationId}`);
+    }
+  };
 
   return (
     <div
@@ -14,7 +22,10 @@ const MessageNotification = () => {
         isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
       )}
     >
-      <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl p-4 pointer-events-auto animate-fade-in backdrop-blur-xl">
+      <button
+        onClick={handleClick}
+        className="w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl p-4 pointer-events-auto animate-fade-in backdrop-blur-xl hover:bg-card/90 transition-colors cursor-pointer"
+      >
         <div className="flex items-center gap-3">
           <Avatar className="w-12 h-12 flex-shrink-0">
             {notification.avatar && <AvatarImage src={notification.avatar} alt={notification.name} />}
@@ -22,7 +33,7 @@ const MessageNotification = () => {
               {notification.name[0]}
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-left">
             <h3 className="font-semibold text-foreground text-sm mb-0.5">
               {notification.name}
             </h3>
@@ -31,7 +42,7 @@ const MessageNotification = () => {
             </p>
           </div>
         </div>
-      </div>
+      </button>
     </div>
   );
 };
