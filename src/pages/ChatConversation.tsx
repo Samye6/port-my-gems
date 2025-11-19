@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
 import EphemeralPhoto from "@/components/EphemeralPhoto";
 import { ConversationSettings } from "@/components/ConversationSettings";
+import { fitgirlPhotos } from "@/utils/ephemeralPhotos";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -432,29 +433,72 @@ const ChatConversation = () => {
           throw aiError;
         }
 
-        const aiText = aiResponse?.text || "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
+        let aiText = aiResponse?.text || "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
+        
+        // Détecter et traiter les photos éphémères
+        const ephemeralPhotoPattern = /\[SEND_EPHEMERAL_PHOTO\]/g;
+        const hasEphemeralPhotos = ephemeralPhotoPattern.test(aiText);
+        const photoCount = (aiText.match(ephemeralPhotoPattern) || []).length;
+        
+        // Retirer les marqueurs du texte
+        const cleanedText = aiText.replace(/\[SEND_EPHEMERAL_PHOTO\]/g, '').trim();
 
-        const aiMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: aiText,
-          sender: "ai",
-          timestamp: new Date(),
-          read: false,
-        };
+        // Sauvegarder le message texte si il y en a un
+        if (cleanedText) {
+          const aiMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            text: cleanedText,
+            sender: "ai",
+            timestamp: new Date(),
+            read: false,
+          };
 
-        // Sauvegarder la réponse de l'IA
-        if (actualConversationId) {
-          try {
-            await sendMessage(aiMessage.text, "ai");
-            // Forcer un refetch après un court délai pour s'assurer que la liste est à jour
-            setTimeout(() => {
-              refetch();
-            }, 200);
-          } catch (error) {
-            console.error("Error sending AI message:", error);
+          if (actualConversationId) {
+            try {
+              await sendMessage(aiMessage.text, "ai");
+            } catch (error) {
+              console.error("Error sending AI message:", error);
+            }
+          } else {
+            setLocalMessages((prev) => [...prev, aiMessage]);
           }
-        } else {
-          setLocalMessages((prev) => [...prev, aiMessage]);
+        }
+        
+        // Envoyer les photos éphémères si demandées
+        if (hasEphemeralPhotos && conversationData?.scenarioId === 'fitgirl') {
+          for (let i = 0; i < photoCount; i++) {
+            // Sélectionner une photo aléatoire
+            const randomIndex = Math.floor(Math.random() * fitgirlPhotos.length);
+            const photoUrl = fitgirlPhotos[randomIndex];
+            
+            // Petit délai entre chaque photo
+            await new Promise(resolve => setTimeout(resolve, i * 1000));
+            
+            const ephemeralPhotoContent = `ephemeral_photo:${photoUrl}`;
+            
+            if (actualConversationId) {
+              try {
+                await sendMessage(ephemeralPhotoContent, "ai");
+              } catch (error) {
+                console.error("Error sending ephemeral photo:", error);
+              }
+            } else {
+              setLocalMessages((prev) => [...prev, {
+                id: `ephemeral-${Date.now()}-${i}`,
+                text: ephemeralPhotoContent,
+                sender: "ai",
+                timestamp: new Date(),
+                read: false,
+              }]);
+            }
+          }
+        }
+        
+        // Forcer un refetch après l'envoi de tous les messages
+        if (actualConversationId) {
+          setTimeout(() => {
+            refetch();
+          }, 200);
         }
         
         setIsTyping(false);
@@ -463,11 +507,11 @@ const ChatConversation = () => {
           setAiResponseCount((prev) => prev + 1);
         }
         
-        // Show notification for AI message (only if not muted)
-        if (!isMuted) {
+        // Show notification for AI message (only if not muted and has text)
+        if (!isMuted && cleanedText) {
           showNotification({
             name: characterName,
-            message: aiMessage.text,
+            message: cleanedText,
             avatar: avatarUrl,
             conversationId: actualConversationId || id || undefined,
           });
