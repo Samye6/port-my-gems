@@ -50,7 +50,21 @@ export const useConversations = () => {
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'conversations'
+        },
+        () => {
+          // Petit délai pour s'assurer que la mise à jour est complète
+          setTimeout(() => {
+            fetchConversations();
+          }, 100);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
           schema: 'public',
           table: 'conversations'
         },
