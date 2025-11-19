@@ -76,7 +76,7 @@ const Conversations = () => {
   // Calculate and update unread count whenever conversations change
   useEffect(() => {
     const totalUnread = conversations.reduce((sum, conv) => {
-      return sum + (conv.unread || 0);
+      return sum + (conv.unread ?? 0);
     }, 0);
     setUnreadCount(totalUnread);
   }, [conversations, setUnreadCount]);
