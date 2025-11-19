@@ -130,7 +130,7 @@ const Scenarios = () => {
       likes: 1250,
       dislikes: 45,
       badge: "🔥 Top 1 aujourd'hui",
-      gradient: "from-rose-500/20 via-pink-500/10 to-fuchsia-500/20",
+      gradient: "from-rose-500/20 via-pink-400/10 to-fuchsia-500/20", // Rose - Romantique
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -149,7 +149,7 @@ const Scenarios = () => {
       likes: 1580,
       dislikes: 38,
       badge: "💬 Très populaire",
-      gradient: "from-violet-500/20 via-purple-500/10 to-pink-500/20",
+      gradient: "from-purple-500/20 via-fuchsia-400/10 to-pink-500/20", // Rose - Romantique
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -168,7 +168,7 @@ const Scenarios = () => {
       likes: 890,
       dislikes: 52,
       badge: "⭐ Tendance",
-      gradient: "from-amber-500/20 via-orange-500/10 to-red-500/20",
+      gradient: "from-amber-500/20 via-orange-400/10 to-red-500/20", // Doré vers Rouge - Passion
       icon: <Users className="w-6 h-6" />,
     },
     {
@@ -182,7 +182,7 @@ const Scenarios = () => {
       likes: 720,
       dislikes: 68,
       badge: "✨ Premium",
-      gradient: "from-blue-500/20 via-indigo-500/10 to-purple-500/20",
+      gradient: "from-blue-500/20 via-indigo-400/10 to-purple-500/20", // Bleu - Mystérieux
       icon: <Sparkles className="w-6 h-6" />,
     },
     {
@@ -196,7 +196,7 @@ const Scenarios = () => {
       likes: 1120,
       dislikes: 95,
       badge: "💬 Très populaire",
-      gradient: "from-red-500/20 via-rose-500/10 to-pink-500/20",
+      gradient: "from-red-600/20 via-rose-400/10 to-pink-500/20", // Rouge vineux - Passion
       icon: <Heart className="w-6 h-6" />,
     },
     {
@@ -210,7 +210,7 @@ const Scenarios = () => {
       likes: 950,
       dislikes: 120,
       badge: "🎭 Rôle dramatique",
-      gradient: "from-purple-500/20 via-fuchsia-500/10 to-pink-500/20",
+      gradient: "from-red-700/20 via-red-500/10 to-rose-500/20", // Rouge vineux - Passion
       icon: <Crown className="w-6 h-6" />,
     },
     {
@@ -224,7 +224,7 @@ const Scenarios = () => {
       likes: 1050,
       dislikes: 78,
       badge: "🔥 Top 3 aujourd'hui",
-      gradient: "from-slate-500/20 via-gray-500/10 to-zinc-500/20",
+      gradient: "from-amber-600/20 via-amber-400/10 to-yellow-500/20", // Doré - Premium
       icon: <Briefcase className="w-6 h-6" />,
     },
     {
@@ -238,7 +238,7 @@ const Scenarios = () => {
       likes: 840,
       dislikes: 61,
       badge: "⭐ Tendance",
-      gradient: "from-teal-500/20 via-cyan-500/10 to-blue-500/20",
+      gradient: "from-blue-400/20 via-cyan-400/10 to-indigo-500/20", // Bleu - Mystérieux
       icon: <Stethoscope className="w-6 h-6" />,
     },
     {
@@ -252,7 +252,7 @@ const Scenarios = () => {
       likes: 920,
       dislikes: 55,
       badge: "🕒 Nouveau",
-      gradient: "from-emerald-500/20 via-green-500/10 to-lime-500/20",
+      gradient: "from-pink-500/20 via-rose-400/10 to-fuchsia-500/20", // Rose - Romantique
       icon: <ClipboardList className="w-6 h-6" />,
     },
     {
@@ -266,7 +266,7 @@ const Scenarios = () => {
       likes: 1320,
       dislikes: 42,
       badge: "🔥 Top 3 aujourd'hui",
-      gradient: "from-cyan-500/20 via-blue-500/10 to-indigo-500/20",
+      gradient: "from-blue-600/20 via-indigo-400/10 to-purple-500/20", // Bleu - Mystérieux
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -285,7 +285,7 @@ const Scenarios = () => {
       likes: 1180,
       dislikes: 35,
       badge: "💬 Très populaire",
-      gradient: "from-pink-500/20 via-rose-500/10 to-red-500/20",
+      gradient: "from-rose-500/20 via-pink-400/10 to-fuchsia-500/20", // Rose - Romantique
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -304,7 +304,7 @@ const Scenarios = () => {
       likes: 1420,
       dislikes: 48,
       badge: "✨ Premium",
-      gradient: "from-amber-500/20 via-yellow-500/10 to-orange-500/20",
+      gradient: "from-amber-600/20 via-yellow-400/10 to-orange-500/20", // Doré - Premium
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -390,21 +390,24 @@ const Scenarios = () => {
         {/* Top Tendances Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           {/* Left: Top des scénarios populaires */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Flame className="w-5 h-5 text-primary animate-pulse" />
-              <h2 className="text-lg font-bold text-foreground">Tops du moment</h2>
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Tops du moment</h2>
+                <p className="text-[10px] text-muted-foreground">Découvre les scénarios les plus appréciés aujourd'hui</p>
+              </div>
             </div>
             
             {/* Two columns for tops */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               {/* Left column: Top Vérifiées */}
-              <div className="space-y-2">
-                <h3 className="text-sm font-bold text-primary flex items-center gap-1">
-                  <BadgeCheck className="w-4 h-4" />
+              <div className="space-y-1.5">
+                <h3 className="text-xs font-bold text-primary flex items-center gap-1">
+                  <BadgeCheck className="w-3.5 h-3.5" />
                   Top Vérifiées
                 </h3>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   {[
                     { rank: 1, name: "Mio Khalifo", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
                     { rank: 2, name: "Korinna Kopfa", icon: <div className="relative"><UserRound className="w-4 h-4" /><BadgeCheck className="w-2 h-2 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" /></div> },
@@ -414,10 +417,10 @@ const Scenarios = () => {
                   ].map((item) => (
                     <div
                       key={item.rank}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 hover:border-primary/40 transition-all hover:scale-105 cursor-pointer"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 hover:border-primary/40 transition-all hover:scale-105 cursor-pointer shadow-sm hover:shadow-md"
                     >
-                      <span className="text-xs font-bold text-primary w-4">{item.rank}</span>
-                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                      <span className="text-xs font-bold text-primary w-3">{item.rank}</span>
+                      <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
                         {item.icon}
                       </div>
                       <span className="text-xs font-medium text-foreground truncate">{item.name}</span>
@@ -427,12 +430,12 @@ const Scenarios = () => {
               </div>
 
               {/* Right column: Top Situations */}
-              <div className="space-y-2">
-                <h3 className="text-sm font-bold text-accent flex items-center gap-1">
-                  <Heart className="w-4 h-4" />
+              <div className="space-y-1.5">
+                <h3 className="text-xs font-bold text-accent flex items-center gap-1">
+                  <Heart className="w-3.5 h-3.5" />
                   Top Situations
                 </h3>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   {[
                     { rank: 1, name: "Collègue ambiguë", icon: <Users className="w-4 h-4" /> },
                     { rank: 2, name: "Ex qui revient", icon: <Heart className="w-4 h-4" /> },
@@ -442,10 +445,10 @@ const Scenarios = () => {
                   ].map((item) => (
                     <div
                       key={item.rank}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 hover:border-accent/40 transition-all hover:scale-105 cursor-pointer"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 hover:border-accent/40 transition-all hover:scale-105 cursor-pointer shadow-sm hover:shadow-md"
                     >
-                      <span className="text-xs font-bold text-accent w-4">{item.rank}</span>
-                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+                      <span className="text-xs font-bold text-accent w-3">{item.rank}</span>
+                      <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
                         {item.icon}
                       </div>
                       <span className="text-xs font-medium text-foreground truncate">{item.name}</span>
@@ -487,10 +490,10 @@ const Scenarios = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Rechercher un scénario..."
+            placeholder="Trouve l'ambiance qui t'attire…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 bg-background border-border"
+            className="pl-10 pr-10 bg-background/50 border-border focus:border-primary transition-all"
           />
           {searchQuery && (
             <button
@@ -510,6 +513,7 @@ const Scenarios = () => {
             onClick={() => setFilter("all")}
             className="flex-1"
           >
+            <Star className="w-3 h-3 mr-1" />
             Tous
           </Button>
           <Button
@@ -527,6 +531,7 @@ const Scenarios = () => {
             onClick={() => setFilter("general")}
             className="flex-1"
           >
+            <Sparkles className="w-3 h-3 mr-1" />
             Général
           </Button>
           <Button
@@ -552,7 +557,7 @@ const Scenarios = () => {
             return (
               <div
                 key={scenario.id}
-                className="relative aspect-square rounded-2xl animate-fade-in group [perspective:1000px] hover:scale-105 transition-transform duration-300"
+                className="relative aspect-square rounded-2xl animate-fade-in group [perspective:1000px] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 shadow-lg hover:shadow-2xl"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <button
