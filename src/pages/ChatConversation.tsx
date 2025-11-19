@@ -493,7 +493,7 @@ const ChatConversation = () => {
       <div 
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 bg-[hsl(var(--background))] relative"
+        className="flex-1 overflow-y-auto p-4 bg-[hsl(var(--background))] relative scrollbar-custom"
       >
         <div className="max-w-4xl mx-auto space-y-2">
           {/* New conversation header for Tamara */}
