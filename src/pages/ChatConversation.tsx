@@ -500,32 +500,30 @@ const ChatConversation = () => {
         className="flex-1 overflow-y-scroll p-4 pr-2 bg-[hsl(var(--background))] relative scrollbar-custom"
       >
         <div className="max-w-4xl mx-auto space-y-2">
-          {/* New conversation header for Tamara */}
-          {id === "demo-tamara" && (
-            <>
-              <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
-                <Avatar className="w-32 h-32 mb-4 ring-4 ring-border">
-                  {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
-                  <AvatarFallback className="bg-primary/20 text-primary text-4xl">
-                    {characterName[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="text-xl font-semibold text-foreground mb-1">{characterName}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {characterName} a démarré une discussion
+          {/* New conversation header - Pour toutes les conversations */}
+          <>
+            <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
+              <Avatar className="w-32 h-32 mb-4 ring-4 ring-border">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
+                <AvatarFallback className="bg-primary/20 text-primary text-4xl">
+                  {characterName[0]}
+                </AvatarFallback>
+              </Avatar>
+              <h3 className="text-xl font-semibold text-foreground mb-1">{characterName}</h3>
+              <p className="text-sm text-muted-foreground">
+                {characterName} a démarré une discussion
+              </p>
+            </div>
+            
+            {/* Security message */}
+            <div className="flex justify-center mb-4 animate-fade-in">
+              <div className="max-w-[85%] bg-[#FCF4C4] dark:bg-[#3D3B30] px-4 py-3 rounded-lg shadow-sm">
+                <p className="text-xs text-[#54504E] dark:text-[#D3D1CB] text-center leading-relaxed">
+                  🔒 Les messages à vous-même sont chiffrés de bout en bout. Aucun tiers, pas même Lydia, ne peut les lire ou les écouter. Appuyez pour en savoir plus.
                 </p>
               </div>
-              
-              {/* Security message */}
-              <div className="flex justify-center mb-4 animate-fade-in">
-                <div className="max-w-[85%] bg-[#FCF4C4] dark:bg-[#3D3B30] px-4 py-3 rounded-lg shadow-sm">
-                  <p className="text-xs text-[#54504E] dark:text-[#D3D1CB] text-center leading-relaxed">
-                    🔒 Les messages à vous-même sont chiffrés de bout en bout. Aucun tiers, pas même Lydia, ne peut les lire ou les écouter. Appuyez pour en savoir plus.
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
+            </div>
+          </>
           
           {displayMessages.map((message, index) => (
             <div key={message.id}>
