@@ -255,6 +255,63 @@ const Scenarios = () => {
       gradient: "from-emerald-500/20 via-green-500/10 to-lime-500/20",
       icon: <ClipboardList className="w-6 h-6" />,
     },
+    {
+      id: "celebrity3",
+      title: "Bonnio Blue",
+      description: "Collaboration vérifiée",
+      emotionalSubtitle: "Charme mystérieux",
+      detailedDescription: "Une créatrice de contenu qui aime partager ses secrets les plus intimes...",
+      photos: 180,
+      videos: 28,
+      likes: 1320,
+      dislikes: 42,
+      badge: "🔥 Top 3 aujourd'hui",
+      gradient: "from-cyan-500/20 via-blue-500/10 to-indigo-500/20",
+      icon: (
+        <div className="relative">
+          <UserRound className="w-6 h-6" />
+          <BadgeCheck className="w-3 h-3 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" />
+        </div>
+      ),
+    },
+    {
+      id: "celebrity4",
+      title: "Sophie Raino",
+      description: "Collaboration vérifiée",
+      emotionalSubtitle: "Élégance sensuelle",
+      detailedDescription: "Une personnalité captivante qui sait exactement comment te séduire...",
+      photos: 165,
+      videos: 22,
+      likes: 1180,
+      dislikes: 35,
+      badge: "💬 Très populaire",
+      gradient: "from-pink-500/20 via-rose-500/10 to-red-500/20",
+      icon: (
+        <div className="relative">
+          <UserRound className="w-6 h-6" />
+          <BadgeCheck className="w-3 h-3 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" />
+        </div>
+      ),
+    },
+    {
+      id: "celebrity5",
+      title: "Bella Thorno",
+      description: "Collaboration vérifiée",
+      emotionalSubtitle: "Audace assumée",
+      detailedDescription: "Une star audacieuse qui n'a peur de rien et qui aime provoquer...",
+      photos: 195,
+      videos: 32,
+      likes: 1420,
+      dislikes: 48,
+      badge: "✨ Premium",
+      gradient: "from-amber-500/20 via-yellow-500/10 to-orange-500/20",
+      icon: (
+        <div className="relative">
+          <UserRound className="w-6 h-6" />
+          <BadgeCheck className="w-3 h-3 text-blue-500 absolute -bottom-0.5 -right-0.5 fill-blue-500" />
+        </div>
+      ),
+    },
   ];
 
   const handleStartChat = async () => {
@@ -312,8 +369,8 @@ const Scenarios = () => {
                          scenario.description.toLowerCase().includes(searchQuery.toLowerCase());
     
     if (filter === "all") return matchesSearch;
-    if (filter === "verified") return matchesSearch && (scenario.id === "celebrity" || scenario.id === "celebrity2");
-    if (filter === "general") return matchesSearch && scenario.id !== "celebrity" && scenario.id !== "celebrity2";
+    if (filter === "verified") return matchesSearch && (scenario.id === "celebrity" || scenario.id === "celebrity2" || scenario.id === "celebrity3" || scenario.id === "celebrity4" || scenario.id === "celebrity5");
+    if (filter === "general") return matchesSearch && !scenario.id.startsWith("celebrity");
     if (filter === "favorites") return matchesSearch && isFavorite(scenario.id);
     
     return matchesSearch;
