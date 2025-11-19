@@ -480,7 +480,7 @@ const Scenarios = () => {
                 <h3 className="text-lg font-bold text-foreground">Expérience exclusive</h3>
               </div>
               <CountdownTimer />
-              <p className="text-sm text-muted-foreground font-medium">Accès limité – ambiance exceptionnelle</p>
+              <p className="text-sm text-muted-foreground font-medium">Accès limité – contenu exclusif</p>
               <p className="text-xs text-amber-400 font-medium">Contenu premium • Ne laisse pas passer</p>
               <p className="text-5xl font-bold text-foreground mt-2">Sophie Raino</p>
             </div>
