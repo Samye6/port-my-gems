@@ -375,18 +375,17 @@ const ConversationList = ({
         </div>
       ))}
       
-      {!isAuthenticated && (
-        <div className="flex justify-center py-6 animate-fade-in">
-          <Button
-            onClick={() => navigate("/auth")}
-            size="lg"
-            className="w-full max-w-xs bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Nouvelle conversation
-          </Button>
-        </div>
-      )}
+      {/* Bouton Nouvelle conversation - toujours visible */}
+      <div className="flex justify-center py-6 animate-fade-in">
+        <Button
+          onClick={() => navigate(isAuthenticated ? "/scenarios" : "/auth")}
+          size="lg"
+          className="w-full max-w-xs bg-primary hover:bg-primary/90 text-primary-foreground"
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          Nouvelle conversation
+        </Button>
+      </div>
     </div>
   );
 };
