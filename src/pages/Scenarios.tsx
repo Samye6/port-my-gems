@@ -338,23 +338,60 @@ const Scenarios = () => {
               <Flame className="w-5 h-5 text-primary animate-pulse" />
               <h2 className="text-lg font-bold text-foreground">Tops du moment</h2>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              {[
-                { title: "Crush secret", emoji: "💕" },
-                { title: "Collègue ambiguë", emoji: "👔" },
-                { title: "Rencontre inattendue", emoji: "✨" },
-                { title: "Ex qui revient", emoji: "💔" },
-                { title: "Voisine séduisante", emoji: "🏠" },
-              ].map((item, index) => (
-                <button
-                  key={index}
-                  className="flex-shrink-0 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 hover:border-primary/50 transition-all hover:scale-105"
-                >
-                  <span className="text-sm font-medium text-foreground whitespace-nowrap">
-                    {item.emoji} {item.title}
-                  </span>
-                </button>
-              ))}
+            
+            {/* Two columns for tops */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Left column: Top Vérifiées */}
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold text-primary flex items-center gap-1">
+                  <BadgeCheck className="w-4 h-4" />
+                  Top Vérifiées
+                </h3>
+                <div className="space-y-1.5">
+                  {[
+                    { rank: 1, name: "Mio Khalifo", emoji: "🔥" },
+                    { rank: 2, name: "Korinna Kopfa", emoji: "💕" },
+                    { rank: 3, name: "Star mystérieuse", emoji: "✨" },
+                    { rank: 4, name: "Influenceuse X", emoji: "💫" },
+                    { rank: 5, name: "Célébrité VIP", emoji: "⭐" },
+                  ].map((item) => (
+                    <div
+                      key={item.rank}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 hover:border-primary/40 transition-all hover:scale-105 cursor-pointer"
+                    >
+                      <span className="text-xs font-bold text-primary w-4">{item.rank}</span>
+                      <span className="text-sm">{item.emoji}</span>
+                      <span className="text-xs font-medium text-foreground truncate">{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right column: Top Situations */}
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold text-accent flex items-center gap-1">
+                  <Heart className="w-4 h-4" />
+                  Top Situations
+                </h3>
+                <div className="space-y-1.5">
+                  {[
+                    { rank: 1, name: "Collègue ambiguë", emoji: "👔" },
+                    { rank: 2, name: "Ex qui revient", emoji: "💔" },
+                    { rank: 3, name: "Inconnue séduisante", emoji: "✨" },
+                    { rank: 4, name: "La Patronne", emoji: "💼" },
+                    { rank: 5, name: "Docteure", emoji: "🩺" },
+                  ].map((item) => (
+                    <div
+                      key={item.rank}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 hover:border-accent/40 transition-all hover:scale-105 cursor-pointer"
+                    >
+                      <span className="text-xs font-bold text-accent w-4">{item.rank}</span>
+                      <span className="text-sm">{item.emoji}</span>
+                      <span className="text-xs font-medium text-foreground truncate">{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
