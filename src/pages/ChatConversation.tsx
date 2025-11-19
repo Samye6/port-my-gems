@@ -10,6 +10,7 @@ import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ProfileImageModal from "@/components/ProfileImageModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,7 @@ const ChatConversation = () => {
   const [persistedConversationId, setPersistedConversationId] = useState<string | null>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   
@@ -457,7 +459,10 @@ const ChatConversation = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             )}
-            <Avatar className="w-10 h-10 flex-shrink-0">
+            <Avatar 
+              className="w-10 h-10 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setShowProfileModal(true)}
+            >
               {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
               <AvatarFallback className="bg-primary/20 text-primary">
                 {characterName[0]}
@@ -537,7 +542,10 @@ const ChatConversation = () => {
           {/* New conversation header - Pour toutes les conversations */}
           <>
             <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
-              <Avatar className="w-32 h-32 mb-4 ring-4 ring-border">
+              <Avatar 
+                className="w-32 h-32 mb-4 ring-4 ring-border cursor-pointer hover:ring-primary/50 transition-all"
+                onClick={() => setShowProfileModal(true)}
+              >
                 {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
                 <AvatarFallback className="bg-primary/20 text-primary text-4xl">
                   {characterName[0]}
@@ -692,6 +700,13 @@ const ChatConversation = () => {
           </Button>
         </div>
       </div>
+
+      <ProfileImageModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        imageUrl={avatarUrl}
+        name={characterName}
+      />
     </div>
   );
 };

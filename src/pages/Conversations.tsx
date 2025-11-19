@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Search, MoreVertical, Pin, Archive, Trash2, Plus, Bell, BellOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ProfileImageModal from "@/components/ProfileImageModal";
 import avatar1 from "@/assets/avatars/avatar-1.jpg";
 import { useUnread } from "@/contexts/UnreadContext";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,8 @@ const Conversations = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [showArchived, setShowArchived] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<{ imageUrl?: string; name: string } | null>(null);
   const { isMuted, toggleMute } = useSoundSettings();
   const { conversations: dbConversations, updateConversation, deleteConversation: deleteConv, loading } = useConversations();
   
@@ -222,6 +225,10 @@ const Conversations = () => {
               showArchived={showArchived}
               isAuthenticated={isAuthenticated}
               activeConversationId={activeConversationId}
+              onOpenProfile={(imageUrl, name) => {
+                setSelectedProfile({ imageUrl, name });
+                setShowProfileModal(true);
+              }}
             />
           </TabsContent>
 
@@ -243,10 +250,24 @@ const Conversations = () => {
               showArchived={showArchived}
               isAuthenticated={isAuthenticated}
               activeConversationId={activeConversationId}
+              onOpenProfile={(imageUrl, name) => {
+                setSelectedProfile({ imageUrl, name });
+                setShowProfileModal(true);
+              }}
             />
           </TabsContent>
         </Tabs>
       </div>
+
+      <ProfileImageModal
+        isOpen={showProfileModal}
+        onClose={() => {
+          setShowProfileModal(false);
+          setSelectedProfile(null);
+        }}
+        imageUrl={selectedProfile?.imageUrl}
+        name={selectedProfile?.name || ""}
+      />
     </div>
   );
 };
@@ -261,6 +282,7 @@ interface ConversationListProps {
   showArchived: boolean;
   isAuthenticated: boolean;
   activeConversationId?: string;
+  onOpenProfile: (imageUrl: string | undefined, name: string) => void;
 }
 
 const ConversationList = ({
@@ -273,6 +295,7 @@ const ConversationList = ({
   showArchived,
   isAuthenticated,
   activeConversationId,
+  onOpenProfile,
 }: ConversationListProps) => {
   if (conversations.length === 0) {
     return (
@@ -307,7 +330,13 @@ const ConversationList = ({
               })}
               className="flex items-center gap-3 flex-1 min-w-0"
             >
-              <Avatar className="w-12 h-12 flex-shrink-0">
+              <Avatar 
+                className="w-12 h-12 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenProfile(conv.avatarUrl, conv.name);
+                }}
+              >
                 {conv.avatarUrl && <AvatarImage src={conv.avatarUrl} alt={conv.name} />}
                 <AvatarFallback className="bg-primary/20 text-primary text-base">
                   {conv.name[0]}
