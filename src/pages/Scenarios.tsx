@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
 import { Button } from "@/components/ui/button";
@@ -255,6 +255,20 @@ const Scenarios = () => {
       badge: "🕒 Nouveau",
       gradient: "from-pink-500/20 via-rose-400/10 to-fuchsia-500/20", // Rose - Romantique
       icon: <ClipboardList className="w-6 h-6" />,
+    },
+    {
+      id: "fitgirl",
+      title: "La Fit Girl",
+      description: "Énergie et sensualité",
+      emotionalSubtitle: "Corps sculpté, esprit libre",
+      detailedDescription: "Cette sportive passionnée qui aime repousser ses limites... et les tiennes.",
+      photos: 65,
+      videos: 14,
+      likes: 1180,
+      dislikes: 42,
+      badge: "🔥 Très populaire",
+      gradient: "from-emerald-500/20 via-teal-400/10 to-cyan-500/20", // Vert/Cyan - Énergie
+      icon: <Dumbbell className="w-6 h-6" />,
     },
     {
       id: "celebrity3",
