@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
+import EphemeralPhoto from "@/components/EphemeralPhoto";
 import { ConversationSettings } from "@/components/ConversationSettings";
 import {
   DropdownMenu,
@@ -46,6 +47,7 @@ const ChatConversation = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [viewedEphemeralPhotos, setViewedEphemeralPhotos] = useState<Set<string>>(new Set());
   const [conversationData, setConversationData] = useState<{
     characterName: string;
     avatarUrl?: string;
@@ -171,6 +173,25 @@ const ChatConversation = () => {
 
     resetUnreadCount();
   }, [actualConversationId]);
+
+  // Load viewed ephemeral photos from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('viewedEphemeralPhotos');
+    if (stored) {
+      try {
+        setViewedEphemeralPhotos(new Set(JSON.parse(stored)));
+      } catch (error) {
+        console.error("Error loading viewed ephemeral photos:", error);
+      }
+    }
+  }, []);
+
+  const handleViewEphemeralPhoto = (messageId: string) => {
+    const newViewed = new Set(viewedEphemeralPhotos);
+    newViewed.add(messageId);
+    setViewedEphemeralPhotos(newViewed);
+    localStorage.setItem('viewedEphemeralPhotos', JSON.stringify([...newViewed]));
+  };
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -627,37 +648,48 @@ const ChatConversation = () => {
                   message.sender === "user" ? "justify-end" : "justify-start"
                 } animate-fade-in`}
               >
-              <div
-                className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
-                  message.sender === "user"
-                    ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm"
-                    : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm"
-                }`}
-              >
-                <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
-                  {message.text}
-                </p>
-                <div className="flex items-center justify-end gap-1 mt-1">
-                  <span
-                    className={`text-[10px] ${
+                {message.text.startsWith('ephemeral_photo:') ? (
+                  // Ephemeral photo message
+                  <EphemeralPhoto
+                    messageId={message.id}
+                    photoUrl={message.text.replace('ephemeral_photo:', '')}
+                    isViewed={viewedEphemeralPhotos.has(message.id)}
+                    onView={handleViewEphemeralPhoto}
+                  />
+                ) : (
+                  // Regular text message
+                  <div
+                    className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
                       message.sender === "user"
-                        ? "text-white/70"
-                        : "text-muted-foreground"
+                        ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm"
+                        : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm"
                     }`}
                   >
-                    {message.timestamp.toLocaleTimeString("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                  {message.sender === "user" && (
-                    <div className="relative flex items-center ml-1">
-                      <Check className={`w-4 h-4 absolute left-[3px] ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
-                      <Check className={`w-4 h-4 ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                    <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                      {message.text}
+                    </p>
+                    <div className="flex items-center justify-end gap-1 mt-1">
+                      <span
+                        className={`text-[10px] ${
+                          message.sender === "user"
+                            ? "text-white/70"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {message.timestamp.toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                      {message.sender === "user" && (
+                        <div className="relative flex items-center ml-1">
+                          <Check className={`w-4 h-4 absolute left-[3px] ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                          <Check className={`w-4 h-4 ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
