@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -292,21 +292,77 @@ const Scenarios = () => {
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-4 py-4 flex items-center gap-4">
+        <div className="px-4 py-4 flex items-center gap-4 bg-gradient-to-r from-card via-card/80 to-card">
           <Button
             size="icon"
             variant="ghost"
             onClick={() => navigate("/home")}
-            className="rounded-full"
+            className="rounded-full hover:bg-primary/10"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-xl font-semibold text-foreground">Choisir un scénario</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Choisir un scénario
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">Découvrez nos expériences premium</p>
+          </div>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
       <div className="p-4 space-y-3 border-b border-border bg-card/30">
+        {/* Top Tendances Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+          {/* Left: Top des scénarios populaires */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Flame className="w-5 h-5 text-primary animate-pulse" />
+              <h2 className="text-lg font-bold text-foreground">Tops du moment</h2>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {[
+                { title: "Crush secret", emoji: "💕" },
+                { title: "Collègue ambiguë", emoji: "👔" },
+                { title: "Rencontre inattendue", emoji: "✨" },
+                { title: "Ex qui revient", emoji: "💔" },
+                { title: "Voisine séduisante", emoji: "🏠" },
+              ].map((item, index) => (
+                <button
+                  key={index}
+                  className="flex-shrink-0 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 hover:border-primary/50 transition-all hover:scale-105"
+                >
+                  <span className="text-sm font-medium text-foreground whitespace-nowrap">
+                    {item.emoji} {item.title}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Expérience exclusive */}
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 p-4 hover:border-amber-400/50 transition-all cursor-pointer group">
+            <div className="absolute top-2 right-2">
+              <div className="bg-amber-500 text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                <Crown className="w-3 h-3" />
+                VIP
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-400 animate-pulse" />
+                <h3 className="text-lg font-bold text-foreground">Expérience exclusive</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">Disponible encore 24h</p>
+              <p className="text-xs text-amber-400 font-medium">Contenu premium • Accès limité</p>
+            </div>
+            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <ChevronRight className="w-5 h-5 text-amber-400" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+          </div>
+        </div>
+
         {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -368,7 +424,7 @@ const Scenarios = () => {
 
       {/* Scenarios Grid */}
       <div className="p-4">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredScenarios.map((scenario, index) => {
             const isUnlocked = isScenarioUnlocked(scenario.id);
             const shouldShowLock = !isAuthenticated && !isUnlocked;
@@ -377,7 +433,7 @@ const Scenarios = () => {
             return (
               <div
                 key={scenario.id}
-                className="relative aspect-square rounded-xl animate-fade-in group [perspective:1000px]"
+                className="relative aspect-square rounded-2xl animate-fade-in group [perspective:1000px] hover:scale-105 transition-transform duration-300"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <button
@@ -386,64 +442,64 @@ const Scenarios = () => {
                   className={`relative w-full h-full [transform-style:preserve-3d] transition-all duration-500 group-hover:[transform:rotateY(180deg)] ${!isClickable ? "cursor-not-allowed" : ""}`}
                 >
                   {/* Front Face */}
-                  <div className={`absolute inset-0 rounded-xl bg-gradient-to-br from-card to-secondary border border-border p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] ${!isClickable ? "opacity-50" : ""}`}>
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-card via-card to-secondary/50 border border-border p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] shadow-lg hover:shadow-primary/20 transition-shadow ${!isClickable ? "opacity-50" : ""}`}>
                     {shouldShowLock ? (
-                      <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10">
-                        <Lock className="w-3 h-3 text-muted-foreground" />
+                      <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 shadow-md">
+                        <Lock className="w-4 h-4 text-muted-foreground" />
                       </div>
                     ) : (
                       <button
                         onClick={(e) => toggleFavorite(e, scenario.id)}
-                        className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10 hover:bg-background transition-colors"
+                        className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 hover:bg-background transition-colors shadow-md"
                       >
                         <Heart 
-                          className={`w-3 h-3 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
+                          className={`w-4 h-4 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
                         />
                       </button>
                     )}
-                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-primary shadow-lg">
                       {scenario.icon}
                     </div>
                     <div className="text-center">
-                      <h3 className="font-semibold text-foreground text-sm mb-0.5">{scenario.title}</h3>
-                      <p className="text-xs text-muted-foreground">{scenario.description}</p>
+                      <h3 className="font-bold text-foreground text-base mb-1">{scenario.title}</h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{scenario.description}</p>
                     </div>
                   </div>
 
                   {/* Back Face */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/30 p-3 flex flex-col items-center justify-center gap-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-2 border-primary/30 p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-xl">
                     {!shouldShowLock && (
                       <button
                         onClick={(e) => toggleFavorite(e, scenario.id)}
-                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-1.5 rounded-lg z-10 hover:bg-background transition-colors"
+                        className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm p-2 rounded-xl z-10 hover:bg-background transition-colors shadow-md"
                       >
                         <Heart 
-                          className={`w-3 h-3 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
+                          className={`w-4 h-4 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
                         />
                       </button>
                     )}
-                    <div className="text-center space-y-2">
-                      <p className="text-sm text-foreground leading-relaxed font-semibold">
+                    <div className="text-center space-y-3">
+                      <p className="text-sm text-foreground leading-relaxed font-bold">
                         {scenario.detailedDescription}
                       </p>
-                      <div className="space-y-1 pt-2">
-                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 font-semibold">
-                          <Camera className="w-4 h-4 text-primary" />
+                      <div className="space-y-2 pt-2">
+                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-2 font-semibold">
+                          <Camera className="w-5 h-5 text-primary" />
                           {scenario.photos} photos
                         </p>
-                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 font-semibold">
-                          <Video className="w-4 h-4 text-primary" />
+                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-2 font-semibold">
+                          <Video className="w-5 h-5 text-primary" />
                           {scenario.videos} vidéos
                         </p>
                       </div>
-                      <div className="flex items-center justify-center gap-4 pt-2">
-                        <div className="flex items-center gap-1">
-                          <ThumbsUp className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-semibold">{scenario.likes}</span>
+                      <div className="flex items-center justify-center gap-6 pt-2">
+                        <div className="flex items-center gap-2">
+                          <ThumbsUp className="w-5 h-5 text-primary" />
+                          <span className="text-sm font-bold">{scenario.likes}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <ThumbsDown className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-semibold">{scenario.dislikes}</span>
+                        <div className="flex items-center gap-2">
+                          <ThumbsDown className="w-5 h-5 text-primary" />
+                          <span className="text-sm font-bold">{scenario.dislikes}</span>
                         </div>
                       </div>
                     </div>
