@@ -481,7 +481,7 @@ const Scenarios = () => {
               </div>
               <CountdownTimer />
               <p className="text-sm text-muted-foreground font-medium">Accès limité – contenu exclusif</p>
-              <p className="text-sm text-muted-foreground font-medium mt-2">Chat intense avec</p>
+              <p className="text-lg font-bold text-foreground mt-2">Chat intense avec</p>
               <p className="text-5xl font-bold text-foreground">Sophie Raino</p>
             </div>
             <p className="text-xs text-amber-400 font-medium absolute bottom-4 left-0 right-0 text-center z-10">Contenu premium • Ne laisse pas passer</p>
