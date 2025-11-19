@@ -2,6 +2,12 @@
 
 Ce dossier contient les photos éphémères que l'IA peut envoyer dans les conversations.
 
+## Photos disponibles
+
+### La Fit Girl
+- `fitgirl-1.jpg` - Photo en tenue de sport (turquoise)
+- `fitgirl-2.jpg` - Photo dans la salle de sport
+
 ## Comment ajouter des photos
 
 1. Ajoutez vos photos dans ce dossier (formats supportés: .jpg, .jpeg, .png, .webp)
