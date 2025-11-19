@@ -317,24 +317,29 @@ const Profile = () => {
             </Card>
 
             {/* Premium Section for Non-Authenticated */}
-            <Card className="p-6 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-amber-600/20 border-amber-500/30 rounded-2xl shadow-xl">
-              <div className="text-center space-y-3">
+            <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 rounded-2xl shadow-xl hover:shadow-2xl hover:border-amber-400/50 transition-all cursor-pointer group hover:scale-105">
+              <div className="text-center space-y-3 relative z-10">
                 <div className="flex justify-center">
-                  <Crown className="w-12 h-12 text-amber-400" />
+                  <div className="p-3 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full shadow-lg">
+                    <Crown className="w-8 h-8 text-white" />
+                  </div>
                 </div>
                 <h3 className="text-xl font-bold text-foreground">
                   Passe Premium
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   Débloque les scénarios exclusifs, les collaborations vérifiées et les expériences limitées.
                 </p>
                 <Button 
                   onClick={() => navigate("/premium")}
-                  className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-semibold"
+                  className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-semibold shadow-lg"
                 >
+                  <Sparkles className="w-4 h-4 mr-2" />
                   Découvrir Premium
                 </Button>
               </div>
+              {/* Effet de lumière au survol */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             </Card>
           </div>
         ) : (
@@ -491,10 +496,10 @@ const Profile = () => {
             </Card>
 
             {/* 2. SECTION PREMIUM */}
-            <Card className="p-6 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-amber-600/20 border-amber-500/30 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow">
-              <div className="text-center space-y-3">
+            <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 rounded-2xl shadow-xl hover:shadow-2xl hover:border-amber-400/50 transition-all cursor-pointer group hover:scale-105">
+              <div className="text-center space-y-3 relative z-10">
                 <div className="flex justify-center">
-                  <div className="p-3 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full">
+                  <div className="p-3 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full shadow-lg">
                     <Crown className="w-8 h-8 text-white" />
                   </div>
                 </div>
@@ -512,6 +517,8 @@ const Profile = () => {
                   Découvrir Premium
                 </Button>
               </div>
+              {/* Effet de lumière au survol */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             </Card>
 
             {/* 3. STATISTIQUES DU COMPTE */}
