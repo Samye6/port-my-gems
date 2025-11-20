@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell, GraduationCap } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
 import colleagueBg from "@/assets/colleague-bg.png";
 import colleagueCard from "@/assets/colleague-card.png";
 import marriedCard from "@/assets/married-card.png";
+import universityCard from "@/assets/university-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -276,6 +277,21 @@ const Scenarios = () => {
       badge: "🔥 Très populaire",
       gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Dumbbell className="w-6 h-6" />,
+    },
+    {
+      id: "university",
+      title: "Universitaire",
+      description: "Étudiante coquine",
+      emotionalSubtitle: "Innocence trompeuse",
+      detailedDescription: "Cette étudiante rebelle qui aime jouer avec les limites entre cours et plaisir...",
+      photos: 48,
+      videos: 9,
+      likes: 1050,
+      dislikes: 47,
+      badge: "🎓 Nouveau",
+      gradient: "from-pink-600/25 via-rose-400/15 to-red-400/20", // Rose → Rouge (Jeunesse)
+      icon: <GraduationCap className="w-6 h-6" />,
+      image: universityCard,
     },
     {
       id: "celebrity3",
