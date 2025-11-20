@@ -5,6 +5,7 @@ import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, B
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
 import colleagueBg from "@/assets/colleague-bg.png";
+import colleagueCard from "@/assets/colleague-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -174,6 +175,7 @@ const Scenarios = () => {
       badge: "⭐ Tendance",
       gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Users className="w-6 h-6" />,
+      image: colleagueCard,
     },
     {
       id: "stranger",
