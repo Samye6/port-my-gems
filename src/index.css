@@ -147,4 +147,55 @@ All colors MUST be HSL.
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Animation for sent messages - bounce and fade */
+  @keyframes message-sent {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-message-sent {
+    animation: message-sent 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Breathing halo animation for avatar */
+  @keyframes avatar-breathe {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4),
+                  0 0 20px 5px hsl(var(--primary) / 0.2);
+    }
+    50% {
+      box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2),
+                  0 0 30px 10px hsl(var(--primary) / 0.3);
+    }
+  }
+
+  .avatar-breathe {
+    animation: avatar-breathe 3s ease-in-out infinite;
+  }
+
+  /* Fine grain texture for AI bubbles */
+  .ai-bubble-grain {
+    position: relative;
+  }
+
+  .ai-bubble-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
 }

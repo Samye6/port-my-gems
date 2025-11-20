@@ -575,7 +575,7 @@ const ChatConversation = () => {
               </Button>
             )}
             <Avatar 
-              className="w-10 h-10 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+              className="w-10 h-10 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity avatar-breathe"
               onClick={() => setShowProfileModal(true)}
             >
               {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
@@ -702,7 +702,7 @@ const ChatConversation = () => {
               <div
                 className={`flex ${
                   message.sender === "user" ? "justify-end" : "justify-start"
-                } animate-fade-in`}
+                } ${message.sender === "user" ? "animate-message-sent" : "animate-fade-in"}`}
               >
                 {message.text.startsWith('ephemeral_photo:') ? (
                   // Ephemeral photo message
@@ -716,10 +716,10 @@ const ChatConversation = () => {
                 ) : (
                   // Regular text message
                   <div
-                    className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm ${
+                    className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 ${
                       message.sender === "user"
-                        ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm"
-                        : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm"
+                        ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm shadow-[0_4px_12px_rgba(0,0,0,0.4),0_2px_4px_rgba(0,0,0,0.3)]"
+                        : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm shadow-sm ai-bubble-grain"
                     }`}
                   >
                     <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
