@@ -280,8 +280,8 @@ const Profile = () => {
     <div className="min-h-screen bg-background pb-24">
       <PageHeader />
 
-      {/* Gradient Background */}
-      <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[#FF4D8D]/20 via-purple-500/10 to-transparent pointer-events-none" />
+      {/* Premium Gradient Header */}
+      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-br from-[#FF4D8D]/30 via-purple-500/20 to-transparent pointer-events-none" />
 
       <div className="relative p-4 space-y-6 max-w-2xl mx-auto">
         {!isAuthenticated ? (
@@ -347,7 +347,7 @@ const Profile = () => {
             {/* 1. IDENTITÉ */}
             <Card className="p-8 bg-card border-border rounded-2xl shadow-lg">
               <div className="flex flex-col items-center space-y-4">
-                {/* Avatar avec halo rose */}
+                {/* Avatar avec halo rose et badge */}
                 <div className="relative group">
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#FF4D8D] to-pink-400 blur-xl opacity-50 group-hover:opacity-70 transition-opacity" />
                   <Avatar className="relative w-32 h-32 border-4 border-[#FF4D8D]/30">
@@ -362,6 +362,13 @@ const Profile = () => {
                       {form.getValues("username")?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
+                  
+                  {/* Badge Membre */}
+                  <div className="absolute top-0 left-0 bg-gradient-to-r from-amber-400/90 to-amber-500/90 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-lg border border-amber-300/50">
+                    <span className="text-[10px] font-semibold text-white flex items-center gap-0.5">
+                      ⭐ Membre
+                    </span>
+                  </div>
                   
                   <label
                     htmlFor="avatar-upload"
@@ -483,13 +490,15 @@ const Profile = () => {
                       )}
                     />
 
-                    <Button
-                      type="submit"
-                      className="w-full bg-primary hover:bg-primary/90"
-                      disabled={!form.formState.isDirty}
-                    >
-                      {form.formState.isDirty ? "Enregistrer" : "Modifié"}
-                    </Button>
+                    <div className="flex justify-center">
+                      <Button
+                        type="submit"
+                        className="w-48 bg-primary hover:bg-primary/90 rounded-full shadow-md hover:shadow-lg transition-all"
+                        disabled={!form.formState.isDirty}
+                      >
+                        {form.formState.isDirty ? "Enregistrer" : "Modifier"}
+                      </Button>
+                    </div>
                   </form>
                 </Form>
               </div>
