@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell, GraduationCap } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell, GraduationCap, Shield } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
 import colleagueBg from "@/assets/colleague-bg.png";
 import colleagueCard from "@/assets/colleague-card.png";
 import marriedCard from "@/assets/married-card.png";
 import universityCard from "@/assets/university-card.png";
+import policeCard from "@/assets/police-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -292,6 +293,21 @@ const Scenarios = () => {
       gradient: "from-pink-600/25 via-rose-400/15 to-red-400/20", // Rose → Rouge (Jeunesse)
       icon: <GraduationCap className="w-6 h-6" />,
       image: universityCard,
+    },
+    {
+      id: "police",
+      title: "Policière",
+      description: "Autorité séduisante",
+      emotionalSubtitle: "Loi et désir",
+      detailedDescription: "Cette officière qui sait faire respecter l'ordre... à sa manière.",
+      photos: 52,
+      videos: 10,
+      likes: 1120,
+      dislikes: 58,
+      badge: "🚨 Tendance",
+      gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20", // Bleu foncé → Violet
+      icon: <Shield className="w-6 h-6" />,
+      image: policeCard,
     },
     {
       id: "celebrity3",
