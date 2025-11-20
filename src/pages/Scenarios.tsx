@@ -661,12 +661,12 @@ const Scenarios = () => {
                     {/* Background Image with Premium Effects */}
                     {scenario.image ? (
                       <div className="absolute inset-0">
-                        {/* Background Image with light blur (3px) + premium filters - visage + corps visibles */}
+                        {/* Background Image SANS BLUR - photo nette + visible + premium filters */}
                         <div 
                           className="absolute inset-0 bg-cover bg-center"
                           style={{
                             backgroundImage: `url(${scenario.image})`,
-                            filter: 'blur(3px) contrast(1.06) saturate(1.05) brightness(1.03)',
+                            filter: 'contrast(1.08) saturate(1.06) brightness(1.04)',
                           }}
                         />
                         
