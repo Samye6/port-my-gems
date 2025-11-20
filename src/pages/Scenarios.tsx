@@ -43,6 +43,7 @@ interface Scenario {
   badge?: string;
   gradient: string;
   avatar?: string;
+  image?: string; // Background image for card front
 }
 
 const Scenarios = () => {
@@ -594,39 +595,81 @@ const Scenarios = () => {
                   className={`relative w-full h-full [transform-style:preserve-3d] transition-all duration-500 group-hover:[transform:rotateY(180deg)] ${!isClickable ? "cursor-not-allowed" : ""}`}
                 >
                   {/* Front Face */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${scenario.gradient} border border-border p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] shadow-lg hover:shadow-xl transition-shadow ${!isClickable ? "opacity-50" : ""} overflow-hidden`}>
-                    {/* Visual background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
-                    {/* Badge à gauche */}
-                    {scenario.badge && (
-                      <div className="absolute top-2 left-2 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-extrabold text-foreground shadow-[0_0_12px_rgba(255,77,141,0.3),0_2px_4px_rgba(0,0,0,0.2)] z-10 border border-primary/30">
-                        {scenario.badge}
-                      </div>
-                    )}
-                    
-                    {/* Cœur ou Lock à droite */}
-                    {shouldShowLock ? (
-                      <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 shadow-md">
-                        <Lock className="w-4 h-4 text-muted-foreground" />
+                  <div className={`absolute inset-0 rounded-2xl border border-border [backface-visibility:hidden] shadow-lg hover:shadow-xl transition-shadow ${!isClickable ? "opacity-50" : ""} overflow-hidden`}>
+                    {/* Background Image with Premium Effects */}
+                    {scenario.image ? (
+                      <div className="absolute inset-0">
+                        {/* Background Image with light blur and premium filters */}
+                        <div 
+                          className="absolute inset-0 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(${scenario.image})`,
+                            filter: 'blur(4px) contrast(1.04) saturate(1.1)',
+                          }}
+                        />
+                        
+                        {/* Premium vignette effect */}
+                        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/12" />
+                        
+                        {/* Light grain texture */}
+                        <div 
+                          className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                          style={{
+                            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
+                          }}
+                        />
+                        
+                        {/* Premium gradient overlay - bottom to top */}
+                        <div 
+                          className="absolute inset-0"
+                          style={{
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(23,0,18,0.25) 50%, rgba(0,0,0,0.05) 100%)',
+                          }}
+                        />
+                        
+                        {/* Warm temperature filter */}
+                        <div className="absolute inset-0 bg-orange-500/[0.06] mix-blend-overlay" />
                       </div>
                     ) : (
-                      <button
-                        onClick={(e) => toggleFavorite(e, scenario.id)}
-                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 hover:bg-background transition-colors shadow-md"
-                      >
-                        <Heart 
-                          className={`w-4 h-4 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
-                        />
-                      </button>
+                      /* Fallback gradient if no image */
+                      <div className={`absolute inset-0 bg-gradient-to-br ${scenario.gradient}`} />
                     )}
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary shadow-lg z-10 ring-2 ring-primary/20">
-                      {scenario.icon}
-                    </div>
-                    <div className="text-center z-10">
-                      <h3 className="font-bold text-foreground text-base mb-1">{scenario.title}</h3>
-                      <p className="text-xs text-primary font-semibold mb-1">{scenario.emotionalSubtitle}</p>
-                      <p className="text-[10px] text-muted-foreground leading-relaxed">{scenario.description}</p>
+                    
+                    {/* Visual background effect on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Content Layer */}
+                    <div className="absolute inset-0 p-4 flex flex-col items-center justify-center gap-3">
+                      {/* Badge à gauche */}
+                      {scenario.badge && (
+                        <div className="absolute top-2 left-2 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-extrabold text-foreground shadow-[0_0_12px_rgba(255,77,141,0.3),0_2px_4px_rgba(0,0,0,0.2)] z-10 border border-primary/30">
+                          {scenario.badge}
+                        </div>
+                      )}
+                      
+                      {/* Cœur ou Lock à droite */}
+                      {shouldShowLock ? (
+                        <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 shadow-md">
+                          <Lock className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => toggleFavorite(e, scenario.id)}
+                          className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm p-2 rounded-xl z-10 hover:bg-background transition-colors shadow-md"
+                        >
+                          <Heart 
+                            className={`w-4 h-4 ${isFavorite(scenario.id) ? "fill-primary text-primary" : "text-primary"}`}
+                          />
+                        </button>
+                      )}
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary shadow-lg z-10 ring-2 ring-primary/20">
+                        {scenario.icon}
+                      </div>
+                      <div className="text-center z-10">
+                        <h3 className="font-bold text-white text-base mb-1 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">{scenario.title}</h3>
+                        <p className="text-xs text-primary font-semibold mb-1 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">{scenario.emotionalSubtitle}</p>
+                        <p className="text-[10px] text-white/90 leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">{scenario.description}</p>
+                      </div>
                     </div>
                   </div>
 
