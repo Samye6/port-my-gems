@@ -42,6 +42,7 @@ interface Scenario {
   dislikes: number;
   badge?: string;
   gradient: string;
+  avatar?: string;
 }
 
 const Scenarios = () => {
@@ -700,8 +701,8 @@ const Scenarios = () => {
 
       {/* Dialog */}
       <Dialog open={!!selectedScenario} onOpenChange={() => setSelectedScenario(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
-          <DialogHeader className="pb-4 border-b border-border/50 flex-row items-center justify-between">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-gradient-to-br from-background via-background to-primary/5 animate-[fade-in_200ms_ease-out,scale-in_200ms_ease-out] [animation-timing-function:cubic-bezier(0.16,1,0.3,1)]">
+          <DialogHeader className="pb-6 pr-32 border-b border-border/50 flex-row items-center justify-between shadow-[inset_0_-2px_8px_rgba(0,0,0,0.1)]">
             <div>
               <DialogTitle className="text-2xl font-bold text-white">
                 Configurer la conversation
@@ -710,10 +711,34 @@ const Scenarios = () => {
                 Personnalise ton expérience pour une immersion totale
               </DialogDescription>
             </div>
-            {/* Placeholder for character image */}
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/40 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-              <span className="text-xs text-muted-foreground">Photo</span>
-            </div>
+            {/* Character image - larger with premium effects */}
+            {selectedScenario?.avatar ? (
+              <div className="absolute top-4 right-4 animate-[fade-in_250ms_ease-out_80ms_backwards,slide-in-from-top_250ms_ease-out_80ms_backwards]">
+                {/* Halo circulaire derrière */}
+                <div className="absolute inset-0 w-[120px] h-[120px] rounded-full bg-gradient-to-br from-primary/20 via-purple-500/15 to-transparent blur-xl -z-10" />
+                
+                {/* Photo avec bordure et glow */}
+                <div className="relative w-[120px] h-[120px] rounded-full border-2 border-primary/40 shadow-[0_0_18px_rgba(255,77,141,0.2)] overflow-hidden hover:scale-[1.04] hover:shadow-[0_0_24px_rgba(255,77,141,0.35)] transition-all duration-300 cursor-pointer">
+                  <img
+                    src={selectedScenario.avatar}
+                    alt={selectedScenario.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="absolute top-4 right-4 animate-[fade-in_250ms_ease-out_80ms_backwards,slide-in-from-top_250ms_ease-out_80ms_backwards]">
+                {/* Halo circulaire derrière */}
+                <div className="absolute inset-0 w-[120px] h-[120px] rounded-full bg-gradient-to-br from-primary/20 via-purple-500/15 to-transparent blur-xl -z-10" />
+                
+                {/* Placeholder avec icône */}
+                <div className="relative w-[120px] h-[120px] rounded-full border-2 border-primary/40 bg-card/80 shadow-[0_0_18px_rgba(255,77,141,0.2)] overflow-hidden flex items-center justify-center hover:scale-[1.04] hover:shadow-[0_0_24px_rgba(255,77,141,0.35)] transition-all duration-300">
+                  <svg className="w-12 h-12 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              </div>
+            )}
           </DialogHeader>
           
           <div className="flex-1 overflow-y-auto space-y-5 scrollbar-custom p-1">
