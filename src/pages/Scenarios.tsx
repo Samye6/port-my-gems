@@ -10,6 +10,7 @@ import marriedCard from "@/assets/married-card.png";
 import universityCard from "@/assets/university-card.png";
 import policeCard from "@/assets/police-card.png";
 import teacherCard from "@/assets/teacher-card.png";
+import secretaryCard from "@/assets/secretary-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -265,6 +266,7 @@ const Scenarios = () => {
       badge: "🕒 Nouveau",
       gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: <ClipboardList className="w-6 h-6" />,
+      image: secretaryCard,
     },
     {
       id: "fitgirl",
