@@ -629,7 +629,29 @@ const Scenarios = () => {
                   </div>
 
                   {/* Back Face */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-2 border-primary/30 p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-xl">
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${scenario.gradient} border-2 border-primary/30 p-4 flex flex-col items-center justify-center gap-3 [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-xl overflow-hidden`}>
+                    {/* Background avec vignettage et grain */}
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]"></div>
+                    <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]"></div>
+                    <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(255,77,141,0.15)]"></div>
+                    
+                    {/* Image de fond pour "Collègue" uniquement */}
+                    {scenario.id === "colleague" && (
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center opacity-20 blur-3xl scale-110"
+                        style={{ 
+                          backgroundImage: `url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop')`,
+                        }}
+                      ></div>
+                    )}
+                    
+                    {/* Silhouette floue pour les autres cartes */}
+                    {scenario.id !== "colleague" && (
+                      <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-foreground/30 rounded-full blur-[60px]"></div>
+                      </div>
+                    )}
+                    
                     {!shouldShowLock && (
                       <button
                         onClick={(e) => toggleFavorite(e, scenario.id)}
@@ -640,30 +662,41 @@ const Scenarios = () => {
                         />
                       </button>
                     )}
-                    <div className="text-center space-y-3">
-                      <p className="text-sm text-foreground leading-relaxed font-bold">
+                    
+                    <div className="text-center space-y-3 z-10 relative">
+                      <p className="text-sm text-foreground leading-relaxed font-bold [text-shadow:0_0_8px_rgba(255,255,255,0.3)]">
                         {scenario.detailedDescription}
                       </p>
+                      
                       <div className="space-y-2 pt-2">
-                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-2 font-semibold">
-                          <Camera className="w-5 h-5 text-primary" />
-                          {scenario.photos} photos
-                        </p>
-                        <p className="text-sm text-muted-foreground flex items-center justify-center gap-2 font-semibold">
-                          <Video className="w-5 h-5 text-primary" />
-                          {scenario.videos} vidéos
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-center gap-6 pt-2">
-                        <div className="flex items-center gap-2">
-                          <ThumbsUp className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-bold">{scenario.likes}</span>
+                        <div className="flex items-center justify-center gap-3 transition-transform hover:scale-105">
+                          <Camera className="w-5 h-5 text-primary stroke-[2.5] drop-shadow-[0_0_4px_rgba(255,77,141,0.4)]" />
+                          <span className="text-sm text-muted-foreground font-semibold">{scenario.photos} photos</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <ThumbsDown className="w-5 h-5 text-primary" />
-                          <span className="text-sm font-bold">{scenario.dislikes}</span>
+                        <div className="flex items-center justify-center gap-3 transition-transform hover:scale-105">
+                          <Video className="w-5 h-5 text-primary stroke-[2.5] drop-shadow-[0_0_4px_rgba(255,77,141,0.4)]" />
+                          <span className="text-sm text-muted-foreground font-semibold">{scenario.videos} vidéos</span>
                         </div>
                       </div>
+                      
+                      <div className="flex items-center justify-center gap-8 pt-2">
+                        <div className="flex items-center gap-2">
+                          <ThumbsUp className="w-5 h-5 text-primary drop-shadow-[0_0_6px_rgba(255,77,141,0.5)]" />
+                          <span className="text-sm font-bold text-foreground">{scenario.likes}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <ThumbsDown className="w-5 h-5 text-muted-foreground/70" />
+                          <span className="text-sm font-bold text-muted-foreground">{scenario.dislikes}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-xs text-yellow-600/90 font-light italic pt-1">
+                        Très apprécié cette semaine
+                      </p>
+                      
+                      <p className="text-xs text-primary/75 font-light pt-2 hover:text-primary transition-colors cursor-pointer flex items-center justify-center gap-1">
+                        Découvrir le scénario <ChevronRight className="w-3 h-3" />
+                      </p>
                     </div>
                   </div>
                 </button>
