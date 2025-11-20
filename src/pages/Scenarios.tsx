@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell, GraduationCap, Shield } from "lucide-react";
+import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell, GraduationCap, Shield, BookOpen } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
 import colleagueBg from "@/assets/colleague-bg.png";
@@ -9,6 +9,7 @@ import colleagueCard from "@/assets/colleague-card.png";
 import marriedCard from "@/assets/married-card.png";
 import universityCard from "@/assets/university-card.png";
 import policeCard from "@/assets/police-card.png";
+import teacherCard from "@/assets/teacher-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -308,6 +309,21 @@ const Scenarios = () => {
       gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20", // Bleu foncé → Violet
       icon: <Shield className="w-6 h-6" />,
       image: policeCard,
+    },
+    {
+      id: "teacher",
+      title: "Professeure",
+      description: "Enseignement privé",
+      emotionalSubtitle: "Leçons particulières",
+      detailedDescription: "Cette enseignante qui propose des cours privés très... instructifs.",
+      photos: 46,
+      videos: 8,
+      likes: 980,
+      dislikes: 51,
+      badge: "📚 Nouveau",
+      gradient: "from-amber-600/25 via-orange-400/15 to-yellow-400/20", // Ambré → Jaune
+      icon: <BookOpen className="w-6 h-6" />,
+      image: teacherCard,
     },
     {
       id: "celebrity3",
