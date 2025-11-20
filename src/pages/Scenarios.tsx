@@ -661,36 +661,42 @@ const Scenarios = () => {
                     {/* Background Image with Premium Effects */}
                     {scenario.image ? (
                       <div className="absolute inset-0">
-                        {/* Background Image with light blur and premium filters */}
+                        {/* Background Image with intelligent blur (4-7px) + premium filters */}
                         <div 
                           className="absolute inset-0 bg-cover bg-center"
                           style={{
                             backgroundImage: `url(${scenario.image})`,
-                            filter: 'blur(4px) contrast(1.04) saturate(1.1)',
+                            filter: 'blur(5px) contrast(1.04) saturate(1.03) brightness(1.02)',
                           }}
                         />
                         
-                        {/* Premium vignette effect */}
-                        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/12" />
-                        
-                        {/* Light grain texture */}
+                        {/* Premium vignette effect (soft 5-7%) */}
                         <div 
-                          className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                          className="absolute inset-0" 
+                          style={{
+                            background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.06) 100%)',
+                          }}
+                        />
+                        
+                        {/* Light grain texture (2-3%) */}
+                        <div 
+                          className="absolute inset-0 opacity-[0.025] mix-blend-overlay"
                           style={{
                             backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
                           }}
                         />
                         
-                        {/* Premium gradient overlay - bottom to top */}
+                        {/* Lydia premium gradient overlay - unified ambiance */}
                         <div 
                           className="absolute inset-0"
                           style={{
-                            background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(23,0,18,0.25) 50%, rgba(0,0,0,0.05) 100%)',
+                            background: 'linear-gradient(to top, rgba(20, 0, 17, 0.55) 0%, rgba(38, 0, 31, 0.35) 40%, rgba(0, 0, 0, 0.05) 85%, rgba(0, 0, 0, 0) 100%)',
+                            pointerEvents: 'none',
                           }}
                         />
                         
-                        {/* Warm temperature filter */}
-                        <div className="absolute inset-0 bg-orange-500/[0.06] mix-blend-overlay" />
+                        {/* Warm temperature filter (+5 temperature) */}
+                        <div className="absolute inset-0 bg-orange-400/[0.05] mix-blend-overlay pointer-events-none" />
                       </div>
                     ) : (
                       /* Fallback gradient if no image */
