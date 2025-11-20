@@ -131,7 +131,7 @@ const Scenarios = () => {
       likes: 1250,
       dislikes: 45,
       badge: "🔥 Top 1 aujourd'hui",
-      gradient: "from-rose-500/20 via-pink-400/10 to-fuchsia-500/20", // Rose - Romantique
+      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -150,7 +150,7 @@ const Scenarios = () => {
       likes: 1580,
       dislikes: 38,
       badge: "💬 Très populaire",
-      gradient: "from-purple-500/20 via-fuchsia-400/10 to-pink-500/20", // Rose - Romantique
+      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -169,7 +169,7 @@ const Scenarios = () => {
       likes: 890,
       dislikes: 52,
       badge: "⭐ Tendance",
-      gradient: "from-amber-500/20 via-orange-400/10 to-red-500/20", // Doré vers Rouge - Passion
+      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Users className="w-6 h-6" />,
     },
     {
@@ -183,7 +183,7 @@ const Scenarios = () => {
       likes: 720,
       dislikes: 68,
       badge: "✨ Premium",
-      gradient: "from-blue-500/20 via-indigo-400/10 to-purple-500/20", // Bleu - Mystérieux
+      gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20", // Bleu foncé → Violet (Mystère)
       icon: <Sparkles className="w-6 h-6" />,
     },
     {
@@ -197,7 +197,7 @@ const Scenarios = () => {
       likes: 1120,
       dislikes: 95,
       badge: "💬 Très populaire",
-      gradient: "from-red-600/20 via-rose-400/10 to-pink-500/20", // Rouge vineux - Passion
+      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Heart className="w-6 h-6" />,
     },
     {
@@ -211,7 +211,7 @@ const Scenarios = () => {
       likes: 950,
       dislikes: 120,
       badge: "🎭 Rôle dramatique",
-      gradient: "from-red-700/20 via-red-500/10 to-rose-500/20", // Rouge vineux - Passion
+      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Crown className="w-6 h-6" />,
     },
     {
@@ -225,7 +225,7 @@ const Scenarios = () => {
       likes: 1050,
       dislikes: 78,
       badge: "🔥 Top 3 aujourd'hui",
-      gradient: "from-amber-600/20 via-amber-400/10 to-yellow-500/20", // Doré - Premium
+      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Briefcase className="w-6 h-6" />,
     },
     {
@@ -239,7 +239,7 @@ const Scenarios = () => {
       likes: 840,
       dislikes: 61,
       badge: "⭐ Tendance",
-      gradient: "from-blue-400/20 via-cyan-400/10 to-indigo-500/20", // Bleu - Mystérieux
+      gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20", // Bleu foncé → Violet (Mystère)
       icon: <Stethoscope className="w-6 h-6" />,
     },
     {
@@ -253,7 +253,7 @@ const Scenarios = () => {
       likes: 920,
       dislikes: 55,
       badge: "🕒 Nouveau",
-      gradient: "from-pink-500/20 via-rose-400/10 to-fuchsia-500/20", // Rose - Romantique
+      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: <ClipboardList className="w-6 h-6" />,
     },
     {
@@ -267,7 +267,7 @@ const Scenarios = () => {
       likes: 1180,
       dislikes: 42,
       badge: "🔥 Très populaire",
-      gradient: "from-emerald-500/20 via-teal-400/10 to-cyan-500/20", // Vert/Cyan - Énergie
+      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Dumbbell className="w-6 h-6" />,
     },
     {
@@ -281,7 +281,7 @@ const Scenarios = () => {
       likes: 1320,
       dislikes: 42,
       badge: "🔥 Top 3 aujourd'hui",
-      gradient: "from-blue-600/20 via-indigo-400/10 to-purple-500/20", // Bleu - Mystérieux
+      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -300,7 +300,7 @@ const Scenarios = () => {
       likes: 1180,
       dislikes: 35,
       badge: "💬 Très populaire",
-      gradient: "from-rose-500/20 via-pink-400/10 to-fuchsia-500/20", // Rose - Romantique
+      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -319,7 +319,7 @@ const Scenarios = () => {
       likes: 1420,
       dislikes: 48,
       badge: "✨ Premium",
-      gradient: "from-amber-600/20 via-yellow-400/10 to-orange-500/20", // Doré - Premium
+      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20", // Rose → Violet (Vérifiées)
       icon: (
         <div className="relative">
           <UserRound className="w-6 h-6" />
@@ -432,7 +432,7 @@ const Scenarios = () => {
                   ].map((item) => (
                     <div
                       key={item.rank}
-                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 hover:border-primary/40 transition-all hover:scale-105 cursor-pointer shadow-sm hover:shadow-md"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-rose-500/15 via-pink-400/10 to-rose-600/10 border border-primary/20 hover:border-primary/40 transition-all hover:scale-105 cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)] hover:shadow-md"
                     >
                       <span className="text-xs font-bold text-primary w-3">{item.rank}</span>
                       <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
@@ -460,7 +460,7 @@ const Scenarios = () => {
                   ].map((item) => (
                     <div
                       key={item.rank}
-                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 hover:border-accent/40 transition-all hover:scale-105 cursor-pointer shadow-sm hover:shadow-md"
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-rose-500/15 via-pink-400/10 to-rose-600/10 border border-accent/20 hover:border-accent/40 transition-all hover:scale-105 cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)] hover:shadow-md"
                     >
                       <span className="text-xs font-bold text-accent w-3">{item.rank}</span>
                       <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center text-accent flex-shrink-0">
@@ -475,12 +475,12 @@ const Scenarios = () => {
           </div>
 
           {/* Right: Expérience exclusive */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 p-4 hover:border-amber-400/50 transition-all cursor-pointer group hover:scale-105">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/10 to-amber-700/5 border-2 border-amber-400/30 p-4 hover:border-amber-400/50 transition-all cursor-pointer group hover:scale-105 shadow-[0_8px_30px_rgb(251,191,36,0.15)] hover:shadow-[0_12px_40px_rgb(251,191,36,0.25)]">
             {/* Image de fond positionnée à droite du milieu */}
             <img 
               src={exclusiveModel} 
               alt="Exclusive" 
-              className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto object-cover opacity-60"
+              className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto object-cover opacity-60 drop-shadow-[4px_4px_12px_rgba(0,0,0,0.3)]"
             />
             <div className="absolute top-2 right-2 z-10">
               <div className="bg-gradient-to-r from-amber-400 to-amber-600 text-black text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg animate-pulse">
@@ -528,6 +528,9 @@ const Scenarios = () => {
           )}
         </div>
 
+        {/* Subtle separator */}
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-3"></div>
+        
         {/* Filter Buttons */}
         <div className="flex gap-2">
           <Button
@@ -595,7 +598,7 @@ const Scenarios = () => {
                     
                     {/* Badge à gauche */}
                     {scenario.badge && (
-                      <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-bold text-foreground shadow-md z-10 border border-primary/20">
+                      <div className="absolute top-2 left-2 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-extrabold text-foreground shadow-[0_0_12px_rgba(255,77,141,0.3),0_2px_4px_rgba(0,0,0,0.2)] z-10 border border-primary/30">
                         {scenario.badge}
                       </div>
                     )}
