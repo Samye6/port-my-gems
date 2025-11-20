@@ -11,6 +11,7 @@ import universityCard from "@/assets/university-card.png";
 import policeCard from "@/assets/police-card.png";
 import teacherCard from "@/assets/teacher-card.png";
 import secretaryCard from "@/assets/secretary-card.png";
+import doctorCard from "@/assets/doctor-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -252,6 +253,7 @@ const Scenarios = () => {
       badge: "⭐ Tendance",
       gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20", // Bleu foncé → Violet (Mystère)
       icon: <Stethoscope className="w-6 h-6" />,
+      image: doctorCard,
     },
     {
       id: "secretary",
