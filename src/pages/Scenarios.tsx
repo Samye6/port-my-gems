@@ -13,6 +13,7 @@ import teacherCard from "@/assets/teacher-card.png";
 import secretaryCard from "@/assets/secretary-card.png";
 import doctorCard from "@/assets/doctor-card.png";
 import bossCard from "@/assets/boss-card.png";
+import fitgirlCard from "@/assets/fitgirl-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -285,6 +286,7 @@ const Scenarios = () => {
       badge: "🔥 Très populaire",
       gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Dumbbell className="w-6 h-6" />,
+      image: fitgirlCard,
     },
     {
       id: "university",
