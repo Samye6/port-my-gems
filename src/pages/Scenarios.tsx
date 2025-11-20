@@ -700,15 +700,23 @@ const Scenarios = () => {
 
       {/* Dialog */}
       <Dialog open={!!selectedScenario} onOpenChange={() => setSelectedScenario(null)}>
-        <DialogContent className="bg-card border-border max-h-[90vh] overflow-y-auto scrollbar-custom">
-          <DialogHeader>
-            <DialogTitle className="text-foreground text-xl">Configurer la conversation</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Personnalise ton expérience pour une immersion totale
-            </DialogDescription>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
+          <DialogHeader className="pb-4 border-b border-border/50 flex-row items-center justify-between">
+            <div>
+              <DialogTitle className="text-2xl font-bold text-white">
+                Configurer la conversation
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground text-sm">
+                Personnalise ton expérience pour une immersion totale
+              </DialogDescription>
+            </div>
+            {/* Placeholder for character image */}
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/40 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+              <span className="text-xs text-muted-foreground">Photo</span>
+            </div>
           </DialogHeader>
           
-          <div className="space-y-5">
+          <div className="flex-1 overflow-y-auto space-y-5 scrollbar-custom p-1">
             {/* Informations de base */}
             <div className="space-y-3">
               <div className="space-y-2">
@@ -785,79 +793,55 @@ const Scenarios = () => {
             </div>
 
             {/* CARD: Style d'écriture */}
-            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 shadow-lg border border-primary/10">
-              <h3 className="font-bold text-foreground mb-4 text-base flex items-center gap-2">
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
+              <h3 className="font-bold text-white mb-5 text-lg">
                 ✨ Style d'écriture
               </h3>
               
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-foreground text-sm font-medium">Style de messages</Label>
+              <div className="space-y-5">
+                <div className="space-y-3">
+                  <Label className="text-primary text-sm font-semibold">✏️ Style de messages</Label>
                   <RadioGroup value={shortSuggestive ? "suggestive" : softDetailed ? "detailed" : ""} onValueChange={(val) => {
                     setShortSuggestive(val === "suggestive");
                     setSoftDetailed(val === "detailed");
                   }}>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                       <RadioGroupItem value="suggestive" id="msg-suggestive" />
-                      <Label htmlFor="msg-suggestive" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>💕</span> Court & suggestif
-                      </Label>
+                      <Label htmlFor="msg-suggestive" className="flex-1 cursor-pointer">💕 Court & suggestif</Label>
                     </div>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                       <RadioGroupItem value="detailed" id="msg-detailed" />
-                      <Label htmlFor="msg-detailed" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>✨</span> Doux & détaillé
-                      </Label>
+                      <Label htmlFor="msg-detailed" className="flex-1 cursor-pointer">✨ Doux & détaillé</Label>
                     </div>
-                  </RadioGroup>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-foreground text-sm font-medium">Ton de conversation</Label>
-                  <RadioGroup value={teasingTone ? "teasing" : romanticTone ? "romantic" : intenseTone ? "intense" : ""} onValueChange={(val) => {
-                    setTeasingTone(val === "teasing");
-                    setRomanticTone(val === "romantic");
-                    setIntenseTone(val === "intense");
-                  }}>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
-                      <RadioGroupItem value="teasing" id="tone-teasing" />
-                      <Label htmlFor="tone-teasing" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>😏</span> Taquin
-                      </Label>
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
+                      <RadioGroupItem value="teasing" id="style-teasing" />
+                      <Label htmlFor="style-teasing" className="flex-1 cursor-pointer">😏 Taquin</Label>
                     </div>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
-                      <RadioGroupItem value="romantic" id="tone-romantic" />
-                      <Label htmlFor="tone-romantic" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>🌹</span> Romantique
-                      </Label>
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
+                      <RadioGroupItem value="romantic" id="style-romantic" />
+                      <Label htmlFor="style-romantic" className="flex-1 cursor-pointer">🌹 Romantique</Label>
                     </div>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
-                      <RadioGroupItem value="intense" id="tone-intense" />
-                      <Label htmlFor="tone-intense" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>🔥</span> Intense
-                      </Label>
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
+                      <RadioGroupItem value="intense" id="style-intense" />
+                      <Label htmlFor="style-intense" className="flex-1 cursor-pointer">🔥 Intense</Label>
                     </div>
                   </RadioGroup>
                 </div>
 
                 {/* Sous-section: Emojis */}
-                <div className="border-t border-primary/20 pt-4 mt-4">
-                  <Label className="text-foreground text-sm font-medium mb-2 block">Utilisation des emojis</Label>
+                <div className="border-t border-primary/20 pt-4">
+                  <Label className="text-primary text-sm font-semibold mb-3 block">🎭 Utilisation des emojis</Label>
                   <RadioGroup value={withEmojis ? "with" : withoutEmojis ? "without" : ""} onValueChange={(val) => {
                     setWithEmojis(val === "with");
                     setWithoutEmojis(val === "without");
                   }}>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                       <RadioGroupItem value="with" id="emoji-with" />
-                      <Label htmlFor="emoji-with" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>😄</span> Avec emojis
-                      </Label>
+                      <Label htmlFor="emoji-with" className="flex-1 cursor-pointer">😄 Avec emojis</Label>
                     </div>
-                    <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                    <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                       <RadioGroupItem value="without" id="emoji-without" />
-                      <Label htmlFor="emoji-without" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                        <span>⚫</span> Sans emojis
-                      </Label>
+                      <Label htmlFor="emoji-without" className="flex-1 cursor-pointer">⚫ Sans emojis</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -865,88 +849,73 @@ const Scenarios = () => {
             </div>
 
             {/* CARD: Intensité de l'échange */}
-            <div className="bg-gradient-to-br from-card/80 to-secondary/40 rounded-2xl p-5 shadow-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2 text-base flex items-center gap-2">
+            <div className="bg-gradient-to-br from-card/80 to-secondary/40 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
+              <h3 className="font-bold text-white mb-2 text-lg">
                 🔥 Intensité de l'échange
               </h3>
-              <p className="text-xs text-muted-foreground mb-4">
-                Plus le niveau est élevé, plus les échanges peuvent devenir suggestifs
+              <p className="text-sm text-muted-foreground mb-5">
+                Plus le niveau est élevé, plus les échanges peuvent devenir suggestifs.
               </p>
               
-              <RadioGroup value={intensity} onValueChange={setIntensity} className="space-y-1">
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+              <RadioGroup value={intensity} onValueChange={setIntensity} className="space-y-2">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="amical" id="int-amical" />
-                  <Label htmlFor="int-amical" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>🙂</span> Amical
-                  </Label>
+                  <Label htmlFor="int-amical" className="flex-1 cursor-pointer">🙂 Amical</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="doux" id="int-doux" />
-                  <Label htmlFor="int-doux" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>🌙</span> Doux
-                  </Label>
+                  <Label htmlFor="int-doux" className="flex-1 cursor-pointer">🌙 Doux</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="intime" id="int-intime" />
-                  <Label htmlFor="int-intime" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>💗</span> Intime
-                  </Label>
+                  <Label htmlFor="int-intime" className="flex-1 cursor-pointer">💗 Intime</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="audacieux" id="int-audacieux" />
-                  <Label htmlFor="int-audacieux" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>🔥</span> Audacieux
-                  </Label>
+                  <Label htmlFor="int-audacieux" className="flex-1 cursor-pointer">🔥 Audacieux</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="tres-audacieux" id="int-tres-audacieux" />
-                  <Label htmlFor="int-tres-audacieux" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>💋</span> Très audacieux
-                  </Label>
+                  <Label htmlFor="int-tres-audacieux" className="flex-1 cursor-pointer">💋 Très audacieux</Label>
                 </div>
               </RadioGroup>
             </div>
 
             {/* CARD: Rythme de réponse */}
-            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 shadow-lg border border-primary/10">
-              <h3 className="font-bold text-foreground mb-4 text-base flex items-center gap-2">
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
+              <h3 className="font-bold text-white mb-5 text-lg">
                 ⏳ Rythme de réponse
               </h3>
               
-              <RadioGroup value={responseRhythm} onValueChange={setResponseRhythm} className="space-y-1">
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+              <RadioGroup value={responseRhythm} onValueChange={setResponseRhythm} className="space-y-2">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="instant" id="rythm-instant" />
-                  <Label htmlFor="rythm-instant" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>⚡</span> Instantané (10s-30s)
-                  </Label>
+                  <Label htmlFor="rythm-instant" className="flex-1 cursor-pointer">⚡ Instantané (10–30s)</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="quick" id="rythm-quick" />
-                  <Label htmlFor="rythm-quick" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>🚀</span> Rapide (10s-1min)
-                  </Label>
+                  <Label htmlFor="rythm-quick" className="flex-1 cursor-pointer">🚀 Rapide (10s–1min)</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="natural" id="rythm-natural" />
-                  <Label htmlFor="rythm-natural" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>🕒</span> Naturel (10s-5min)
-                  </Label>
+                  <Label htmlFor="rythm-natural" className="flex-1 cursor-pointer">🕒 Naturel (10s–5min)</Label>
                 </div>
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-background/20 transition-colors cursor-pointer">
+                <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-background/50 transition-all duration-120 hover:scale-[1.02] has-[:checked]:shadow-[0_0_8px_rgba(255,77,141,0.3)]">
                   <RadioGroupItem value="free" id="rythm-free" />
-                  <Label htmlFor="rythm-free" className="text-sm text-foreground cursor-pointer flex items-center gap-2">
-                    <span>🎭</span> Libre (messages spontanés)
-                  </Label>
+                  <Label htmlFor="rythm-free" className="flex-1 cursor-pointer">🎭 Libre (messages spontanés)</Label>
                 </div>
               </RadioGroup>
             </div>
 
-            {/* CTA Premium */}
-            <div className="pt-4">
+            {/* CTA Section */}
+            <div className="mt-6 space-y-3">
+              <p className="text-center text-sm text-muted-foreground">
+                ✨ Tu es prêt ? Elle t'attend…
+              </p>
               <Button
                 onClick={handleStartChat}
                 disabled={!userNickname || !characterName}
-                className="w-full bg-gradient-to-r from-primary to-pink-600 hover:from-primary/90 hover:to-pink-700 text-white font-semibold rounded-full h-12 shadow-[0_0_20px_rgba(255,77,141,0.4)] hover:shadow-[0_0_30px_rgba(255,77,141,0.6)] transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-full py-6 shadow-[0_0_12px_rgba(255,77,141,0.4)] hover:shadow-[0_0_16px_rgba(255,77,141,0.6)] hover:scale-[1.03] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
               >
                 Commencer la conversation
               </Button>
