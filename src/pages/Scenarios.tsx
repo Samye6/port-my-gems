@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
+import colleagueBg from "@/assets/colleague-bg.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -638,9 +639,9 @@ const Scenarios = () => {
                     {/* Image de fond pour "Collègue" uniquement */}
                     {scenario.id === "colleague" && (
                       <div 
-                        className="absolute inset-0 bg-cover bg-center opacity-20 blur-3xl scale-110"
+                        className="absolute inset-0 bg-cover bg-center opacity-[0.15] blur-[80px] scale-110"
                         style={{ 
-                          backgroundImage: `url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop')`,
+                          backgroundImage: `url(${colleagueBg})`,
                         }}
                       ></div>
                     )}
