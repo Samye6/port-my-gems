@@ -69,7 +69,7 @@ export const ConversationSettings = ({
   return (
     <div className="h-full bg-background border-l border-border flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-border flex items-center justify-between">
+      <div className="p-4 border-b border-border flex items-center justify-between bg-card/50">
         <h2 className="text-lg font-semibold">Réglages de conversation</h2>
         <Button
           variant="ghost"
@@ -82,66 +82,66 @@ export const ConversationSettings = ({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8">
-        {/* Style de messages */}
-        <div className="space-y-4">
-          <div>
-            <Label className="text-base font-semibold">Style de messages</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Définis comment le personnage s'exprime
-            </p>
-          </div>
+      <div className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar-custom">
+        {/* CARD: Style d'écriture */}
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 shadow-lg border border-primary/10">
+          <h3 className="font-bold text-foreground mb-4 text-base flex items-center gap-2">
+            ✨ Style d'écriture
+          </h3>
           
-          <div className="space-y-3">
-            <Label htmlFor="writing-style">Type de messages</Label>
-            <Select value={writingStyle} onValueChange={setWritingStyle}>
-              <SelectTrigger id="writing-style">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="suggestive">Messages courts et suggestifs</SelectItem>
-                <SelectItem value="detailed">Messages doux et détaillés</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-foreground text-sm font-medium">Style de messages</Label>
+              <Select value={writingStyle} onValueChange={setWritingStyle}>
+                <SelectTrigger className="bg-background/50 border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="suggestive">💕 Court & suggestif</SelectItem>
+                  <SelectItem value="detailed">✨ Doux & détaillé</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-3">
-            <Label htmlFor="tone">Ton de la conversation</Label>
-            <Select value={tone} onValueChange={setTone}>
-              <SelectTrigger id="tone">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="playful">Ton taquin</SelectItem>
-                <SelectItem value="romantic">Ton romantique</SelectItem>
-                <SelectItem value="intense">Ton intense</SelectItem>
-                <SelectItem value="flirty">Ton coquin</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="space-y-2">
+              <Label className="text-foreground text-sm font-medium">Ton de conversation</Label>
+              <Select value={tone} onValueChange={setTone}>
+                <SelectTrigger className="bg-background/50 border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="playful">😏 Taquin</SelectItem>
+                  <SelectItem value="romantic">🌹 Romantique</SelectItem>
+                  <SelectItem value="intense">🔥 Intense</SelectItem>
+                  <SelectItem value="flirty">💋 Coquin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-3">
-            <Label htmlFor="emojis">Utilisation des emojis</Label>
-            <Select value={useEmojis ? "yes" : "no"} onValueChange={(val) => setUseEmojis(val === "yes")}>
-              <SelectTrigger id="emojis">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="yes">Avec emojis</SelectItem>
-                <SelectItem value="no">Sans emojis</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Sous-section: Emojis */}
+            <div className="border-t border-primary/20 pt-4 mt-4">
+              <Label className="text-foreground text-sm font-medium mb-2 block">Utilisation des emojis</Label>
+              <Select value={useEmojis ? "yes" : "no"} onValueChange={(val) => setUseEmojis(val === "yes")}>
+                <SelectTrigger className="bg-background/50 border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="yes">😄 Avec emojis</SelectItem>
+                  <SelectItem value="no">⚫ Sans emojis</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
-        {/* Intensité de l'échange */}
-        <div className="space-y-4">
-          <div>
-            <Label className="text-base font-semibold">Intensité de l'échange</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Plus l'intensité est élevée, plus les échanges deviennent suggestifs
-            </p>
-          </div>
+        {/* CARD: Intensité de l'échange */}
+        <div className="bg-gradient-to-br from-card/80 to-secondary/40 rounded-2xl p-5 shadow-lg border border-border">
+          <h3 className="font-bold text-foreground mb-2 text-base flex items-center gap-2">
+            🔥 Intensité de l'échange
+          </h3>
+          <p className="text-xs text-muted-foreground mb-4">
+            Plus l'intensité est élevée, plus les échanges deviennent suggestifs
+          </p>
           
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -156,29 +156,33 @@ export const ConversationSettings = ({
               step={1}
               className="w-full"
             />
+            <div className="flex justify-between text-xs text-muted-foreground px-1">
+              <span>🙂</span>
+              <span>🌙</span>
+              <span>💗</span>
+              <span>🔥</span>
+              <span>💋</span>
+            </div>
           </div>
         </div>
 
-        {/* Rythme de réponse */}
-        <div className="space-y-4">
-          <div>
-            <Label className="text-base font-semibold">Rythme de réponse</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Contrôle la vitesse et la spontanéité des réponses
-            </p>
-          </div>
+        {/* CARD: Rythme de réponse */}
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 shadow-lg border border-primary/10">
+          <h3 className="font-bold text-foreground mb-4 text-base flex items-center gap-2">
+            ⏳ Rythme de réponse
+          </h3>
           
-          <div className="space-y-3">
-            <Label htmlFor="rhythm">Délai de réponse</Label>
+          <div className="space-y-2">
+            <Label className="text-foreground text-sm font-medium">Délai de réponse</Label>
             <Select value={rhythm} onValueChange={setRythm}>
-              <SelectTrigger id="rhythm">
+              <SelectTrigger className="bg-background/50 border-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="instant">Réponse instantanée (10s-30s)</SelectItem>
-                <SelectItem value="quick">Réponse rapide (10s-1min)</SelectItem>
-                <SelectItem value="natural">Réponse naturelle (10s-5min)</SelectItem>
-                <SelectItem value="free">Mode libre (messages spontanés)</SelectItem>
+                <SelectItem value="instant">⚡ Instantané (10s-30s)</SelectItem>
+                <SelectItem value="quick">🚀 Rapide (10s-1min)</SelectItem>
+                <SelectItem value="natural">🕒 Naturel (10s-5min)</SelectItem>
+                <SelectItem value="free">🎭 Libre (messages spontanés)</SelectItem>
               </SelectContent>
             </Select>
           </div>
