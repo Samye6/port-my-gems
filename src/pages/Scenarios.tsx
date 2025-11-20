@@ -638,12 +638,11 @@ const Scenarios = () => {
                     
                     {/* Image de fond pour "Collègue" uniquement */}
                     {scenario.id === "colleague" && (
-                      <div 
-                        className="absolute inset-0 bg-cover bg-center opacity-30 blur-[40px] scale-110"
-                        style={{ 
-                          backgroundImage: `url(${colleagueBg})`,
-                        }}
-                      ></div>
+                      <img 
+                        src={colleagueBg}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover opacity-40 blur-[30px] scale-110"
+                      />
                     )}
                     
                     {/* Silhouette floue pour les autres cartes */}
