@@ -639,7 +639,7 @@ const Scenarios = () => {
                     {/* Image de fond pour "Collègue" uniquement */}
                     {scenario.id === "colleague" && (
                       <div 
-                        className="absolute inset-0 bg-cover bg-center opacity-[0.15] blur-[80px] scale-110"
+                        className="absolute inset-0 bg-cover bg-center opacity-30 blur-[40px] scale-110"
                         style={{ 
                           backgroundImage: `url(${colleagueBg})`,
                         }}
