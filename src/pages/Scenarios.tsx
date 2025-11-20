@@ -12,6 +12,7 @@ import policeCard from "@/assets/police-card.png";
 import teacherCard from "@/assets/teacher-card.png";
 import secretaryCard from "@/assets/secretary-card.png";
 import doctorCard from "@/assets/doctor-card.png";
+import bossCard from "@/assets/boss-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -239,6 +240,7 @@ const Scenarios = () => {
       badge: "🔥 Top 3 aujourd'hui",
       gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20", // Bordeaux → Orangé (Tendance)
       icon: <Briefcase className="w-6 h-6" />,
+      image: bossCard,
     },
     {
       id: "doctor",
