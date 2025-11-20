@@ -69,8 +69,8 @@ export const ConversationSettings = ({
   return (
     <div className="h-full bg-background border-l border-border flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-border flex items-center justify-between bg-card/50">
-        <h2 className="text-lg font-semibold">Réglages de conversation</h2>
+      <div className="p-4 border-b border-border/50 flex items-center justify-between bg-card/50">
+        <h2 className="text-xl font-bold text-white">Réglages de conversation</h2>
         <Button
           variant="ghost"
           size="icon"
@@ -82,18 +82,18 @@ export const ConversationSettings = ({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar-custom">
+      <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-custom">
         {/* CARD: Style d'écriture */}
-        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 shadow-lg border border-primary/10">
-          <h3 className="font-bold text-foreground mb-4 text-base flex items-center gap-2">
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
+          <h3 className="font-bold text-white mb-5 text-lg flex items-center gap-2">
             ✨ Style d'écriture
           </h3>
           
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium">Style de messages</Label>
+          <div className="space-y-5">
+            <div className="space-y-3">
+              <Label className="text-primary text-sm font-semibold">Style de messages</Label>
               <Select value={writingStyle} onValueChange={setWritingStyle}>
-                <SelectTrigger className="bg-background/50 border-border">
+                <SelectTrigger className="bg-background/50 border-border hover:scale-[1.01] transition-transform">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,10 +103,10 @@ export const ConversationSettings = ({
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-foreground text-sm font-medium">Ton de conversation</Label>
+            <div className="space-y-3">
+              <Label className="text-primary text-sm font-semibold">Ton de conversation</Label>
               <Select value={tone} onValueChange={setTone}>
-                <SelectTrigger className="bg-background/50 border-border">
+                <SelectTrigger className="bg-background/50 border-border hover:scale-[1.01] transition-transform">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -119,10 +119,10 @@ export const ConversationSettings = ({
             </div>
 
             {/* Sous-section: Emojis */}
-            <div className="border-t border-primary/20 pt-4 mt-4">
-              <Label className="text-foreground text-sm font-medium mb-2 block">Utilisation des emojis</Label>
+            <div className="border-t border-primary/20 pt-4">
+              <Label className="text-primary text-sm font-semibold mb-3 block">🎭 Utilisation des emojis</Label>
               <Select value={useEmojis ? "yes" : "no"} onValueChange={(val) => setUseEmojis(val === "yes")}>
-                <SelectTrigger className="bg-background/50 border-border">
+                <SelectTrigger className="bg-background/50 border-border hover:scale-[1.01] transition-transform">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -135,12 +135,12 @@ export const ConversationSettings = ({
         </div>
 
         {/* CARD: Intensité de l'échange */}
-        <div className="bg-gradient-to-br from-card/80 to-secondary/40 rounded-2xl p-5 shadow-lg border border-border">
-          <h3 className="font-bold text-foreground mb-2 text-base flex items-center gap-2">
+        <div className="bg-gradient-to-br from-card/80 to-secondary/40 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
+          <h3 className="font-bold text-white mb-2 text-lg flex items-center gap-2">
             🔥 Intensité de l'échange
           </h3>
-          <p className="text-xs text-muted-foreground mb-4">
-            Plus l'intensité est élevée, plus les échanges deviennent suggestifs
+          <p className="text-sm text-muted-foreground mb-5">
+            Plus l'intensité est élevée, plus les échanges peuvent devenir suggestifs.
           </p>
           
           <div className="space-y-4">
@@ -167,21 +167,21 @@ export const ConversationSettings = ({
         </div>
 
         {/* CARD: Rythme de réponse */}
-        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 shadow-lg border border-primary/10">
-          <h3 className="font-bold text-foreground mb-4 text-base flex items-center gap-2">
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
+          <h3 className="font-bold text-white mb-5 text-lg flex items-center gap-2">
             ⏳ Rythme de réponse
           </h3>
           
-          <div className="space-y-2">
-            <Label className="text-foreground text-sm font-medium">Délai de réponse</Label>
+          <div className="space-y-3">
+            <Label className="text-primary text-sm font-semibold">Délai de réponse</Label>
             <Select value={rhythm} onValueChange={setRythm}>
-              <SelectTrigger className="bg-background/50 border-border">
+              <SelectTrigger className="bg-background/50 border-border hover:scale-[1.01] transition-transform">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="instant">⚡ Instantané (10s-30s)</SelectItem>
-                <SelectItem value="quick">🚀 Rapide (10s-1min)</SelectItem>
-                <SelectItem value="natural">🕒 Naturel (10s-5min)</SelectItem>
+                <SelectItem value="instant">⚡ Instantané (10–30s)</SelectItem>
+                <SelectItem value="quick">🚀 Rapide (10s–1min)</SelectItem>
+                <SelectItem value="natural">🕒 Naturel (10s–5min)</SelectItem>
                 <SelectItem value="free">🎭 Libre (messages spontanés)</SelectItem>
               </SelectContent>
             </Select>
