@@ -14,6 +14,7 @@ import secretaryCard from "@/assets/secretary-card.png";
 import doctorCard from "@/assets/doctor-card.png";
 import bossCard from "@/assets/boss-card.png";
 import fitgirlCard from "@/assets/fitgirl-card.png";
+import unknownCard from "@/assets/unknown-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -198,6 +199,7 @@ const Scenarios = () => {
       badge: "✨ Premium",
       gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20", // Bleu foncé → Violet (Mystère)
       icon: <Sparkles className="w-6 h-6" />,
+      image: unknownCard,
     },
     {
       id: "ex",
