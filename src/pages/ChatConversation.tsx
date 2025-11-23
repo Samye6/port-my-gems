@@ -700,73 +700,94 @@ const ChatConversation = () => {
               
               {/* Message bubble */}
               <div
-                className={`flex ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
-                } ${message.sender === "user" ? "animate-message-sent" : "animate-fade-in"}`}
+                className={`flex flex-col ${
+                  message.sender === "user" ? "items-end" : "items-start"
+                } ${message.sender === "user" ? "animate-message-sent" : "animate-fade-in"} gap-2`}
               >
-                {message.text.startsWith('ephemeral_photo:') ? (
-                  // Ephemeral photo message
-                  <EphemeralPhoto
-                    messageId={message.id}
-                    photoUrl={message.text.replace('ephemeral_photo:', '')}
-                    isViewed={viewedEphemeralPhotos.has(message.id)}
-                    onView={handleViewEphemeralPhoto}
-                    timestamp={message.timestamp}
-                  />
-                ) : (
-                  // Regular text message
-                  <div
-                    className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 ${
-                      message.sender === "user"
-                        ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm shadow-[0_4px_12px_rgba(0,0,0,0.4),0_2px_4px_rgba(0,0,0,0.3)]"
-                        : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm shadow-sm ai-bubble-grain"
-                    }`}
-                  >
-                    <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
-                      {message.text}
-                    </p>
-                    <div className="flex items-center justify-end gap-1 mt-1">
-                      <span
-                        className={`text-[10px] ${
-                          message.sender === "user"
-                            ? "text-white/70"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {message.timestamp.toLocaleTimeString("fr-FR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                      {message.sender === "user" && (
-                        <div className="relative flex items-center ml-1">
-                          <Check className={`w-4 h-4 absolute left-[3px] ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
-                          <Check className={`w-4 h-4 ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                {(() => {
+                  // Vérifier si le message contient une photo éphémère
+                  const ephemeralPhotoMatch = message.text.match(/ephemeral_photo:(.+)/);
+                  const hasEphemeralPhoto = ephemeralPhotoMatch !== null;
+                  
+                  // Séparer le texte de la référence photo
+                  const textContent = hasEphemeralPhoto 
+                    ? message.text.split('ephemeral_photo:')[0].trim()
+                    : message.text;
+                  
+                  const photoUrl = ephemeralPhotoMatch ? ephemeralPhotoMatch[1].trim() : '';
+                  
+                  return (
+                    <>
+                      {/* Afficher le texte si présent */}
+                      {textContent && (
+                        <div
+                          className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 ${
+                            message.sender === "user"
+                              ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm shadow-[0_4px_12px_rgba(0,0,0,0.4),0_2px_4px_rgba(0,0,0,0.3)]"
+                              : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm shadow-sm ai-bubble-grain"
+                          }`}
+                        >
+                          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                            {textContent}
+                          </p>
+                          <div className="flex items-center justify-end gap-1 mt-1">
+                            <span
+                              className={`text-[10px] ${
+                                message.sender === "user"
+                                  ? "text-white/70"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              {message.timestamp.toLocaleTimeString("fr-FR", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                            {message.sender === "user" && (
+                              <div className="relative flex items-center ml-1">
+                                <Check className={`w-4 h-4 absolute left-[3px] ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                                <Check className={`w-4 h-4 ${message.read ? 'text-blue-400' : 'text-white/70'} transition-colors duration-300`} strokeWidth={2.5} />
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
-                    </div>
-                  </div>
-                )}
+                      
+                      {/* Afficher la photo éphémère si présente */}
+                      {hasEphemeralPhoto && (
+                        <EphemeralPhoto
+                          messageId={message.id}
+                          photoUrl={photoUrl}
+                          isViewed={viewedEphemeralPhotos.has(message.id)}
+                          onView={handleViewEphemeralPhoto}
+                          timestamp={message.timestamp}
+                        />
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
           ))}
+        </div>
 
-          {isTyping && (
-            <div className="flex justify-start animate-fade-in">
-              <div className="bg-[hsl(var(--chat-ai))] rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></span>
-                </div>
+        {/* Afficher l'indicateur de saisie si l'IA écrit */}
+        {isTyping && (
+          <div className="flex justify-start mb-2 animate-fade-in">
+            <div className="max-w-[80%] bg-[hsl(var(--chat-ai))] text-foreground rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm ai-bubble-grain">
+              <div className="flex gap-1.5">
+                <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-typing-dot-1"></div>
+                <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-typing-dot-2"></div>
+                <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-typing-dot-3"></div>
               </div>
             </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
+          </div>
+        )}
         
-        {/* Bouton pour revenir en bas */}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Bouton pour revenir en bas */}
         {showScrollButton && (
           <button
             onClick={() => scrollToBottom(true)}
@@ -828,7 +849,6 @@ const ChatConversation = () => {
           >
             <Send className="w-5 h-5" />
           </Button>
-        </div>
         </div>
       </div>
 
