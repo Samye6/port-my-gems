@@ -25,6 +25,7 @@ interface Conversation {
   name: string;
   lastMessage: string;
   time: string;
+  timestamp?: string;
   unread?: number;
   isPinned?: boolean;
   isRead?: boolean;
@@ -65,6 +66,7 @@ const Conversations = () => {
         time: conv.last_message_time 
           ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
           : "",
+        timestamp: conv.last_message_time || undefined,
         unread: conv.unread_count,
         isPinned: conv.is_pinned,
         isRead: conv.unread_count === 0,
@@ -138,11 +140,19 @@ const Conversations = () => {
 
   const pinnedConversations = filteredConversations
     .filter((conv) => conv.isPinned)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => {
+      if (!a.timestamp) return 1;
+      if (!b.timestamp) return -1;
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
 
   const unpinnedConversations = filteredConversations
     .filter((conv) => !conv.isPinned)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => {
+      if (!a.timestamp) return 1;
+      if (!b.timestamp) return -1;
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
 
   const sortedConversations = [...pinnedConversations, ...unpinnedConversations];
 
