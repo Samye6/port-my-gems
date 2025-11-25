@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Briefcase, Users, Heart, Sparkles, Star, Crown, UserRound, BadgeCheck, Stethoscope, ClipboardList, Search, X, Lock, Camera, Video, ThumbsUp, ThumbsDown, Flame, Zap, ChevronRight, Dumbbell, GraduationCap, Shield, BookOpen } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import exclusiveModel from "@/assets/exclusive-model.png";
+import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueBg from "@/assets/colleague-bg.png";
 import colleagueCard from "@/assets/colleague-card.png";
 import marriedCard from "@/assets/married-card.png";
@@ -460,7 +461,12 @@ const Scenarios = () => {
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="container flex h-16 items-center px-6">
+        <div className="container flex h-16 items-center px-6 gap-3">
+          <img 
+            src={lydiaLogo} 
+            alt="Lydia" 
+            className="w-8 h-8 object-contain"
+          />
           <h1 className="text-xl font-semibold text-foreground">Home</h1>
         </div>
       </div>
