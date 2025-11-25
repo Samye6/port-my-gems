@@ -3,6 +3,7 @@ import Conversations from "./Conversations";
 import ChatConversation from "./ChatConversation";
 import BottomNav from "@/components/BottomNav";
 import { useIsMobile } from "@/hooks/use-mobile";
+import lydiaLogo from "@/assets/lydia-logo.png";
 
 const MessagesLayout = () => {
   const { id } = useParams();
@@ -43,21 +44,14 @@ const MessagesLayout = () => {
             <ChatConversation />
           ) : (
             <div className="h-full flex items-center justify-center bg-background">
-              <div className="text-center space-y-4 max-w-md px-6">
-                <div className="w-32 h-32 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-16 h-16 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    />
-                  </svg>
+              <div className="text-center space-y-6 max-w-md px-6">
+                <div className="w-40 h-40 mx-auto flex items-center justify-center">
+                  <img 
+                    src={lydiaLogo} 
+                    alt="Lydia Logo" 
+                    className="w-full h-full object-contain animate-pulse"
+                    style={{ filter: 'drop-shadow(0 0 20px rgba(255, 77, 141, 0.4))' }}
+                  />
                 </div>
                 <h2 className="text-2xl font-semibold text-foreground">
                   Lydia — Chat Érotique IA
