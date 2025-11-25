@@ -797,7 +797,6 @@ const ChatConversation = () => {
             <ArrowDown className="w-5 h-5 text-foreground" />
           </button>
         )}
-      </div>
 
       {/* Input WhatsApp-style */}
       <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3 flex-shrink-0 z-20 mb-16">
@@ -850,6 +849,7 @@ const ChatConversation = () => {
             <Send className="w-5 h-5" />
           </Button>
         </div>
+      </div>
       </div>
 
       {/* Settings Panel */}
