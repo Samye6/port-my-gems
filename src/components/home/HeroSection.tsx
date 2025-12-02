@@ -27,54 +27,66 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
 
   return (
     <section className="relative min-h-[70vh] overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-purple-950/30 to-primary/20" />
+      {/* Animated Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-violet/10 to-peach/5 animate-gradient" />
       
-      {/* Animated Background Elements */}
+      {/* Violet/Peach Glow Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/15 rounded-full blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-pink-500/10 rounded-full blur-[80px] animate-pulse delay-500" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-violet/25 via-primary/15 to-peach/20 rounded-full blur-[150px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-peach/20 via-pink-500/10 to-violet/15 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] bg-gradient-to-br from-primary/15 to-violet/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
       </div>
 
       {/* Grid Pattern Overlay */}
       <div 
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.015]"
         style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
         }}
       />
 
-      {/* Hero Image */}
+      {/* Hero Image with Enhanced Glow */}
       <div className="absolute right-0 bottom-0 w-1/2 h-full">
+        {/* Violet/Peach halo behind character */}
+        <div 
+          className="absolute bottom-0 right-0 w-full h-full"
+          style={{
+            background: 'radial-gradient(ellipse at 70% 70%, hsl(270 60% 50% / 0.25) 0%, hsl(20 100% 75% / 0.15) 30%, transparent 60%)',
+          }}
+        />
         <img 
           src={exclusiveModel} 
           alt="Featured" 
-          className={`absolute bottom-0 right-0 h-[95%] w-auto object-contain transition-all duration-1000 ${isVisible ? 'opacity-80 translate-x-0' : 'opacity-0 translate-x-20'}`}
+          className={`absolute bottom-0 right-0 h-[95%] w-auto object-contain transition-all duration-1000 ${isVisible ? 'opacity-90 translate-x-0' : 'opacity-0 translate-x-20'}`}
           style={{
-            filter: 'drop-shadow(0 0 60px rgba(255, 77, 141, 0.3))',
+            filter: 'drop-shadow(0 0 80px rgba(139, 92, 246, 0.4)) drop-shadow(0 0 40px rgba(255, 77, 141, 0.3))',
             maskImage: 'linear-gradient(to left, black 60%, transparent 100%)'
           }}
         />
         {/* Glow effect behind image */}
-        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-l from-primary/20 via-transparent to-transparent" />
+        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-l from-violet/15 via-primary/10 to-transparent" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 container px-6 py-20 flex flex-col justify-center min-h-[70vh]">
         <div className={`max-w-xl space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30">
             <Sparkles className="w-4 h-4 text-primary animate-pulse" />
             <span className="text-sm font-medium text-primary">Nouveau match disponible</span>
           </div>
 
-          {/* Main Title */}
+          {/* Main Title with Premium Gradient */}
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
             <span className="text-foreground">Ton match</span>
             <br />
-            <span className="bg-gradient-to-r from-primary via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <span 
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'linear-gradient(135deg, hsl(338 100% 55%) 0%, hsl(280 70% 60%) 50%, hsl(20 100% 75%) 100%)',
+              }}
+            >
               du moment
             </span>
             <br />
@@ -86,23 +98,23 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
             Découvre des conversations intimes et personnalisées avec des personnalités uniques qui n'attendent que toi.
           </p>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons with Glassmorphism */}
           <div className="flex flex-wrap gap-4 pt-4">
             <Button 
               size="lg" 
               onClick={handleClick}
-              className="group relative overflow-hidden bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_0_40px_rgba(255,77,141,0.4)] hover:shadow-[0_0_60px_rgba(255,77,141,0.6)] transition-all duration-300 hover:scale-105"
+              className="group relative overflow-hidden bg-gradient-to-r from-primary via-pink-500 to-violet text-white px-8 py-6 text-lg font-semibold rounded-full shadow-[0_0_50px_rgba(255,77,141,0.4),0_0_100px_rgba(139,92,246,0.2)] hover:shadow-[0_0_70px_rgba(255,77,141,0.6),0_0_120px_rgba(139,92,246,0.3)] transition-all duration-500 hover:scale-105"
             >
               <MessageCircle className="w-5 h-5 mr-2 group-hover:animate-pulse" />
               Parler maintenant
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             </Button>
             
             <Button 
               size="lg" 
               variant="outline"
               onClick={() => navigate("/premium")}
-              className="group px-8 py-6 text-lg font-semibold rounded-full border-2 border-amber-400/50 text-amber-400 hover:bg-amber-400/10 hover:border-amber-400 transition-all duration-300"
+              className="group px-8 py-6 text-lg font-semibold rounded-full glass border-2 border-gold/40 text-gold hover:bg-gold/10 hover:border-gold/60 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all duration-300"
             >
               <Play className="w-5 h-5 mr-2" />
               Découvrir Premium
@@ -130,7 +142,7 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
       </div>
 
       {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent" />
     </section>
   );
 };

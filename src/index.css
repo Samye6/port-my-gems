@@ -8,22 +8,22 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
+    --background: 240 10% 4%;
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 8%;
+    --card: 240 8% 8%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 8%;
+    --popover: 240 8% 8%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 338 100% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 12%;
+    --secondary: 240 6% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 15%;
+    --muted: 240 6% 15%;
     --muted-foreground: 0 0% 55%;
 
     --accent: 338 100% 55%;
@@ -32,17 +32,17 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 14%;
-    --input: 0 0% 14%;
+    --border: 240 6% 14%;
+    --input: 240 6% 14%;
     --ring: 338 100% 55%;
 
     --radius: 1rem;
 
     --chat-user: 338 100% 65%;
-    --chat-ai: 0 0% 12%;
+    --chat-ai: 240 6% 12%;
     
     --lydia-pink: 338 100% 65%;
-    --conversation-hover: 0 0% 10%;
+    --conversation-hover: 240 6% 10%;
 
     /* Premium Gold colors */
     --gold: 43 96% 56%;
@@ -51,7 +51,10 @@ All colors MUST be HSL.
     /* Purple/Violet for gradients */
     --violet: 270 60% 50%;
     --purple: 280 70% 45%;
-
+    
+    /* Peach for premium gradients */
+    --peach: 20 100% 75%;
+    --peach-light: 25 100% 85%;
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 338 100% 55%;
@@ -205,5 +208,103 @@ All colors MUST be HSL.
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
     pointer-events: none;
     mix-blend-mode: overlay;
+  }
+
+  /* Premium Gradient Animation */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 15s ease infinite;
+  }
+
+  /* Fade in up animation for scroll */
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  /* Premium glow effect */
+  .premium-glow {
+    box-shadow: 
+      0 0 20px hsl(var(--primary) / 0.2),
+      0 0 40px hsl(var(--violet) / 0.15),
+      0 0 60px hsl(var(--peach) / 0.1);
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .glass-gold {
+    background: linear-gradient(
+      135deg,
+      hsl(43 96% 56% / 0.15) 0%,
+      hsl(20 100% 75% / 0.1) 50%,
+      hsl(43 96% 56% / 0.15) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(43 96% 56% / 0.3);
+  }
+
+  /* Section glow backgrounds */
+  .section-glow-violet {
+    background: radial-gradient(ellipse at center, hsl(var(--violet) / 0.08) 0%, transparent 70%);
+  }
+
+  .section-glow-peach {
+    background: radial-gradient(ellipse at center, hsl(var(--peach) / 0.06) 0%, transparent 70%);
+  }
+
+  /* Online pulse animation */
+  @keyframes online-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(142 76% 36% / 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 8px hsl(142 76% 36% / 0);
+    }
+  }
+
+  .animate-online-pulse {
+    animation: online-pulse 2s ease-in-out infinite;
+  }
+
+  /* Card float shadow */
+  .card-float-shadow {
+    box-shadow: 
+      0 10px 40px -10px hsl(0 0% 0% / 0.5),
+      0 0 20px hsl(var(--violet) / 0.1);
+  }
+
+  /* Micro parallax hover */
+  .micro-parallax {
+    transition: transform 0.3s ease-out;
+  }
+
+  .micro-parallax:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-8px);
   }
 }

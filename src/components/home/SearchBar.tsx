@@ -20,30 +20,41 @@ const SearchBar = ({ value, onChange, suggestions = [] }: SearchBarProps) => {
   const activeSuggestions = suggestions.length > 0 ? suggestions : defaultSuggestions;
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-3">
+    <div className="w-full max-w-2xl mx-auto space-y-4">
       {/* Search Input */}
       <div className="relative group">
         {/* Glow Effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 via-pink-500/30 to-purple-500/30 rounded-full blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-violet/40 via-primary/40 to-peach/30 rounded-full blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
         
         <div className="relative flex items-center">
-          <Search className="absolute left-5 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          {/* Spotlight Effect on Icon */}
+          <div className="absolute left-4 w-8 h-8 rounded-full bg-gradient-to-br from-violet/20 to-primary/10 flex items-center justify-center group-focus-within:from-violet/30 group-focus-within:to-primary/20 transition-all duration-300">
+            <Search className="w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          </div>
           <Input
             type="text"
             placeholder="De quoi as-tu envie aujourd'hui ? Collègue, inconnue, dominante…"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="pl-14 pr-14 py-6 text-base bg-card/80 backdrop-blur-sm border-2 border-border/50 rounded-full focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/70"
+            className="pl-14 pr-14 py-6 text-base glass rounded-full border-2 border-border/30 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/60"
+            style={{
+              background: 'linear-gradient(135deg, hsl(270 60% 50% / 0.05) 0%, hsl(20 100% 75% / 0.03) 100%)',
+            }}
           />
           {value ? (
             <button
               onClick={() => onChange("")}
-              className="absolute right-5 p-1.5 rounded-full bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute right-4 p-2 rounded-full glass hover:bg-card/80 text-muted-foreground hover:text-foreground transition-all"
             >
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <Sparkles className="absolute right-5 w-5 h-5 text-primary/50 animate-pulse" />
+            <div className="absolute right-4">
+              <Sparkles 
+                className="w-5 h-5 text-primary/60 animate-pulse" 
+                style={{ filter: 'drop-shadow(0 0 6px rgba(255, 77, 141, 0.5))' }}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -55,7 +66,7 @@ const SearchBar = ({ value, onChange, suggestions = [] }: SearchBarProps) => {
             <button
               key={suggestion}
               onClick={() => onChange(suggestion)}
-              className="px-4 py-1.5 rounded-full bg-card/50 border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/10 transition-all duration-200"
+              className="px-4 py-1.5 rounded-full glass text-sm text-muted-foreground hover:text-foreground border border-border/30 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,77,141,0.2)]"
             >
               {suggestion}
             </button>
