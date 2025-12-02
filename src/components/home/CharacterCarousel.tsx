@@ -26,6 +26,7 @@ interface CharacterCarouselProps {
   onCharacterClick: (character: Character) => void;
   onFavoriteToggle: (e: React.MouseEvent, characterId: string) => void;
   cardSize?: "small" | "medium" | "large";
+  glowColor?: "violet" | "peach" | "primary";
 }
 
 const CharacterCarousel = ({
@@ -38,6 +39,7 @@ const CharacterCarousel = ({
   onCharacterClick,
   onFavoriteToggle,
   cardSize = "medium",
+  glowColor = "violet",
 }: CharacterCarouselProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -69,13 +71,28 @@ const CharacterCarousel = ({
     return scenarioId === "colleague" || scenarioId === "doctor";
   };
 
+  const glowClasses = {
+    violet: "section-glow-violet",
+    peach: "section-glow-peach",
+    primary: "",
+  };
+
   return (
-    <section className="relative py-6">
+    <section className={`relative py-8 ${glowClasses[glowColor]}`}>
       {/* Section Header */}
-      <div className="container px-6 mb-4">
+      <div className="container px-6 mb-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {icon && <div className="text-primary">{icon}</div>}
+            {icon && (
+              <div 
+                className="text-primary"
+                style={{
+                  filter: 'drop-shadow(0 0 8px rgba(255, 77, 141, 0.5))'
+                }}
+              >
+                {icon}
+              </div>
+            )}
             <div>
               <h2 className="text-xl font-bold text-foreground">{title}</h2>
               {subtitle && (
@@ -89,7 +106,7 @@ const CharacterCarousel = ({
             <Button
               size="icon"
               variant="outline"
-              className={`rounded-full w-9 h-9 border-border/50 bg-card/50 backdrop-blur-sm transition-opacity ${showLeftArrow ? 'opacity-100' : 'opacity-30'}`}
+              className={`rounded-full w-9 h-9 glass border-border/30 transition-all duration-300 ${showLeftArrow ? 'opacity-100 hover:border-primary/50' : 'opacity-30'}`}
               onClick={() => scroll("left")}
               disabled={!showLeftArrow}
             >
@@ -98,7 +115,7 @@ const CharacterCarousel = ({
             <Button
               size="icon"
               variant="outline"
-              className={`rounded-full w-9 h-9 border-border/50 bg-card/50 backdrop-blur-sm transition-opacity ${showRightArrow ? 'opacity-100' : 'opacity-30'}`}
+              className={`rounded-full w-9 h-9 glass border-border/30 transition-all duration-300 ${showRightArrow ? 'opacity-100 hover:border-primary/50' : 'opacity-30'}`}
               onClick={() => scroll("right")}
               disabled={!showRightArrow}
             >
@@ -111,13 +128,13 @@ const CharacterCarousel = ({
       {/* Carousel */}
       <div className="relative">
         {/* Left Fade */}
-        <div className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none transition-opacity ${showLeftArrow ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none transition-opacity ${showLeftArrow ? 'opacity-100' : 'opacity-0'}`} />
         
         {/* Scrollable Container */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-4 overflow-x-auto scrollbar-hide px-6 py-2"
+          className="flex gap-5 overflow-x-auto scrollbar-hide px-6 py-4"
           style={{ scrollSnapType: 'x mandatory' }}
         >
           {characters.map((character, index) => {
@@ -127,9 +144,9 @@ const CharacterCarousel = ({
             return (
               <div 
                 key={character.id}
-                className="animate-fade-in"
+                className="animate-fade-in-up"
                 style={{ 
-                  animationDelay: `${index * 50}ms`,
+                  animationDelay: `${index * 80}ms`,
                   scrollSnapAlign: 'start'
                 }}
               >
@@ -147,7 +164,7 @@ const CharacterCarousel = ({
         </div>
 
         {/* Right Fade */}
-        <div className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none transition-opacity ${showRightArrow ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none transition-opacity ${showRightArrow ? 'opacity-100' : 'opacity-0'}`} />
       </div>
     </section>
   );

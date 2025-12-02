@@ -47,17 +47,17 @@ const CharacterCard = ({
   const getBadgeStyles = () => {
     switch (badgeType) {
       case "trending":
-        return "bg-gradient-to-r from-orange-500 to-red-500 text-white";
+        return "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.5)]";
       case "premium":
-        return "bg-gradient-to-r from-amber-400 to-amber-600 text-black";
+        return "bg-gradient-to-r from-amber-400 to-amber-600 text-black shadow-[0_0_15px_rgba(251,191,36,0.5)]";
       case "new":
-        return "bg-gradient-to-r from-emerald-400 to-teal-500 text-white";
+        return "bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-[0_0_15px_rgba(52,211,153,0.5)]";
       case "verified":
-        return "bg-gradient-to-r from-blue-400 to-blue-600 text-white";
+        return "bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-[0_0_15px_rgba(96,165,250,0.5)]";
       case "vip":
-        return "bg-gradient-to-r from-purple-500 to-pink-500 text-white";
+        return "bg-gradient-to-r from-violet to-pink-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]";
       default:
-        return "bg-primary text-white";
+        return "bg-primary text-white shadow-[0_0_15px_rgba(255,77,141,0.5)]";
     }
   };
 
@@ -78,15 +78,14 @@ const CharacterCard = ({
 
   return (
     <div
-      className={`relative ${sizeClasses[size]} flex-shrink-0 rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300`}
+      className={`relative ${sizeClasses[size]} flex-shrink-0 rounded-2xl overflow-hidden cursor-pointer group micro-parallax`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={!isLocked ? onClick : undefined}
       style={{
-        transform: isHovered ? 'scale(1.05) translateY(-8px)' : 'scale(1)',
         boxShadow: isHovered 
-          ? '0 20px 60px rgba(255, 77, 141, 0.3), 0 0 40px rgba(255, 77, 141, 0.2)' 
-          : '0 8px 30px rgba(0, 0, 0, 0.3)',
+          ? '0 25px 80px rgba(139, 92, 246, 0.3), 0 0 60px rgba(255, 77, 141, 0.25), 0 0 30px rgba(255, 178, 156, 0.15)' 
+          : '0 10px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.1)',
       }}
     >
       {/* Background Image/Gradient */}
@@ -102,52 +101,57 @@ const CharacterCard = ({
                 filter: 'brightness(0.9) contrast(1.05) saturate(1.1)',
               }}
             />
-            {/* Vignette */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(0,0,0,0.5)_100%)]" />
+            {/* Premium Violet/Rose Vignette */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(139,92,246,0.2)_70%,rgba(0,0,0,0.6)_100%)]" />
           </>
         ) : (
-          <div className={`absolute inset-0 bg-gradient-to-br ${gradient}`} />
+          <div 
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(135deg, hsl(270 60% 30% / 0.8) 0%, hsl(338 100% 35% / 0.6) 50%, hsl(20 100% 50% / 0.4) 100%)',
+            }}
+          />
         )}
         
         {/* Bottom Gradient for Text */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
         
-        {/* Hover Glow Effect */}
+        {/* Hover Glow Effect - Violet/Peach */}
         <div 
-          className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className={`absolute inset-0 bg-gradient-to-t from-violet/40 via-primary/20 to-peach/10 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
         />
         
-        {/* Pink Halo on Hover */}
+        {/* Pink/Violet Halo on Hover */}
         <div 
-          className="absolute -inset-1 bg-gradient-to-r from-primary/50 via-pink-500/50 to-purple-500/50 rounded-2xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-300 -z-10"
+          className={`absolute -inset-2 bg-gradient-to-r from-violet/50 via-primary/50 to-peach/40 rounded-2xl blur-2xl transition-opacity duration-300 -z-10 ${isHovered ? 'opacity-70' : 'opacity-0'}`}
         />
       </div>
 
-      {/* Badge */}
+      {/* Badge with Glow */}
       {badge && (
-        <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 ${getBadgeStyles()} shadow-lg`}>
+        <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 ${getBadgeStyles()}`}>
           {getBadgeIcon()}
           {badge}
         </div>
       )}
 
-      {/* Online Indicator */}
+      {/* Online Indicator with Pulse */}
       {isOnline && (
         <div className="absolute top-3 right-12 z-10 flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/50 backdrop-blur-sm">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-online-pulse" />
           <span className="text-[9px] text-emerald-400 font-medium">En ligne</span>
         </div>
       )}
 
       {/* Favorite/Lock Button */}
       {isLocked ? (
-        <div className="absolute top-3 right-3 z-10 p-2 rounded-xl bg-black/50 backdrop-blur-sm">
+        <div className="absolute top-3 right-3 z-10 p-2 rounded-xl glass">
           <Lock className="w-4 h-4 text-muted-foreground" />
         </div>
       ) : (
         <button
           onClick={onFavoriteToggle}
-          className="absolute top-3 right-3 z-10 p-2 rounded-xl bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors group/fav"
+          className="absolute top-3 right-3 z-10 p-2 rounded-xl glass hover:bg-card/80 transition-colors group/fav"
         >
           <Heart 
             className={`w-4 h-4 transition-all duration-300 ${
@@ -156,16 +160,21 @@ const CharacterCard = ({
                 : "text-white group-hover/fav:text-primary group-hover/fav:scale-110"
             }`}
             style={{
-              filter: isFavorite ? 'drop-shadow(0 0 8px rgba(255, 77, 141, 0.8))' : 'none'
+              filter: isFavorite ? 'drop-shadow(0 0 10px rgba(255, 77, 141, 0.8))' : 'none'
             }}
           />
         </button>
       )}
 
-      {/* Verified Badge */}
+      {/* Verified Badge with Glow */}
       {isVerified && (
         <div className="absolute top-12 right-3 z-10">
-          <BadgeCheck className="w-5 h-5 text-blue-400 fill-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]" />
+          <BadgeCheck 
+            className="w-5 h-5 text-blue-400 fill-blue-400" 
+            style={{
+              filter: 'drop-shadow(0 0 10px rgba(96,165,250,0.8))'
+            }}
+          />
         </div>
       )}
 
@@ -176,7 +185,16 @@ const CharacterCard = ({
             {title}
             {isVerified && <BadgeCheck className="w-4 h-4 text-blue-400 fill-blue-400" />}
           </h3>
-          <p className="text-primary text-sm font-medium">{emotionalSubtitle}</p>
+          <p 
+            className="text-sm font-medium"
+            style={{
+              background: 'linear-gradient(90deg, hsl(338 100% 65%), hsl(280 70% 65%))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            {emotionalSubtitle}
+          </p>
           
           {/* Sexy Tagline on Hover */}
           <div 
@@ -194,14 +212,20 @@ const CharacterCard = ({
       <div 
         className={`absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${isHovered && !isLocked ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-        <div className="px-4 py-2 rounded-full bg-primary text-white font-semibold text-sm shadow-[0_0_20px_rgba(255,77,141,0.5)] animate-pulse">
+        <div 
+          className="px-5 py-2.5 rounded-full text-white font-semibold text-sm"
+          style={{
+            background: 'linear-gradient(135deg, hsl(338 100% 55%), hsl(280 70% 50%))',
+            boxShadow: '0 0 30px rgba(255, 77, 141, 0.5), 0 0 60px rgba(139, 92, 246, 0.3)',
+          }}
+        >
           Viens me parler 😘
         </div>
       </div>
 
       {/* Locked Overlay */}
       {isLocked && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px] flex items-center justify-center">
           <div className="text-center">
             <Lock className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">Connecte-toi</p>
