@@ -833,10 +833,12 @@ const ChatConversation = () => {
           </button>
         )}
 
-      {/* Input Premium Apple Vision Pro style */}
-      <div className="border-t border-border/50 glass backdrop-blur-2xl p-4 flex-shrink-0 z-20 mb-16 relative">
+      {/* Input Premium Apple Vision Pro style - collé au bottom nav */}
+      <div className="border-t border-border/50 glass backdrop-blur-2xl p-3 pb-0 flex-shrink-0 z-20 relative">
         {/* Subtle gradient behind input */}
         <div className="absolute inset-0 bg-gradient-to-r from-violet/5 via-primary/5 to-peach/5 pointer-events-none" />
+        {/* Glow violet/peach derrière la zone de saisie */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-violet/10 via-transparent to-peach/10 blur-xl pointer-events-none" />
         
         {!isAuthenticated && id === "demo-tamara" && messageCount >= 10 && (
           <div className="max-w-4xl mx-auto mb-3 glass-gold border border-gold/30 rounded-2xl p-4 text-center animate-fade-in-up shadow-xl">
@@ -852,7 +854,7 @@ const ChatConversation = () => {
             </Button>
           </div>
         )}
-        <div className="max-w-4xl mx-auto flex items-end gap-2 relative z-10">
+        <div className="max-w-4xl mx-auto flex items-end gap-2 relative z-10 pb-3">
           <Button
             size="icon"
             variant="ghost"
