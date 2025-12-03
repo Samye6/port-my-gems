@@ -557,12 +557,19 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex pb-16">
+    <div className="h-screen bg-background flex pb-16 relative overflow-hidden">
+      {/* Animated premium gradient background */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet via-primary to-peach animate-gradient" />
+      </div>
+      
       {/* Chat Area */}
-      <div className={`flex flex-col ${showSettings ? 'flex-[0_0_60%]' : 'flex-1'} transition-all`}>
-      {/* Header WhatsApp-style */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm z-10">
-        <div className="px-3 py-2 flex items-center justify-between">
+      <div className={`flex flex-col ${showSettings ? 'flex-[0_0_60%]' : 'flex-1'} transition-all relative z-10`}>
+      {/* Header Premium */}
+      <div className="border-b border-border/50 glass backdrop-blur-xl z-10 relative">
+        {/* Subtle glow behind header */}
+        <div className="absolute inset-0 bg-gradient-to-r from-violet/5 via-primary/5 to-peach/5 opacity-50" />
+        <div className="px-3 py-2 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             {isMobile && (
               <Button
@@ -574,25 +581,34 @@ const ChatConversation = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             )}
-            <Avatar 
-              className="w-10 h-10 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity avatar-breathe"
-              onClick={() => setShowProfileModal(true)}
-            >
-              {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
-              <AvatarFallback className="bg-primary/20 text-primary">
-                {characterName[0]}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              {/* Halo violet/peach derrière l'avatar */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet via-primary to-peach opacity-30 blur-xl animate-pulse" />
+              <Avatar 
+                className="w-10 h-10 flex-shrink-0 cursor-pointer hover:opacity-80 transition-all relative z-10 ring-2 ring-primary/20"
+                onClick={() => setShowProfileModal(true)}
+              >
+                {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
+                <AvatarFallback className="bg-gradient-to-br from-primary/30 to-violet/20 text-primary">
+                  {characterName[0]}
+                </AvatarFallback>
+              </Avatar>
+            </div>
             <div className="flex-1 min-w-0">
               <h2 
-                className="font-semibold text-foreground truncate cursor-pointer hover:text-primary transition-colors"
+                className="font-semibold text-foreground truncate cursor-pointer hover:text-primary transition-all bg-gradient-to-r from-foreground via-primary/80 to-foreground bg-clip-text"
                 onClick={() => setShowSettings(!showSettings)}
               >
                 {characterName}
               </h2>
-              <p className={`text-xs ${isTyping ? 'text-primary animate-pulse' : 'text-muted-foreground'}`}>
-                {isTyping ? "est en train d'écrire..." : "en ligne"}
-              </p>
+              <div className="flex items-center gap-1.5">
+                {!isTyping && (
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-online-pulse" />
+                )}
+                <p className={`text-xs ${isTyping ? 'text-primary font-medium animate-pulse' : 'text-muted-foreground'}`}>
+                  {isTyping ? "est en train d'écrire..." : "en ligne"}
+                </p>
+              </div>
             </div>
           </div>
           <DropdownMenu>
@@ -650,36 +666,45 @@ const ChatConversation = () => {
         </div>
       </div>
 
-      {/* Messages WhatsApp-style */}
+      {/* Messages Area */}
       <div 
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-scroll p-4 pr-2 bg-[hsl(var(--background))] relative scrollbar-custom"
+        className="flex-1 overflow-y-scroll p-4 pr-2 relative scrollbar-custom"
       >
-        <div className="max-w-4xl mx-auto space-y-2">
+        {/* Subtle radial glow in messages area */}
+        <div className="absolute inset-0 section-glow-violet pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 section-glow-peach pointer-events-none" />
+        <div className="max-w-4xl mx-auto space-y-2 relative z-10">
           {/* New conversation header - Pour toutes les conversations */}
           <>
-            <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
-              <Avatar 
-                className="w-32 h-32 mb-4 ring-4 ring-border cursor-pointer hover:ring-primary/50 transition-all"
-                onClick={() => setShowProfileModal(true)}
-              >
-                {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
-                <AvatarFallback className="bg-primary/20 text-primary text-4xl">
-                  {characterName[0]}
-                </AvatarFallback>
-              </Avatar>
-              <h3 className="text-xl font-semibold text-foreground mb-1">{characterName}</h3>
+            <div className="flex flex-col items-center justify-center py-8 animate-fade-in-up">
+              <div className="relative">
+                {/* Premium glow derrière l'avatar */}
+                <div className="absolute inset-0 scale-150 bg-gradient-to-br from-violet via-primary to-peach opacity-20 blur-3xl animate-pulse" />
+                <Avatar 
+                  className="w-32 h-32 mb-4 ring-4 ring-primary/30 cursor-pointer hover:ring-primary/60 transition-all relative z-10 premium-glow"
+                  onClick={() => setShowProfileModal(true)}
+                >
+                  {avatarUrl && <AvatarImage src={avatarUrl} alt={characterName} />}
+                  <AvatarFallback className="bg-gradient-to-br from-primary/30 to-violet/20 text-primary text-4xl">
+                    {characterName[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <h3 className="text-xl font-semibold bg-gradient-to-r from-foreground via-primary to-violet bg-clip-text text-transparent mb-1">
+                {characterName}
+              </h3>
               <p className="text-sm text-muted-foreground">
                 {characterName} a démarré une discussion
               </p>
             </div>
             
             {/* Security message */}
-            <div className="flex justify-center mb-4 animate-fade-in">
-              <div className="max-w-[85%] bg-[#FCF4C4] dark:bg-[#3D3B30] px-4 py-3 rounded-lg shadow-sm">
-                <p className="text-xs text-[#54504E] dark:text-[#D3D1CB] text-center leading-relaxed">
-                  🔒 Les messages à vous-même sont chiffrés de bout en bout. Aucun tiers, pas même Lydia, ne peut les lire ou les écouter. Appuyez pour en savoir plus.
+            <div className="flex justify-center mb-4 animate-fade-in-up">
+              <div className="max-w-[85%] glass-gold px-4 py-3 rounded-xl shadow-lg">
+                <p className="text-xs text-gold-foreground text-center leading-relaxed font-medium">
+                  🔒 Les messages à vous-même sont chiffrés de bout en bout. Aucun tiers, pas même Lydia, ne peut les lire ou les écouter.
                 </p>
               </div>
             </div>
@@ -689,9 +714,9 @@ const ChatConversation = () => {
             <div key={message.id}>
               {/* Date separator */}
               {shouldShowDateSeparator(message, displayMessages[index - 1]) && (
-                <div className="flex justify-center my-4">
-                  <div className="bg-card/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">
-                    <span className="text-[11px] font-medium text-muted-foreground">
+                <div className="flex justify-center my-4 animate-fade-in">
+                  <div className="glass px-4 py-2 rounded-full shadow-lg">
+                    <span className="text-[11px] font-semibold text-muted-foreground tracking-wide">
                       {getDateLabel(message.timestamp)}
                     </span>
                   </div>
@@ -702,7 +727,7 @@ const ChatConversation = () => {
               <div
                 className={`flex flex-col ${
                   message.sender === "user" ? "items-end" : "items-start"
-                } ${message.sender === "user" ? "animate-message-sent" : "animate-fade-in"} gap-2`}
+                } ${message.sender === "user" ? "animate-message-sent" : "animate-fade-in-up"} gap-2`}
               >
                 {(() => {
                   // Vérifier si le message contient une photo éphémère
@@ -721,13 +746,21 @@ const ChatConversation = () => {
                       {/* Afficher le texte si présent */}
                       {textContent && (
                         <div
-                          className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 ${
+                          className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 relative group ${
                             message.sender === "user"
-                              ? "bg-[hsl(var(--lydia-pink))] text-white rounded-br-sm shadow-[0_4px_12px_rgba(0,0,0,0.4),0_2px_4px_rgba(0,0,0,0.3)]"
-                              : "bg-[hsl(var(--chat-ai))] text-foreground rounded-bl-sm shadow-sm ai-bubble-grain"
+                              ? "bg-gradient-to-br from-primary via-primary to-peach/80 text-white rounded-br-sm shadow-lg hover:shadow-primary/30 transition-all duration-200"
+                              : "glass text-foreground rounded-bl-sm shadow-lg hover:shadow-violet/20 transition-all duration-200 border border-border/30"
                           }`}
                         >
-                          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                          {/* Subtle gradient overlay for AI messages */}
+                          {message.sender === "ai" && (
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet/5 via-transparent to-peach/5 rounded-2xl rounded-bl-sm pointer-events-none" />
+                          )}
+                          {/* Subtle glow for user messages */}
+                          {message.sender === "user" && (
+                            <div className="absolute -inset-0.5 bg-gradient-to-br from-primary via-primary to-peach opacity-0 group-hover:opacity-30 blur-sm rounded-2xl rounded-br-sm transition-opacity duration-200 pointer-events-none -z-10" />
+                          )}
+                          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap relative z-10">
                             {textContent}
                           </p>
                           <div className="flex items-center justify-end gap-1 mt-1">
@@ -773,12 +806,14 @@ const ChatConversation = () => {
 
         {/* Afficher l'indicateur de saisie si l'IA écrit */}
         {isTyping && (
-          <div className="flex justify-start mb-2 animate-fade-in">
-            <div className="max-w-[80%] bg-[hsl(var(--chat-ai))] text-foreground rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm ai-bubble-grain">
-              <div className="flex gap-1.5">
-                <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-typing-dot-1"></div>
-                <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-typing-dot-2"></div>
-                <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-typing-dot-3"></div>
+          <div className="flex justify-start mb-2 animate-fade-in-up">
+            <div className="max-w-[80%] glass text-foreground rounded-2xl rounded-bl-sm px-4 py-3 shadow-lg relative border border-border/30">
+              {/* Mini halo derrière l'indicateur */}
+              <div className="absolute -inset-2 bg-gradient-to-br from-violet/10 to-peach/10 blur-lg rounded-2xl pointer-events-none" />
+              <div className="flex gap-1.5 relative z-10">
+                <div className="w-2 h-2 bg-gradient-to-r from-violet to-primary rounded-full animate-typing-dot-1"></div>
+                <div className="w-2 h-2 bg-gradient-to-r from-primary to-peach rounded-full animate-typing-dot-2"></div>
+                <div className="w-2 h-2 bg-gradient-to-r from-violet to-primary rounded-full animate-typing-dot-3"></div>
               </div>
             </div>
           </div>
@@ -791,59 +826,64 @@ const ChatConversation = () => {
         {showScrollButton && (
           <button
             onClick={() => scrollToBottom(true)}
-            className="fixed bottom-24 right-6 z-20 w-12 h-12 rounded-full bg-card border-2 border-border shadow-lg flex items-center justify-center hover:bg-accent transition-all duration-200 animate-fade-in"
+            className="fixed bottom-24 right-6 z-20 w-12 h-12 rounded-full glass-gold border border-gold/30 shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200 animate-fade-in premium-glow"
             aria-label="Revenir en bas"
           >
-            <ArrowDown className="w-5 h-5 text-foreground" />
+            <ArrowDown className="w-5 h-5 text-gold-foreground" />
           </button>
         )}
 
-      {/* Input WhatsApp-style */}
-      <div className="border-t border-border bg-card/50 backdrop-blur-sm p-3 flex-shrink-0 z-20 mb-16">
+      {/* Input Premium Apple Vision Pro style */}
+      <div className="border-t border-border/50 glass backdrop-blur-2xl p-4 flex-shrink-0 z-20 mb-16 relative">
+        {/* Subtle gradient behind input */}
+        <div className="absolute inset-0 bg-gradient-to-r from-violet/5 via-primary/5 to-peach/5 pointer-events-none" />
+        
         {!isAuthenticated && id === "demo-tamara" && messageCount >= 10 && (
-          <div className="max-w-4xl mx-auto mb-3 bg-primary/10 border border-primary/20 rounded-2xl p-4 text-center animate-fade-in">
-            <p className="text-sm text-foreground mb-3">
-              Créer un compte ou connecte toi pour continuer à chater avec Tamara!
+          <div className="max-w-4xl mx-auto mb-3 glass-gold border border-gold/30 rounded-2xl p-4 text-center animate-fade-in-up shadow-xl">
+            <p className="text-sm text-gold-foreground font-medium mb-3">
+              Créer un compte ou connecte toi pour continuer à chater avec Tamara! 💫
             </p>
             <Button
               onClick={() => navigate("/auth")}
               size="sm"
-              className="w-full"
+              className="w-full bg-gradient-to-r from-gold to-peach hover:from-gold/90 hover:to-peach/90 text-gold-foreground shadow-lg"
             >
               Se connecter / S'inscrire
             </Button>
           </div>
         )}
-        <div className="max-w-4xl mx-auto flex items-end gap-2">
+        <div className="max-w-4xl mx-auto flex items-end gap-2 relative z-10">
           <Button
             size="icon"
             variant="ghost"
-            className="rounded-full flex-shrink-0 mb-1"
+            className="rounded-full flex-shrink-0 mb-1 hover:bg-primary/10 transition-all"
           >
-            <Paperclip className="w-5 h-5 text-muted-foreground" />
+            <Paperclip className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
           </Button>
 
-          <div className="flex-1 bg-secondary rounded-3xl flex items-center gap-2 px-4 py-2">
+          <div className="flex-1 glass rounded-3xl flex items-center gap-2 px-4 py-2.5 border border-border/30 shadow-lg relative group">
+            {/* Subtle gradient inside input */}
+            <div className="absolute inset-0 bg-gradient-to-r from-violet/5 via-transparent to-peach/5 rounded-3xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Message..."
-              className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm px-0"
+              className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm px-0 relative z-10"
             />
             <Button
               size="icon"
               variant="ghost"
-              className="rounded-full flex-shrink-0 h-8 w-8"
+              className="rounded-full flex-shrink-0 h-8 w-8 hover:bg-primary/10 transition-all relative z-10"
             >
-              <Smile className="w-5 h-5 text-muted-foreground" />
+              <Smile className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
             </Button>
           </div>
 
           <Button
             onClick={handleSend}
             size="icon"
-            className="rounded-full bg-primary hover:bg-primary/90 flex-shrink-0 mb-1"
+            className="rounded-full bg-gradient-to-br from-primary via-primary to-peach hover:from-primary/90 hover:via-primary/90 hover:to-peach/90 flex-shrink-0 mb-1 shadow-lg hover:shadow-primary/50 transition-all hover:scale-105 active:scale-95 premium-glow"
             disabled={!inputValue.trim() || (!isAuthenticated && id === "demo-tamara" && messageCount >= 10)}
           >
             <Send className="w-5 h-5" />
