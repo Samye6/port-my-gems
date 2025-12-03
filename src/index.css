@@ -307,4 +307,50 @@ All colors MUST be HSL.
   .micro-parallax:hover {
     transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-8px);
   }
+
+  /* Typing dots animation for AI indicator */
+  @keyframes typing-dot-1 {
+    0%, 60%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    30% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes typing-dot-2 {
+    0%, 60%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    45% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes typing-dot-3 {
+    0%, 60%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-typing-dot-1 {
+    animation: typing-dot-1 1.4s ease-in-out infinite;
+  }
+
+  .animate-typing-dot-2 {
+    animation: typing-dot-2 1.4s ease-in-out infinite;
+  }
+
+  .animate-typing-dot-3 {
+    animation: typing-dot-3 1.4s ease-in-out infinite;
+  }
 }
