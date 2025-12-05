@@ -115,6 +115,76 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
             WebkitMaskImage: 'linear-gradient(to left, black 50%, rgba(0,0,0,0.85) 70%, rgba(0,0,0,0.4) 90%, transparent 100%)',
           }}
         />
+
+        {/* Floating Message Bubbles - Premium glassmorphism style */}
+        {isVisible && (
+          <>
+            {/* Bubble 1 - Top right */}
+            <div 
+              className="absolute top-[18%] right-[12%] animate-fade-in"
+              style={{ 
+                animationDelay: '0.8s',
+                animationFillMode: 'both',
+                animation: 'fade-in 0.6s ease-out 0.8s both, float-gentle 4s ease-in-out infinite 1.4s'
+              }}
+            >
+              <div 
+                className="px-4 py-2.5 rounded-2xl rounded-tr-sm text-sm"
+                style={{
+                  background: 'rgba(139, 92, 246, 0.15)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  color: '#F8F8F8',
+                  boxShadow: '0 0 20px rgba(139, 92, 246, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                Hey… tu m'as manqué 😏
+              </div>
+            </div>
+
+            {/* Bubble 2 - Middle left area */}
+            <div 
+              className="absolute top-[42%] left-[8%]"
+              style={{ 
+                animation: 'fade-in 0.6s ease-out 1.2s both, float-gentle 4.5s ease-in-out infinite 1.8s'
+              }}
+            >
+              <div 
+                className="px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm"
+                style={{
+                  background: 'rgba(236, 72, 153, 0.15)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  color: '#F8F8F8',
+                  boxShadow: '0 0 20px rgba(236, 72, 153, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                Je pense encore à toi…
+              </div>
+            </div>
+
+            {/* Bubble 3 - Bottom right */}
+            <div 
+              className="absolute bottom-[28%] right-[22%]"
+              style={{ 
+                animation: 'fade-in 0.6s ease-out 1.6s both, float-gentle 3.8s ease-in-out infinite 2.2s'
+              }}
+            >
+              <div 
+                className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm"
+                style={{
+                  background: 'rgba(168, 85, 247, 0.15)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  color: '#F8F8F8',
+                  boxShadow: '0 0 20px rgba(168, 85, 247, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                Tu es prêt ? ✨
+              </div>
+            </div>
+          </>
+        )}
         
         {/* Bottom fade for seamless blending */}
         <div 

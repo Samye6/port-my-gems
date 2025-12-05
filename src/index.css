@@ -353,4 +353,18 @@ All colors MUST be HSL.
   .animate-typing-dot-3 {
     animation: typing-dot-3 1.4s ease-in-out infinite;
   }
+
+  /* Gentle floating animation for hero bubbles */
+  @keyframes float-gentle {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  .animate-float-gentle {
+    animation: float-gentle 4s ease-in-out infinite;
+  }
 }
