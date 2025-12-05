@@ -486,30 +486,89 @@ const Scenarios = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="container flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-3">
-            <img 
-              src={lydiaLogo} 
-              alt="Lydia" 
-              className="w-10 h-10 object-contain"
-            />
-            <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Lydia
-            </h1>
+      {/* Premium Header */}
+      <header className="sticky top-0 z-50 relative">
+        {/* Main header container with premium gradient background */}
+        <div 
+          className="relative backdrop-blur-xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(11, 11, 13, 0.95) 0%, rgba(88, 28, 135, 0.15) 50%, rgba(219, 39, 119, 0.08) 100%)',
+          }}
+        >
+          {/* Subtle floating glow effect */}
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 80% 50% at 50% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
+            }}
+          />
+          
+          <div className="container flex h-16 items-center justify-between px-6 relative z-10">
+            <div className="flex items-center gap-3">
+              {/* Logo with premium glow and hover animation */}
+              <div className="relative group cursor-pointer">
+                {/* Logo glow background */}
+                <div 
+                  className="absolute inset-0 rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300 blur-md"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(139, 92, 246, 0.2) 70%, transparent 100%)',
+                    transform: 'scale(1.5)',
+                  }}
+                />
+                <img 
+                  src={lydiaLogo} 
+                  alt="Lydia" 
+                  className="w-10 h-10 object-contain relative z-10 transition-all duration-200 group-hover:scale-105 group-hover:brightness-110"
+                  style={{
+                    filter: 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.3))',
+                  }}
+                />
+              </div>
+              
+              {/* Title with premium typography */}
+              <h1 
+                className="text-xl font-bold tracking-wide"
+                style={{
+                  color: '#FFE6F5',
+                  textShadow: '0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(236, 72, 153, 0.15)',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                }}
+              >
+                Lydia
+              </h1>
+            </div>
+            {!isAuthenticated && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className="rounded-full border-primary/50 text-primary hover:bg-primary/10 transition-all duration-200 hover:scale-105"
+                style={{
+                  boxShadow: '0 0 15px rgba(236, 72, 153, 0.2)',
+                }}
+              >
+                Se connecter
+              </Button>
+            )}
           </div>
-          {!isAuthenticated && (
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate("/auth")}
-              className="rounded-full border-primary/50 text-primary hover:bg-primary/10"
-            >
-              Se connecter
-            </Button>
-          )}
         </div>
+        
+        {/* Premium gradient bottom border */}
+        <div 
+          className="h-[1px] w-full"
+          style={{
+            background: 'linear-gradient(90deg, rgba(139, 92, 246, 0.5) 0%, rgba(236, 72, 153, 0.6) 50%, rgba(251, 146, 60, 0.4) 100%)',
+            boxShadow: '0 1px 8px rgba(236, 72, 153, 0.3)',
+          }}
+        />
+        
+        {/* Floating glow under header */}
+        <div 
+          className="absolute -bottom-4 left-0 right-0 h-8 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 60% 100% at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+          }}
+        />
       </header>
 
       {/* Hero Section */}
