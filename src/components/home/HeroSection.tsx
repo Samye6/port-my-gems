@@ -116,68 +116,117 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
           }}
         />
 
-        {/* Floating Message Bubbles - Premium glassmorphism style */}
+        {/* Floating Message Bubbles - Premium Pro Depth glassmorphism style */}
         {isVisible && (
           <>
-            {/* Bubble 1 - Top right */}
+            {/* Bubble 4 - Ghost bubble far behind (depth layer) - Very blurred and transparent */}
             <div 
-              className="absolute top-[18%] right-[12%] animate-fade-in"
+              className="absolute top-[30%] right-[45%] pointer-events-none"
               style={{ 
-                animationDelay: '0.8s',
-                animationFillMode: 'both',
-                animation: 'fade-in 0.6s ease-out 0.8s both, float-gentle 4s ease-in-out infinite 1.4s'
+                animation: 'fade-in 0.8s ease-out 0.5s both, float-gentle 6s ease-in-out infinite 0.5s',
+                zIndex: 0,
               }}
             >
               <div 
-                className="px-4 py-2.5 rounded-2xl rounded-tr-sm text-sm"
+                className="px-5 py-3 rounded-2xl text-sm"
                 style={{
-                  background: 'rgba(139, 92, 246, 0.15)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
+                  background: 'rgba(214, 123, 255, 0.08)',
+                  backdropFilter: 'blur(6px)',
+                  WebkitBackdropFilter: 'blur(6px)',
+                  color: 'rgba(248, 248, 248, 0.25)',
+                  filter: 'blur(3px)',
+                  transform: 'scale(0.85)',
+                  boxShadow: '0 0 40px rgba(214, 123, 255, 0.1)',
+                }}
+              >
+                Je n'arrive pas à t'oublier…
+              </div>
+            </div>
+
+            {/* Bubble 1 - Large - Top right */}
+            <div 
+              className="absolute top-[16%] right-[10%]"
+              style={{ 
+                animation: 'fade-in 0.6s ease-out 0.8s both, float-gentle 4s ease-in-out infinite 1.4s',
+                zIndex: 2,
+              }}
+            >
+              {/* Glow halo behind bubble */}
+              <div 
+                className="absolute inset-0 -m-3 rounded-full"
+                style={{
+                  background: 'radial-gradient(ellipse at center, rgba(214, 123, 255, 0.2) 0%, rgba(255, 108, 168, 0.15) 40%, transparent 70%)',
+                  filter: 'blur(12px)',
+                }}
+              />
+              <div 
+                className="relative px-3.5 py-2 rounded-2xl rounded-tr-sm text-[13px]"
+                style={{
+                  background: 'rgba(139, 92, 246, 0.18)',
+                  backdropFilter: 'blur(14px)',
+                  WebkitBackdropFilter: 'blur(14px)',
                   color: '#F8F8F8',
-                  boxShadow: '0 0 20px rgba(139, 92, 246, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2)',
+                  boxShadow: '0 0 25px rgba(214, 123, 255, 0.25), 0 0 50px rgba(255, 108, 168, 0.15), 0 4px 20px rgba(0, 0, 0, 0.25)',
                 }}
               >
                 Hey… tu m'as manqué 😏
               </div>
             </div>
 
-            {/* Bubble 2 - Middle left area */}
+            {/* Bubble 2 - Medium - Middle left area */}
             <div 
-              className="absolute top-[42%] left-[8%]"
+              className="absolute top-[44%] left-[6%]"
               style={{ 
-                animation: 'fade-in 0.6s ease-out 1.2s both, float-gentle 4.5s ease-in-out infinite 1.8s'
+                animation: 'fade-in 0.6s ease-out 1.2s both, float-gentle 4.5s ease-in-out infinite 1.8s',
+                zIndex: 2,
               }}
             >
+              {/* Glow halo behind bubble */}
               <div 
-                className="px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm"
+                className="absolute inset-0 -m-2 rounded-full"
                 style={{
-                  background: 'rgba(236, 72, 153, 0.15)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
+                  background: 'radial-gradient(ellipse at center, rgba(255, 108, 168, 0.2) 0%, rgba(214, 123, 255, 0.12) 50%, transparent 70%)',
+                  filter: 'blur(10px)',
+                }}
+              />
+              <div 
+                className="relative px-3 py-1.5 rounded-2xl rounded-tl-sm text-xs"
+                style={{
+                  background: 'rgba(236, 72, 153, 0.18)',
+                  backdropFilter: 'blur(14px)',
+                  WebkitBackdropFilter: 'blur(14px)',
                   color: '#F8F8F8',
-                  boxShadow: '0 0 20px rgba(236, 72, 153, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2)',
+                  boxShadow: '0 0 22px rgba(255, 108, 168, 0.22), 0 0 45px rgba(214, 123, 255, 0.12), 0 4px 18px rgba(0, 0, 0, 0.22)',
                 }}
               >
                 Je pense encore à toi…
               </div>
             </div>
 
-            {/* Bubble 3 - Bottom right */}
+            {/* Bubble 3 - Small - Bottom right */}
             <div 
-              className="absolute bottom-[28%] right-[22%]"
+              className="absolute bottom-[30%] right-[20%]"
               style={{ 
-                animation: 'fade-in 0.6s ease-out 1.6s both, float-gentle 3.8s ease-in-out infinite 2.2s'
+                animation: 'fade-in 0.6s ease-out 1.6s both, float-gentle 3.8s ease-in-out infinite 2.2s',
+                zIndex: 2,
               }}
             >
+              {/* Glow halo behind bubble */}
               <div 
-                className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm"
+                className="absolute inset-0 -m-2 rounded-full"
                 style={{
-                  background: 'rgba(168, 85, 247, 0.15)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
+                  background: 'radial-gradient(ellipse at center, rgba(168, 85, 247, 0.18) 0%, rgba(255, 108, 168, 0.1) 50%, transparent 70%)',
+                  filter: 'blur(8px)',
+                }}
+              />
+              <div 
+                className="relative px-2.5 py-1.5 rounded-2xl rounded-br-sm text-[11px]"
+                style={{
+                  background: 'rgba(168, 85, 247, 0.18)',
+                  backdropFilter: 'blur(14px)',
+                  WebkitBackdropFilter: 'blur(14px)',
                   color: '#F8F8F8',
-                  boxShadow: '0 0 20px rgba(168, 85, 247, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2)',
+                  boxShadow: '0 0 20px rgba(168, 85, 247, 0.2), 0 0 40px rgba(214, 123, 255, 0.1), 0 4px 15px rgba(0, 0, 0, 0.2)',
                 }}
               >
                 Tu es prêt ? ✨
