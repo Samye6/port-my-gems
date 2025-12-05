@@ -7,7 +7,7 @@ interface FloatingChatButtonProps {
 
 const FloatingChatButton = ({ onClick }: FloatingChatButtonProps) => {
   return (
-    <div className="fixed bottom-24 right-6 z-40">
+    <div className="fixed bottom-32 right-6 z-40">
       <Button
         onClick={onClick}
         className="group relative overflow-hidden bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 text-white px-6 py-6 rounded-full shadow-[0_0_30px_rgba(255,77,141,0.4)] hover:shadow-[0_0_50px_rgba(255,77,141,0.6)] transition-all duration-300 hover:scale-105"
