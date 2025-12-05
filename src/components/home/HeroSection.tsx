@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Play, Sparkles, Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import exclusiveModel from "@/assets/exclusive-model.png";
+import heroModel from "@/assets/hero-model.png";
 
 interface HeroSectionProps {
   onStartChat: () => void;
@@ -46,26 +46,72 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
         }}
       />
 
-      {/* Hero Image with Enhanced Glow */}
-      <div className="absolute right-0 bottom-0 w-1/2 h-full">
-        {/* Violet/Peach halo behind character */}
+      {/* Hero Image with Premium Integration */}
+      <div className="absolute right-0 bottom-0 w-1/2 h-full pointer-events-none">
+        {/* Multi-layer violet/rose/peach backlight behind character */}
         <div 
           className="absolute bottom-0 right-0 w-full h-full"
           style={{
-            background: 'radial-gradient(ellipse at 70% 70%, hsl(270 60% 50% / 0.25) 0%, hsl(20 100% 75% / 0.15) 30%, transparent 60%)',
+            background: `
+              radial-gradient(ellipse 80% 90% at 60% 80%, hsl(270 60% 35% / 0.5) 0%, transparent 50%),
+              radial-gradient(ellipse 60% 70% at 70% 70%, hsl(330 80% 50% / 0.35) 0%, transparent 45%),
+              radial-gradient(ellipse 50% 60% at 65% 75%, hsl(30 100% 70% / 0.2) 0%, transparent 40%)
+            `,
           }}
         />
-        <img 
-          src={exclusiveModel} 
-          alt="Featured" 
-          className={`absolute bottom-0 right-0 h-[95%] w-auto object-contain transition-all duration-1000 ${isVisible ? 'opacity-90 translate-x-0' : 'opacity-0 translate-x-20'}`}
+        
+        {/* Soft glow halo around silhouette */}
+        <div 
+          className="absolute bottom-0 right-0 w-full h-full animate-pulse"
           style={{
-            filter: 'drop-shadow(0 0 80px rgba(139, 92, 246, 0.4)) drop-shadow(0 0 40px rgba(255, 77, 141, 0.3))',
-            maskImage: 'linear-gradient(to left, black 60%, transparent 100%)'
+            animationDuration: '4s',
+            background: `
+              radial-gradient(ellipse 45% 55% at 55% 65%, hsl(270 70% 50% / 0.25) 0%, transparent 50%),
+              radial-gradient(ellipse 40% 50% at 60% 70%, hsl(330 85% 55% / 0.2) 0%, transparent 45%)
+            `,
           }}
         />
-        {/* Glow effect behind image */}
-        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-l from-violet/15 via-primary/10 to-transparent" />
+        
+        {/* Main hero image with premium integration */}
+        <img 
+          src={heroModel} 
+          alt="Featured" 
+          className={`absolute bottom-0 right-0 h-[90%] w-auto object-contain transition-all duration-1000 ${isVisible ? 'opacity-95 translate-x-0' : 'opacity-0 translate-x-20'}`}
+          style={{
+            filter: `
+              drop-shadow(0 0 100px rgba(107, 33, 168, 0.5))
+              drop-shadow(0 0 60px rgba(236, 72, 153, 0.4))
+              drop-shadow(0 0 30px rgba(251, 191, 36, 0.2))
+              drop-shadow(8px 12px 25px rgba(0, 0, 0, 0.6))
+              contrast(1.05)
+              saturate(1.1)
+              brightness(0.92)
+            `,
+            maskImage: 'linear-gradient(to left, black 50%, rgba(0,0,0,0.8) 75%, transparent 100%), linear-gradient(to top, black 85%, transparent 100%)',
+            maskComposite: 'intersect',
+            WebkitMaskImage: 'linear-gradient(to left, black 50%, rgba(0,0,0,0.85) 70%, transparent 95%)',
+          }}
+        />
+        
+        {/* Overlay gradient for seamless blending */}
+        <div 
+          className="absolute bottom-0 right-0 w-full h-full"
+          style={{
+            background: `
+              linear-gradient(to left, transparent 30%, hsl(var(--background)) 95%),
+              linear-gradient(to top, hsl(var(--background)) 0%, transparent 20%)
+            `,
+            pointerEvents: 'none'
+          }}
+        />
+        
+        {/* Subtle warm color overlay for cohesion */}
+        <div 
+          className="absolute bottom-0 right-0 w-full h-full mix-blend-soft-light opacity-30"
+          style={{
+            background: 'linear-gradient(135deg, hsl(270 50% 40% / 0.3) 0%, hsl(330 70% 50% / 0.2) 50%, hsl(30 90% 60% / 0.15) 100%)'
+          }}
+        />
       </div>
 
       {/* Content */}
