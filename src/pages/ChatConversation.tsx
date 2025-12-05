@@ -557,7 +557,7 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex pb-16 relative overflow-hidden">
+    <div className="h-screen bg-background flex pb-0 relative overflow-hidden">
       {/* Animated premium gradient background */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-violet via-primary to-peach animate-gradient" />
@@ -834,11 +834,11 @@ const ChatConversation = () => {
         )}
 
       {/* Input Premium Apple Vision Pro style - collé au bottom nav */}
-      <div className="border-t border-border/50 glass backdrop-blur-2xl p-3 pb-0 flex-shrink-0 z-20 relative">
+      <div className="border-t border-border/50 glass backdrop-blur-2xl p-3 pb-[calc(env(safe-area-inset-bottom)+70px)] flex-shrink-0 z-20 relative mb-0">
         {/* Subtle gradient behind input */}
         <div className="absolute inset-0 bg-gradient-to-r from-violet/5 via-primary/5 to-peach/5 pointer-events-none" />
         {/* Glow violet/peach derrière la zone de saisie */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-violet/10 via-transparent to-peach/10 blur-xl pointer-events-none" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-violet/10 via-transparent to-peach/10 blur-xl pointer-events-none -z-10" />
         
         {!isAuthenticated && id === "demo-tamara" && messageCount >= 10 && (
           <div className="max-w-4xl mx-auto mb-3 glass-gold border border-gold/30 rounded-2xl p-4 text-center animate-fade-in-up shadow-xl">
@@ -854,7 +854,7 @@ const ChatConversation = () => {
             </Button>
           </div>
         )}
-        <div className="max-w-4xl mx-auto flex items-end gap-2 relative z-10 pb-3">
+        <div className="max-w-4xl mx-auto flex items-end gap-2 relative z-10 pb-0">
           <Button
             size="icon"
             variant="ghost"
