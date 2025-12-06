@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Heart, Sparkles } from "lucide-react";
-import heroModel from "@/assets/hero-model.png";
+import { ArrowLeft } from "lucide-react";
+import authModel from "@/assets/auth-model.png";
+import lydiaLogo from "@/assets/lydia-logo.png";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -20,7 +21,6 @@ const Auth = () => {
 
   useEffect(() => {
     setIsVisible(true);
-    // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/profile");
@@ -91,62 +91,116 @@ const Auth = () => {
       
       {/* Animated gradient overlay */}
       <div 
-        className="absolute inset-0 opacity-60"
+        className="absolute inset-0 opacity-70"
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2), transparent 70%)',
+          background: 'radial-gradient(ellipse 100% 80% at 60% 50%, rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.25), transparent 60%)',
         }}
       />
       
-      {/* Secondary glow */}
+      {/* Secondary glow for peach accent */}
       <div 
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-50"
         style={{
-          background: 'radial-gradient(ellipse 60% 40% at 70% 60%, rgba(255, 77, 141, 0.25), rgba(251, 191, 146, 0.15), transparent 60%)',
+          background: 'radial-gradient(ellipse 70% 50% at 75% 70%, rgba(255, 77, 141, 0.3), rgba(251, 191, 146, 0.2), transparent 50%)',
         }}
       />
 
-      {/* Blurred model image as texture */}
+      {/* Model image with blur and halo integration */}
       <div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        className="absolute inset-0 flex items-end justify-center pointer-events-none"
         style={{
-          opacity: 0.15,
+          opacity: 0.35,
         }}
       >
-        <img 
-          src={heroModel} 
-          alt="" 
-          className="h-[120%] w-auto object-cover"
+        {/* Model halo glow */}
+        <div 
+          className="absolute bottom-0 right-[10%] w-[600px] h-[700px]"
           style={{
-            filter: 'blur(40px) saturate(1.2)',
-            maskImage: 'radial-gradient(ellipse 70% 70% at center, black 20%, transparent 70%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 70% 70% at center, black 20%, transparent 70%)',
+            background: 'radial-gradient(ellipse 80% 60% at 50% 70%, rgba(139, 92, 246, 0.4), rgba(255, 77, 141, 0.25), transparent 70%)',
+            filter: 'blur(60px)',
+          }}
+        />
+        <img 
+          src={authModel} 
+          alt="" 
+          className="h-[85%] w-auto object-contain object-bottom"
+          style={{
+            filter: 'blur(2px) saturate(1.1) brightness(0.95)',
+            maskImage: 'linear-gradient(to top, black 30%, transparent 95%), linear-gradient(to right, transparent 5%, black 30%, black 70%, transparent 95%)',
+            WebkitMaskImage: 'linear-gradient(to top, black 30%, transparent 95%)',
+            marginRight: '-15%',
           }}
         />
       </div>
 
-      {/* Ghost message bubbles - very subtle */}
+      {/* Ghost message bubbles around model */}
       <div 
-        className="absolute top-[15%] left-[10%] px-4 py-2 rounded-2xl pointer-events-none animate-float-gentle"
+        className="absolute top-[20%] right-[12%] px-4 py-2.5 rounded-2xl pointer-events-none"
         style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          backdropFilter: 'blur(8px)',
-          opacity: 0.06,
-          animationDelay: '0s',
+          background: 'rgba(255, 255, 255, 0.04)',
+          backdropFilter: 'blur(12px)',
+          opacity: 0.08,
+          animation: 'float-gentle 6s ease-in-out infinite',
+          boxShadow: '0 0 30px rgba(214, 123, 255, 0.15), 0 0 60px rgba(255, 108, 168, 0.1)',
         }}
       >
-        <span className="text-white/60 text-sm">Hey… tu m'as manqué 😏</span>
+        <span className="text-white/70 text-sm font-light">Hey… tu m'as manqué 😏</span>
       </div>
       
       <div 
-        className="absolute bottom-[25%] right-[8%] px-3 py-1.5 rounded-2xl pointer-events-none animate-float-gentle"
+        className="absolute top-[35%] right-[5%] px-3.5 py-2 rounded-2xl pointer-events-none"
         style={{
-          background: 'rgba(255, 255, 255, 0.02)',
-          backdropFilter: 'blur(6px)',
-          opacity: 0.05,
+          background: 'rgba(255, 255, 255, 0.03)',
+          backdropFilter: 'blur(10px)',
+          opacity: 0.07,
+          animation: 'float-gentle 7s ease-in-out infinite',
           animationDelay: '2s',
+          boxShadow: '0 0 25px rgba(214, 123, 255, 0.12)',
         }}
       >
-        <span className="text-white/50 text-xs">Je pense à toi…</span>
+        <span className="text-white/60 text-xs font-light">Je pense encore à toi…</span>
+      </div>
+
+      <div 
+        className="absolute bottom-[35%] right-[18%] px-3 py-1.5 rounded-xl pointer-events-none"
+        style={{
+          background: 'rgba(255, 255, 255, 0.02)',
+          backdropFilter: 'blur(8px)',
+          opacity: 0.06,
+          animation: 'float-gentle 8s ease-in-out infinite',
+          animationDelay: '4s',
+          boxShadow: '0 0 20px rgba(255, 108, 168, 0.1)',
+        }}
+      >
+        <span className="text-white/50 text-xs font-light">Tu es prêt ? ✨</span>
+      </div>
+
+      {/* Ghost bubble around form - top left */}
+      <div 
+        className="absolute top-[22%] left-[8%] px-3 py-1.5 rounded-xl pointer-events-none hidden lg:block"
+        style={{
+          background: 'rgba(255, 255, 255, 0.015)',
+          backdropFilter: 'blur(20px)',
+          opacity: 0.06,
+          animation: 'float-gentle 9s ease-in-out infinite',
+          animationDelay: '1s',
+        }}
+      >
+        <span className="text-white/40 text-xs font-light">…</span>
+      </div>
+
+      {/* Ghost bubble around form - bottom right */}
+      <div 
+        className="absolute bottom-[20%] left-[35%] px-3 py-1.5 rounded-xl pointer-events-none hidden lg:block"
+        style={{
+          background: 'rgba(255, 255, 255, 0.01)',
+          backdropFilter: 'blur(25px)',
+          opacity: 0.05,
+          animation: 'float-gentle 10s ease-in-out infinite',
+          animationDelay: '3s',
+        }}
+      >
+        <span className="text-white/30 text-xs font-light">Reviens-moi…</span>
       </div>
 
       {/* Back button */}
@@ -168,21 +222,38 @@ const Auth = () => {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          {/* Logo with halo */}
+          {/* Lydia Logo with halo */}
           <div className="text-center space-y-4">
-            <div className="relative mx-auto w-20 h-20">
-              {/* Outer glow */}
+            <div className="relative mx-auto w-24 h-24">
+              {/* Outer glow halo - violet → rose → peach */}
               <div 
-                className="absolute inset-0 rounded-full animate-pulse"
+                className="absolute inset-0 rounded-full"
                 style={{
-                  background: 'radial-gradient(circle, rgba(255, 77, 141, 0.4) 0%, rgba(139, 92, 246, 0.2) 50%, transparent 70%)',
-                  filter: 'blur(20px)',
-                  transform: 'scale(2)',
+                  background: 'conic-gradient(from 0deg, rgba(139, 92, 246, 0.5), rgba(255, 77, 141, 0.4), rgba(251, 191, 146, 0.3), rgba(139, 92, 246, 0.5))',
+                  filter: 'blur(30px)',
+                  transform: 'scale(2.5)',
+                  animation: 'pulse 4s ease-in-out infinite',
                 }}
               />
-              {/* Icon container */}
-              <div className="relative bg-gradient-to-br from-primary/20 to-violet-500/20 p-5 rounded-2xl border border-white/10 backdrop-blur-sm shadow-[0_0_40px_rgba(255,77,141,0.3)]">
-                <Heart className="w-10 h-10 text-primary fill-primary drop-shadow-[0_0_10px_rgba(255,77,141,0.5)]" />
+              {/* Secondary glow layer */}
+              <div 
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, rgba(255, 77, 141, 0.6) 0%, rgba(139, 92, 246, 0.3) 50%, transparent 70%)',
+                  filter: 'blur(20px)',
+                  transform: 'scale(1.8)',
+                }}
+              />
+              {/* Logo container */}
+              <div className="relative flex items-center justify-center h-full">
+                <img 
+                  src={lydiaLogo} 
+                  alt="Lydia" 
+                  className="w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(255,77,141,0.5)]"
+                  style={{
+                    filter: 'brightness(1.1) drop-shadow(0 0 15px rgba(255, 77, 141, 0.4))',
+                  }}
+                />
               </div>
             </div>
             
@@ -202,18 +273,18 @@ const Auth = () => {
           <div 
             className="relative p-8 rounded-3xl"
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 60px rgba(255, 77, 141, 0.1)',
+              background: 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 80px rgba(139, 92, 246, 0.1), 0 0 120px rgba(255, 77, 141, 0.08)',
             }}
           >
             {/* Form halo */}
             <div 
               className="absolute inset-0 rounded-3xl pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse at center, rgba(139, 92, 246, 0.1), transparent 70%)',
+                background: 'radial-gradient(ellipse at center, rgba(139, 92, 246, 0.08), rgba(255, 77, 141, 0.05), transparent 70%)',
               }}
             />
 
@@ -265,14 +336,14 @@ const Auth = () => {
                 </div>
               )}
 
-              {/* Premium CTA button */}
+              {/* Premium CTA button - clean, no icon */}
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-14 rounded-xl text-white font-semibold text-base transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+                className="w-full h-14 rounded-xl text-white font-semibold text-base transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100 border-0"
                 style={{
                   background: 'linear-gradient(135deg, #FF4D8D 0%, #8B5CF6 100%)',
-                  boxShadow: '0 4px 20px rgba(255, 77, 141, 0.4), 0 0 40px rgba(139, 92, 246, 0.2)',
+                  boxShadow: '0 4px 24px rgba(255, 77, 141, 0.45), 0 0 50px rgba(139, 92, 246, 0.25)',
                 }}
               >
                 {loading ? (
@@ -281,10 +352,7 @@ const Auth = () => {
                     <span>Chargement...</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5" />
-                    <span>{isLogin ? "Se connecter" : "Créer mon compte"}</span>
-                  </div>
+                  <span>{isLogin ? "Se connecter" : "Créer mon compte"}</span>
                 )}
               </Button>
             </form>
@@ -308,9 +376,17 @@ const Auth = () => {
       <div 
         className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(15, 15, 35, 0.8), transparent)',
+          background: 'linear-gradient(to top, rgba(15, 15, 35, 0.9), transparent)',
         }}
       />
+
+      {/* CSS for float animation */}
+      <style>{`
+        @keyframes float-gentle {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-3px); }
+        }
+      `}</style>
     </div>
   );
 };
