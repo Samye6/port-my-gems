@@ -166,17 +166,6 @@ const CharacterCard = ({
         </button>
       )}
 
-      {/* Verified Badge with Glow */}
-      {isVerified && (
-        <div className="absolute top-12 right-3 z-10">
-          <BadgeCheck 
-            className="w-5 h-5 text-blue-400 fill-blue-400" 
-            style={{
-              filter: 'drop-shadow(0 0 10px rgba(96,165,250,0.8))'
-            }}
-          />
-        </div>
-      )}
 
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
