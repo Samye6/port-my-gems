@@ -50,8 +50,8 @@ const SearchBar = ({ value, onChange, suggestions = [] }: SearchBarProps) => {
             </button>
           ) : (
             <div className="absolute right-4">
-              <Sparkles 
-                className="w-5 h-5 text-primary/60 animate-pulse" 
+              <Search 
+                className="w-5 h-5 text-primary/60" 
                 style={{ filter: 'drop-shadow(0 0 6px rgba(255, 77, 141, 0.5))' }}
               />
             </div>
