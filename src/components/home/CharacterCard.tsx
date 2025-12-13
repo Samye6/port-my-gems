@@ -135,13 +135,6 @@ const CharacterCard = ({
         </div>
       )}
 
-      {/* Online Indicator with Pulse */}
-      {isOnline && (
-        <div className="absolute top-3 right-12 z-10 flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/50 backdrop-blur-sm">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-online-pulse" />
-          <span className="text-[9px] text-emerald-400 font-medium">En ligne</span>
-        </div>
-      )}
 
       {/* Favorite/Lock Button */}
       {isLocked ? (
