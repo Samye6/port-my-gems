@@ -1,6 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { Crown, Flame, MessageCircle, Sparkles, ChevronRight } from "lucide-react";
+import { Flame, MessageCircle, Sparkles, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import lydiaLogo from "@/assets/lydia-logo.png";
+
+// SVG Logo component for Premium badge with gold glow
+const LydiaGoldLogo = ({ className = "w-10 h-10" }: { className?: string }) => (
+  <div className={`relative ${className}`}>
+    <img 
+      src={lydiaLogo} 
+      alt="Lydia Premium" 
+      className="w-full h-full object-contain"
+      style={{
+        filter: 'brightness(1.2) sepia(1) hue-rotate(10deg) saturate(1.5)',
+      }}
+    />
+  </div>
+);
 
 const PremiumBanner = () => {
   const navigate = useNavigate();
@@ -26,7 +41,7 @@ const PremiumBanner = () => {
         
         {/* Content */}
         <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8">
-          {/* Left: Crown Icon */}
+          {/* Left: Logo Icon */}
           <div className="flex-shrink-0">
             <div 
               className="w-20 h-20 rounded-full bg-gradient-to-br from-gold via-amber-400 to-peach flex items-center justify-center"
@@ -34,14 +49,13 @@ const PremiumBanner = () => {
                 boxShadow: '0 0 50px rgba(251, 191, 36, 0.5), 0 0 100px rgba(255, 178, 156, 0.3)',
               }}
             >
-              <Crown className="w-10 h-10 text-black" />
+              <LydiaGoldLogo className="w-12 h-12" />
             </div>
           </div>
 
           {/* Center: Benefits */}
           <div className="flex-grow text-center lg:text-left">
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              <span className="mr-2">👑</span>
               Passe en{" "}
               <span 
                 className="bg-clip-text text-transparent"
@@ -49,11 +63,11 @@ const PremiumBanner = () => {
                   backgroundImage: 'linear-gradient(135deg, hsl(43 96% 56%) 0%, hsl(20 100% 75%) 50%, hsl(43 96% 66%) 100%)',
                 }}
               >
-                Premium+
+                Premium
               </span>
             </h2>
             <p className="text-muted-foreground mb-6">
-              Fantasy illimitée + 1 discussion VIP incluse chaque mois
+              Accès illimité aux scénarios Fantasy, messages et photos sans restriction
             </p>
 
             {/* Benefits Grid */}
@@ -92,8 +106,8 @@ const PremiumBanner = () => {
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-foreground">1 VIP / mois</p>
-                  <p className="text-xs text-muted-foreground">Créatrice incluse</p>
+                  <p className="text-sm font-semibold text-foreground">IA immersive</p>
+                  <p className="text-xs text-muted-foreground">Expérience unique</p>
                 </div>
               </div>
             </div>
@@ -112,7 +126,7 @@ const PremiumBanner = () => {
                 navigate("/subscriptions");
               }}
             >
-              Découvrir les abonnements
+              Découvrir Premium
               <ChevronRight className="w-5 h-5 ml-1 group-hover/btn:translate-x-1 transition-transform" />
             </Button>
           </div>
@@ -124,8 +138,8 @@ const PremiumBanner = () => {
             className="px-3 py-1.5 rounded-full bg-gradient-to-r from-gold to-peach text-black text-xs font-bold flex items-center gap-1.5 animate-pulse"
             style={{ boxShadow: '0 0 20px rgba(251, 191, 36, 0.5)' }}
           >
-            <Crown className="w-3 h-3" />
-            VIP
+            <LydiaGoldLogo className="w-4 h-4" />
+            Premium
           </div>
         </div>
       </div>

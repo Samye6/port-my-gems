@@ -698,6 +698,24 @@ const Profile = () => {
   );
 };
 
+// SVG Logo component for Premium badge with gold glow
+const LydiaGoldLogo = ({ className = "w-10 h-10" }: { className?: string }) => {
+  // Import dynamically to avoid circular deps
+  const logoSrc = "/lydia-logo.png";
+  return (
+    <div className={`relative ${className}`}>
+      <img 
+        src={logoSrc} 
+        alt="Lydia Premium" 
+        className="w-full h-full object-contain"
+        style={{
+          filter: 'brightness(1.2) sepia(1) hue-rotate(10deg) saturate(1.5)',
+        }}
+      />
+    </div>
+  );
+};
+
 // Premium Card Component
 const PremiumCard = ({ navigate }: { navigate: (path: string) => void }) => (
   <div 
@@ -729,22 +747,22 @@ const PremiumCard = ({ navigate }: { navigate: (path: string) => void }) => (
             boxShadow: '0 8px 32px hsl(45 100% 50% / 0.4)',
           }}
         >
-          <Crown className="w-10 h-10 text-white" />
+          <LydiaGoldLogo className="w-10 h-10" />
         </div>
       </div>
       
       <div>
         <h3 className="text-2xl font-bold text-foreground mb-2">
-          <span className="mr-1">👑</span> Premium+
+          Premium
         </h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Fantasy illimitée + 1 discussion VIP incluse chaque mois
+          Accès illimité aux scénarios Fantasy, messages et photos sans restriction
         </p>
       </div>
       
       {/* Subscription Status (for authenticated users) */}
       <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-        <p className="text-xs text-muted-foreground">Crédit VIP restant : <span className="text-amber-400 font-semibold">1</span></p>
+        <p className="text-xs text-muted-foreground">Statut : <span className="text-amber-400 font-semibold">Gratuit</span></p>
       </div>
       
       <Button 
