@@ -270,7 +270,7 @@ const Profile = () => {
     { icon: Shield, label: "Sécurité", color: "from-violet-500 to-purple-600" },
     { icon: Bell, label: "Notifications", color: "from-pink-500 to-rose-600" },
     { icon: Palette, label: "Apparence", color: "from-orange-400 to-amber-500" },
-    { icon: CreditCard, label: "Paiements & abonnements", color: "from-emerald-400 to-teal-500", onClick: () => navigate("/premium") },
+    { icon: CreditCard, label: "Paiements & abonnements", color: "from-emerald-400 to-teal-500", onClick: () => navigate("/subscriptions") },
     { icon: Lock, label: "Confidentialité", color: "from-blue-400 to-indigo-500" },
     { icon: HelpCircle, label: "Centre d'aide", color: "from-cyan-400 to-sky-500" },
   ];
@@ -701,7 +701,7 @@ const Profile = () => {
 // Premium Card Component
 const PremiumCard = ({ navigate }: { navigate: (path: string) => void }) => (
   <div 
-    onClick={() => navigate("/premium")}
+    onClick={() => navigate("/subscriptions")}
     className="group relative overflow-hidden rounded-3xl p-8 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-2xl"
     style={{
       background: `
@@ -734,17 +734,24 @@ const PremiumCard = ({ navigate }: { navigate: (path: string) => void }) => (
       </div>
       
       <div>
-        <h3 className="text-2xl font-bold text-foreground mb-2">Passe Premium</h3>
+        <h3 className="text-2xl font-bold text-foreground mb-2">
+          <span className="mr-1">👑</span> Premium+
+        </h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Débloque les scénarios exclusifs, les collaborations vérifiées et les expériences limitées.
+          Fantasy illimitée + 1 discussion VIP incluse chaque mois
         </p>
+      </div>
+      
+      {/* Subscription Status (for authenticated users) */}
+      <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+        <p className="text-xs text-muted-foreground">Crédit VIP restant : <span className="text-amber-400 font-semibold">1</span></p>
       </div>
       
       <Button 
         className="px-8 py-6 text-base rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
       >
         <Sparkles className="w-5 h-5 mr-2" />
-        Découvrir Premium
+        Gérer mon abonnement
       </Button>
     </div>
   </div>
