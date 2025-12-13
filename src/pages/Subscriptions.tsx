@@ -34,7 +34,20 @@ const VipStarIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
 const Subscriptions = () => {
   const navigate = useNavigate();
 
+  // Plans ordered: Découverte (left) → Premium (center) → Premium+ (right)
   const plans = [
+    {
+      id: "free",
+      name: "Découverte",
+      price: "0€",
+      period: "",
+      features: [
+        "1 à 2 scénarios Fantasy gratuits",
+        "Messages limités",
+        "Quelques photos teasing",
+        "IA de base",
+      ],
+    },
     {
       id: "premium",
       name: "Premium",
@@ -66,18 +79,6 @@ const Subscriptions = () => {
       ],
       highlight: "Le crédit VIP se renouvelle chaque mois",
     },
-    {
-      id: "free",
-      name: "Découverte",
-      price: "0€",
-      period: "",
-      features: [
-        "1 à 2 scénarios Fantasy gratuits",
-        "Messages limités",
-        "Quelques photos teasing",
-        "IA de base",
-      ],
-    },
   ];
 
   const vipTiers = [
@@ -100,6 +101,46 @@ const Subscriptions = () => {
       description: "Créatrices exclusives",
     },
   ];
+
+  const getCardStyles = (planId: string, isPrimary?: boolean, recommended?: boolean) => {
+    if (planId === "free") {
+      return {
+        background: `linear-gradient(145deg, 
+          hsl(0 0% 8% / 0.9) 0%, 
+          hsl(0 0% 6% / 0.95) 100%
+        )`,
+        border: "hsl(0 0% 20% / 0.3)",
+        shadow: "none",
+      };
+    }
+    if (isPrimary) {
+      return {
+        background: `linear-gradient(145deg, 
+          hsl(45 75% 25% / 0.35) 0%, 
+          hsl(38 70% 20% / 0.3) 40%,
+          hsl(35 60% 15% / 0.25) 100%
+        )`,
+        border: "hsl(45 90% 50% / 0.5)",
+        shadow: "0 0 50px hsl(45 100% 50% / 0.25), 0 20px 40px -20px hsl(45 100% 40% / 0.35)",
+      };
+    }
+    if (recommended) {
+      return {
+        background: `linear-gradient(145deg, 
+          hsl(0 0% 6% / 0.98) 0%, 
+          hsl(270 10% 5% / 0.95) 50%,
+          hsl(280 15% 4% / 0.98) 100%
+        )`,
+        border: "hsl(0 0% 25% / 0.4)",
+        shadow: "0 0 40px hsl(0 0% 0% / 0.6), inset 0 1px 0 hsl(0 0% 25% / 0.15)",
+      };
+    }
+    return {
+      background: "hsl(0 0% 8%)",
+      border: "hsl(0 0% 15%)",
+      shadow: "none",
+    };
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -130,21 +171,20 @@ const Subscriptions = () => {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto p-4 space-y-8">
-        {/* Hero Section */}
-        <div className="text-center space-y-4 py-6 animate-fade-in">
-          <div 
-            className="w-20 h-20 mx-auto flex items-center justify-center"
+        {/* Hero Section - Text "Lydia" instead of logo */}
+        <div className="text-center space-y-4 py-8 animate-fade-in">
+          <h1 
+            className="text-5xl font-bold tracking-tight"
             style={{
-              filter: 'drop-shadow(0 0 30px hsl(45 100% 50% / 0.5))',
+              background: 'linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(320 40% 85%) 50%, hsl(270 50% 80%) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 30px hsl(320 60% 60% / 0.3))',
             }}
           >
-            <img 
-              src={logoGold} 
-              alt="Lydia Premium" 
-              className="w-16 h-16 object-contain"
-            />
-          </div>
-          <h2 className="text-3xl font-bold text-foreground">
+            Lydia
+          </h1>
+          <h2 className="text-2xl font-semibold text-foreground mt-4">
             Choisis ton expérience
           </h2>
           <p className="text-muted-foreground max-w-md mx-auto">
@@ -153,159 +193,189 @@ const Subscriptions = () => {
         </div>
 
         {/* Plans Grid - 3 columns on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 items-start">
-          {plans.map((plan, index) => (
-            <Card
-              key={plan.id}
-              className={`relative overflow-hidden border-2 transition-all duration-300 animate-fade-in ${
-                plan.isPrimary
-                  ? "border-amber-500/60 lg:scale-105 lg:z-10"
-                  : plan.recommended
-                    ? "border-white/20"
-                    : "border-white/5 hover:border-white/10"
-              }`}
-              style={{ 
-                animationDelay: `${index * 100}ms`,
-                background: plan.isPrimary 
-                  ? `linear-gradient(145deg, 
-                      hsl(45 80% 30% / 0.25) 0%, 
-                      hsl(38 70% 25% / 0.2) 40%,
-                      hsl(270 25% 12% / 0.6) 100%
-                    )`
-                  : plan.recommended
-                    ? `linear-gradient(145deg, 
-                        hsl(0 0% 8% / 0.95) 0%, 
-                        hsl(270 15% 8% / 0.9) 50%,
-                        hsl(280 20% 6% / 0.95) 100%
-                      )`
-                    : 'linear-gradient(145deg, hsl(270 15% 10% / 0.3) 0%, hsl(270 10% 8% / 0.2) 100%)',
-                boxShadow: plan.isPrimary 
-                  ? '0 0 50px hsl(45 100% 50% / 0.2), 0 20px 40px -20px hsl(45 100% 40% / 0.3)' 
-                  : plan.recommended
-                    ? '0 0 40px hsl(0 0% 0% / 0.5), inset 0 1px 0 hsl(0 0% 20% / 0.2)'
-                    : 'none',
-                opacity: plan.id === 'free' ? 0.75 : 1,
-              }}
-            >
-              {/* Recommended Badge for Premium+ - Discret */}
-              {plan.recommended && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+          {plans.map((plan, index) => {
+            const styles = getCardStyles(plan.id, plan.isPrimary, plan.recommended);
+            
+            return (
+              <Card
+                key={plan.id}
+                className={`relative overflow-hidden border transition-all duration-300 animate-fade-in group ${
+                  plan.id !== "free" ? "hover:scale-[1.03]" : ""
+                }`}
+                style={{ 
+                  animationDelay: `${index * 100}ms`,
+                  background: styles.background,
+                  borderColor: styles.border,
+                  borderWidth: "1px",
+                  borderRadius: "1.25rem",
+                  boxShadow: styles.shadow,
+                  minHeight: "480px",
+                }}
+              >
+                {/* Shine effect on hover for Premium and Premium+ */}
+                {plan.id !== "free" && (
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{
+                      background: `linear-gradient(
+                        105deg,
+                        transparent 40%,
+                        ${plan.isPrimary ? 'hsl(45 100% 70% / 0.15)' : 'hsl(0 0% 100% / 0.08)'} 50%,
+                        transparent 60%
+                      )`,
+                      animation: 'none',
+                    }}
+                  />
+                )}
+                
+                {/* Animated shine sweep on hover */}
                 <div 
-                  className="absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1 rounded-b-lg text-[10px] font-medium tracking-wide text-white/80"
-                  style={{
-                    background: 'linear-gradient(135deg, hsl(270 30% 25%) 0%, hsl(280 25% 20%) 100%)',
-                    borderBottom: '1px solid hsl(270 30% 35% / 0.3)',
-                  }}
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none overflow-hidden"
+                  style={{ borderRadius: "1.25rem" }}
                 >
-                  Recommandé
-                </div>
-              )}
-
-              <div className={`p-6 ${plan.recommended ? 'pt-10' : 'pt-6'}`}>
-                {/* Logo & Title */}
-                <div className="flex items-center gap-3 mb-4">
-                  {plan.logo && (
-                    <img 
-                      src={plan.logo} 
-                      alt={`Logo ${plan.name}`}
-                      className="w-10 h-10 object-contain"
-                      style={{
-                        filter: plan.isPrimary 
-                          ? 'drop-shadow(0 0 12px hsl(45 100% 50% / 0.6))' 
-                          : 'drop-shadow(0 0 10px hsl(0 0% 30% / 0.5))',
-                      }}
-                    />
-                  )}
-                  <h3 className={`text-xl font-bold ${
-                    plan.isPrimary 
-                      ? 'text-amber-200' 
-                      : plan.recommended 
-                        ? 'text-white/90' 
-                        : 'text-foreground/70'
-                  }`}>
-                    {plan.name}
-                  </h3>
+                  <div 
+                    className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700 ease-out"
+                    style={{
+                      background: `linear-gradient(
+                        90deg,
+                        transparent 0%,
+                        ${plan.isPrimary ? 'hsl(45 100% 75% / 0.2)' : 'hsl(0 0% 100% / 0.1)'} 50%,
+                        transparent 100%
+                      )`,
+                      width: "50%",
+                    }}
+                  />
                 </div>
 
-                {/* Price */}
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span 
-                    className={`text-3xl font-bold ${
-                      plan.isPrimary 
-                        ? 'bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent' 
-                        : plan.recommended
-                          ? 'text-white/80'
-                          : 'text-foreground/60'
-                    }`}
+                {/* Recommended Badge for Premium+ - Discret */}
+                {plan.recommended && (
+                  <div 
+                    className="absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1 rounded-b-lg text-[10px] font-medium tracking-wide text-white/70"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(270 25% 20%) 0%, hsl(280 20% 15%) 100%)',
+                      borderBottom: '1px solid hsl(270 25% 30% / 0.3)',
+                    }}
                   >
-                    {plan.price}
-                  </span>
-                  {plan.period && (
-                    <span className={`${plan.id === 'free' ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>
-                      {plan.period}
-                    </span>
-                  )}
-                </div>
+                    Recommandé
+                  </div>
+                )}
 
-                {/* CTA Button */}
-                <Button
-                  className={`w-full py-5 rounded-xl font-semibold transition-all mb-6 ${
-                    plan.id === "free"
-                      ? "bg-white/5 text-foreground/50 hover:bg-white/10 border border-white/5"
-                      : plan.isPrimary
-                        ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black shadow-lg shadow-amber-500/30"
-                        : "bg-white/10 text-white/80 hover:bg-white/15 border border-white/10"
-                  }`}
-                  disabled={plan.id === "free"}
-                >
-                  {plan.id === "free" ? "Plan actuel" : "Choisir ce plan"}
-                </Button>
+                <div className={`p-6 flex flex-col h-full ${plan.recommended ? 'pt-10' : 'pt-6'}`}>
+                  {/* Logo & Title */}
+                  <div className="flex items-center gap-3 mb-4">
+                    {plan.logo && (
+                      <img 
+                        src={plan.logo} 
+                        alt={`Logo ${plan.name}`}
+                        className="w-10 h-10 object-contain"
+                        style={{
+                          filter: plan.isPrimary 
+                            ? 'drop-shadow(0 0 15px hsl(45 100% 50% / 0.7))' 
+                            : 'drop-shadow(0 0 12px hsl(0 0% 50% / 0.4))',
+                        }}
+                      />
+                    )}
+                    <h3 className={`text-xl font-bold ${
+                      plan.isPrimary 
+                        ? 'text-amber-200' 
+                        : plan.recommended 
+                          ? 'text-white/85' 
+                          : 'text-foreground/50'
+                    }`}>
+                      {plan.name}
+                    </h3>
+                  </div>
 
-                {/* Features */}
-                <div className="space-y-3">
-                  {plan.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <div className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${
+                  {/* Price */}
+                  <div className="flex items-baseline gap-1 mb-6">
+                    <span 
+                      className={`text-3xl font-bold ${
                         plan.isPrimary 
-                          ? 'bg-amber-500/25' 
-                          : plan.recommended 
-                            ? 'bg-white/10' 
-                            : 'bg-white/5'
-                      }`}>
-                        <Check className={`w-3.5 h-3.5 ${
-                          plan.isPrimary 
-                            ? 'text-amber-400' 
-                            : plan.recommended 
-                              ? 'text-white/70' 
-                              : 'text-white/40'
-                        }`} />
-                      </div>
-                      <span className={`text-sm ${
-                        plan.id === 'free' ? 'text-foreground/50' : 'text-foreground/80'
-                      }`}>{feature}</span>
-                    </div>
-                  ))}
-                  
-                  {plan.noVip && (
-                    <div className="flex items-start gap-3 opacity-50">
-                      <div className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/5">
-                        <span className="text-xs text-muted-foreground">✕</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">Aucun accès VIP inclus</span>
-                    </div>
-                  )}
+                          ? '' 
+                          : plan.recommended
+                            ? 'text-white/75'
+                            : 'text-foreground/40'
+                      }`}
+                      style={plan.isPrimary ? {
+                        background: 'linear-gradient(135deg, hsl(45 100% 70%) 0%, hsl(35 100% 55%) 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      } : {}}
+                    >
+                      {plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className={`${plan.id === 'free' ? 'text-muted-foreground/30' : 'text-muted-foreground/70'}`}>
+                        {plan.period}
+                      </span>
+                    )}
+                  </div>
 
-                  {plan.highlight && (
-                    <div className="mt-4 p-3 rounded-xl bg-white/5 border border-white/10">
-                      <p className="text-xs text-white/60 flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-violet-400/60" />
-                        {plan.highlight}
-                      </p>
-                    </div>
-                  )}
+                  {/* CTA Button */}
+                  <Button
+                    className={`w-full py-5 rounded-xl font-semibold transition-all mb-6 ${
+                      plan.id === "free"
+                        ? "bg-white/5 text-foreground/40 hover:bg-white/5 border border-white/5 cursor-default"
+                        : plan.isPrimary
+                          ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black shadow-lg"
+                          : "bg-white/8 text-white/75 hover:bg-white/12 border border-white/15"
+                    }`}
+                    style={plan.isPrimary ? {
+                      boxShadow: '0 8px 30px hsl(45 100% 50% / 0.35)',
+                    } : {}}
+                    disabled={plan.id === "free"}
+                  >
+                    {plan.id === "free" ? "Plan actuel" : "Choisir ce plan"}
+                  </Button>
+
+                  {/* Features */}
+                  <div className="space-y-3 flex-1">
+                    {plan.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <div className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${
+                          plan.isPrimary 
+                            ? 'bg-amber-500/25' 
+                            : plan.recommended 
+                              ? 'bg-white/8' 
+                              : 'bg-white/5'
+                        }`}>
+                          <Check className={`w-3.5 h-3.5 ${
+                            plan.isPrimary 
+                              ? 'text-amber-400' 
+                              : plan.recommended 
+                                ? 'text-white/60' 
+                                : 'text-white/30'
+                          }`} />
+                        </div>
+                        <span className={`text-sm ${
+                          plan.id === 'free' ? 'text-foreground/40' : 'text-foreground/75'
+                        }`}>{feature}</span>
+                      </div>
+                    ))}
+                    
+                    {plan.noVip && (
+                      <div className="flex items-start gap-3 opacity-40">
+                        <div className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/5">
+                          <span className="text-xs text-muted-foreground">✕</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">Aucun accès VIP inclus</span>
+                      </div>
+                    )}
+
+                    {plan.highlight && (
+                      <div className="mt-4 p-3 rounded-xl bg-white/5 border border-white/8">
+                        <p className="text-xs text-white/50 flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-violet-400/50" />
+                          {plan.highlight}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
 
         {/* VIP Section Separator */}
