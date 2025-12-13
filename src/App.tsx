@@ -13,6 +13,7 @@ import Scenarios from "./pages/Scenarios";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
+import Subscriptions from "./pages/Subscriptions";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/shop" element={<Shop />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premium />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

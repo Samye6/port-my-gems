@@ -9,7 +9,7 @@ const PremiumBanner = () => {
     <section className="container px-6 py-10">
       <div 
         className="relative overflow-hidden rounded-3xl glass-gold p-8 group cursor-pointer hover:border-gold/50 transition-all duration-500"
-        onClick={() => navigate("/premium")}
+        onClick={() => navigate("/subscriptions")}
         style={{
           boxShadow: '0 20px 80px rgba(251, 191, 36, 0.15), 0 0 40px rgba(255, 178, 156, 0.1)',
         }}
@@ -41,18 +41,19 @@ const PremiumBanner = () => {
           {/* Center: Benefits */}
           <div className="flex-grow text-center lg:text-left">
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Passe en mode{" "}
+              <span className="mr-2">👑</span>
+              Passe en{" "}
               <span 
                 className="bg-clip-text text-transparent"
                 style={{
                   backgroundImage: 'linear-gradient(135deg, hsl(43 96% 56%) 0%, hsl(20 100% 75%) 50%, hsl(43 96% 66%) 100%)',
                 }}
               >
-                Premium
+                Premium+
               </span>
             </h2>
             <p className="text-muted-foreground mb-6">
-              Débloque l'expérience complète et profite de tous les avantages
+              Fantasy illimitée + 1 discussion VIP incluse chaque mois
             </p>
 
             {/* Benefits Grid */}
@@ -91,8 +92,8 @@ const PremiumBanner = () => {
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-foreground">Personnages VIP</p>
-                  <p className="text-xs text-muted-foreground">Accès complet</p>
+                  <p className="text-sm font-semibold text-foreground">1 VIP / mois</p>
+                  <p className="text-xs text-muted-foreground">Créatrice incluse</p>
                 </div>
               </div>
             </div>
@@ -106,8 +107,12 @@ const PremiumBanner = () => {
               style={{
                 boxShadow: '0 0 40px rgba(251, 191, 36, 0.4), 0 0 80px rgba(255, 178, 156, 0.2)',
               }}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/subscriptions");
+              }}
             >
-              Découvrir Premium
+              Découvrir les abonnements
               <ChevronRight className="w-5 h-5 ml-1 group-hover/btn:translate-x-1 transition-transform" />
             </Button>
           </div>
