@@ -110,6 +110,7 @@ const Subscriptions = () => {
           hsl(0 0% 6% / 0.95) 100%
         )`,
         border: "hsl(0 0% 20% / 0.3)",
+        borderWidth: "1px",
         shadow: "none",
       };
     }
@@ -121,23 +122,33 @@ const Subscriptions = () => {
           hsl(35 60% 15% / 0.25) 100%
         )`,
         border: "hsl(45 90% 50% / 0.5)",
+        borderWidth: "1px",
         shadow: "0 0 50px hsl(45 100% 50% / 0.25), 0 20px 40px -20px hsl(45 100% 40% / 0.35)",
       };
     }
     if (recommended) {
+      // Premium+ Platinum styling - elite, prestigious, tech-premium
       return {
-        background: `linear-gradient(145deg, 
-          hsl(0 0% 6% / 0.98) 0%, 
-          hsl(270 10% 5% / 0.95) 50%,
-          hsl(280 15% 4% / 0.98) 100%
+        background: `linear-gradient(155deg, 
+          hsl(220 8% 14% / 1) 0%, 
+          hsl(240 6% 10% / 1) 35%,
+          hsl(260 8% 8% / 1) 70%,
+          hsl(270 10% 6% / 1) 100%
         )`,
-        border: "hsl(0 0% 25% / 0.4)",
-        shadow: "0 0 40px hsl(0 0% 0% / 0.6), inset 0 1px 0 hsl(0 0% 25% / 0.15)",
+        border: "hsl(220 10% 45% / 0.45)",
+        borderWidth: "1.5px",
+        shadow: `
+          0 0 60px hsl(220 15% 55% / 0.2),
+          0 0 100px hsl(240 10% 50% / 0.1),
+          inset 0 1px 0 hsl(220 15% 45% / 0.2),
+          inset 0 -1px 0 hsl(220 15% 30% / 0.1)
+        `,
       };
     }
     return {
       background: "hsl(0 0% 8%)",
       border: "hsl(0 0% 15%)",
+      borderWidth: "1px",
       shadow: "none",
     };
   };
@@ -201,18 +212,54 @@ const Subscriptions = () => {
               <Card
                 key={plan.id}
                 className={`relative overflow-hidden border transition-all duration-300 animate-fade-in group ${
-                  plan.id !== "free" ? "hover:scale-[1.03]" : ""
+                  plan.id === "free" 
+                    ? "" 
+                    : plan.recommended 
+                      ? "hover:scale-[1.025]" 
+                      : "hover:scale-[1.03]"
                 }`}
                 style={{ 
                   animationDelay: `${index * 100}ms`,
                   background: styles.background,
                   borderColor: styles.border,
-                  borderWidth: "1px",
+                  borderWidth: styles.borderWidth,
                   borderRadius: "1.25rem",
                   boxShadow: styles.shadow,
                   minHeight: "480px",
                 }}
               >
+                {/* Platinum outer glow for Premium+ */}
+                {plan.recommended && (
+                  <div 
+                    className="absolute -inset-[1px] rounded-[1.25rem] opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10"
+                    style={{
+                      background: 'transparent',
+                      boxShadow: `
+                        0 0 40px hsl(220 20% 60% / 0.25),
+                        0 0 80px hsl(230 15% 50% / 0.15)
+                      `,
+                    }}
+                  />
+                )}
+
+                {/* Brushed metal / diagonal light reflection for Premium+ */}
+                {plan.recommended && (
+                  <div 
+                    className="absolute inset-0 opacity-30 pointer-events-none"
+                    style={{
+                      background: `linear-gradient(
+                        135deg,
+                        transparent 0%,
+                        hsl(220 20% 50% / 0.08) 25%,
+                        transparent 50%,
+                        hsl(220 15% 55% / 0.05) 75%,
+                        transparent 100%
+                      )`,
+                      borderRadius: "1.25rem",
+                    }}
+                  />
+                )}
+
                 {/* Shine effect on hover for Premium and Premium+ */}
                 {plan.id !== "free" && (
                   <div 
@@ -221,7 +268,7 @@ const Subscriptions = () => {
                       background: `linear-gradient(
                         105deg,
                         transparent 40%,
-                        ${plan.isPrimary ? 'hsl(45 100% 70% / 0.15)' : 'hsl(0 0% 100% / 0.08)'} 50%,
+                        ${plan.isPrimary ? 'hsl(45 100% 70% / 0.15)' : 'hsl(220 20% 75% / 0.12)'} 50%,
                         transparent 60%
                       )`,
                       animation: 'none',
@@ -240,7 +287,7 @@ const Subscriptions = () => {
                       background: `linear-gradient(
                         90deg,
                         transparent 0%,
-                        ${plan.isPrimary ? 'hsl(45 100% 75% / 0.2)' : 'hsl(0 0% 100% / 0.1)'} 50%,
+                        ${plan.isPrimary ? 'hsl(45 100% 75% / 0.2)' : 'hsl(220 25% 80% / 0.15)'} 50%,
                         transparent 100%
                       )`,
                       width: "50%",
@@ -248,13 +295,30 @@ const Subscriptions = () => {
                   />
                 </div>
 
-                {/* Recommended Badge for Premium+ - Discret */}
+                {/* Intensified platinum glow on hover for Premium+ */}
                 {plan.recommended && (
                   <div 
-                    className="absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1 rounded-b-lg text-[10px] font-medium tracking-wide text-white/70"
+                    className="absolute -inset-[2px] rounded-[1.3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(270 25% 20%) 0%, hsl(280 20% 15%) 100%)',
-                      borderBottom: '1px solid hsl(270 25% 30% / 0.3)',
+                      boxShadow: `
+                        0 0 50px hsl(220 25% 65% / 0.35),
+                        0 0 100px hsl(230 20% 55% / 0.2)
+                      `,
+                    }}
+                  />
+                )}
+
+                {/* Recommended Badge for Premium+ - Elegant & Discret */}
+                {plan.recommended && (
+                  <div 
+                    className="absolute -top-px left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-b-xl text-[10px] font-medium tracking-wider uppercase"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(250 20% 22% / 0.9) 0%, hsl(260 18% 18% / 0.95) 100%)',
+                      borderBottom: '1px solid hsl(250 25% 35% / 0.25)',
+                      borderLeft: '1px solid hsl(250 25% 35% / 0.15)',
+                      borderRight: '1px solid hsl(250 25% 35% / 0.15)',
+                      color: 'hsl(250 20% 75%)',
+                      letterSpacing: '0.1em',
                     }}
                   >
                     Recommandé
@@ -272,17 +336,24 @@ const Subscriptions = () => {
                         style={{
                           filter: plan.isPrimary 
                             ? 'drop-shadow(0 0 15px hsl(45 100% 50% / 0.7))' 
-                            : 'drop-shadow(0 0 12px hsl(0 0% 50% / 0.4))',
+                            : 'drop-shadow(0 0 18px hsl(220 30% 70% / 0.5)) brightness(1.1)',
                         }}
                       />
                     )}
-                    <h3 className={`text-xl font-bold ${
-                      plan.isPrimary 
-                        ? 'text-amber-200' 
-                        : plan.recommended 
-                          ? 'text-white/85' 
-                          : 'text-foreground/50'
-                    }`}>
+                    <h3 
+                      className={`font-bold ${
+                        plan.isPrimary 
+                          ? 'text-xl text-amber-200' 
+                          : plan.recommended 
+                            ? 'text-[22px] tracking-tight' 
+                            : 'text-xl text-foreground/50'
+                      }`}
+                      style={plan.recommended ? {
+                        background: 'linear-gradient(135deg, hsl(220 15% 85%) 0%, hsl(230 20% 70%) 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      } : {}}
+                    >
                       {plan.name}
                     </h3>
                   </div>
@@ -294,11 +365,15 @@ const Subscriptions = () => {
                         plan.isPrimary 
                           ? '' 
                           : plan.recommended
-                            ? 'text-white/75'
+                            ? ''
                             : 'text-foreground/40'
                       }`}
                       style={plan.isPrimary ? {
                         background: 'linear-gradient(135deg, hsl(45 100% 70%) 0%, hsl(35 100% 55%) 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      } : plan.recommended ? {
+                        background: 'linear-gradient(135deg, hsl(220 20% 80%) 0%, hsl(230 15% 65%) 100%)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                       } : {}}
@@ -314,15 +389,20 @@ const Subscriptions = () => {
 
                   {/* CTA Button */}
                   <Button
-                    className={`w-full py-5 rounded-xl font-semibold transition-all mb-6 ${
+                    className={`w-full py-5 rounded-xl font-semibold transition-all duration-300 mb-6 ${
                       plan.id === "free"
                         ? "bg-white/5 text-foreground/40 hover:bg-white/5 border border-white/5 cursor-default"
                         : plan.isPrimary
                           ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black shadow-lg"
-                          : "bg-white/8 text-white/75 hover:bg-white/12 border border-white/15"
+                          : ""
                     }`}
                     style={plan.isPrimary ? {
                       boxShadow: '0 8px 30px hsl(45 100% 50% / 0.35)',
+                    } : plan.recommended ? {
+                      background: 'linear-gradient(145deg, hsl(220 12% 40%) 0%, hsl(230 10% 28%) 50%, hsl(240 8% 22%) 100%)',
+                      color: 'hsl(220 20% 95%)',
+                      border: '1px solid hsl(220 15% 50% / 0.3)',
+                      boxShadow: '0 4px 20px hsl(220 20% 30% / 0.4), inset 0 1px 0 hsl(220 20% 60% / 0.2)',
                     } : {}}
                     disabled={plan.id === "free"}
                   >
