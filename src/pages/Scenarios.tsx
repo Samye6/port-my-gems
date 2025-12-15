@@ -131,51 +131,16 @@ const Scenarios = () => {
     localStorage.setItem("favoriteScenarios", JSON.stringify(newFavorites));
   };
 
-  // All scenarios data
+  // PHASE DE LANCEMENT : Seulement 5 scénarios Fantasy autorisés
+  // Tous les autres scénarios sont cachés (non visibles, non accessibles)
   const scenarios: Scenario[] = [
-    {
-      id: "celebrity",
-      title: "Mio Khalifo",
-      description: "Collaboration vérifiée",
-      emotionalSubtitle: "Célébrité accessible",
-      sexyTagline: "Viens me parler en privé... 😏",
-      detailedDescription: "Une star internationale qui cherche quelqu'un qui la comprend vraiment...",
-      photos: 150,
-      videos: 25,
-      likes: 1250,
-      dislikes: 45,
-      badge: "Top 1",
-      badgeType: "trending",
-      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20",
-      isVerified: true,
-      isOnline: true,
-      icon: <UserRound className="w-6 h-6" />,
-    },
-    {
-      id: "celebrity2",
-      title: "Korinna Kopfa",
-      description: "Collaboration vérifiée",
-      emotionalSubtitle: "Influenceuse intime",
-      sexyTagline: "J'ai envie de te connaître... 💋",
-      detailedDescription: "Une influenceuse qui partage ses moments les plus intimes avec toi...",
-      photos: 200,
-      videos: 30,
-      likes: 1580,
-      dislikes: 38,
-      badge: "Populaire",
-      badgeType: "verified",
-      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20",
-      isVerified: true,
-      isOnline: true,
-      icon: <UserRound className="w-6 h-6" />,
-    },
     {
       id: "colleague",
       title: "Collègue",
       description: "Tension au bureau",
       emotionalSubtitle: "Regards complices",
       sexyTagline: "On se retrouve à la pause ? 😘",
-      detailedDescription: "Cette collègue qui te regarde différemment depuis la dernière réunion...",
+      detailedDescription: "Cette collègue qui te regarde différemment depuis la dernière réunion... Séduction progressive, subtile, interdite. Tension sexuelle non dite.",
       photos: 45,
       videos: 8,
       likes: 890,
@@ -188,114 +153,12 @@ const Scenarios = () => {
       isOnline: true,
     },
     {
-      id: "stranger",
-      title: "Inconnue",
-      description: "Rencontre inattendue",
-      emotionalSubtitle: "Magnétisme instantané",
-      sexyTagline: "Tu me fascines... 🌙",
-      detailedDescription: "Cette mystérieuse inconnue croisée dans un bar qui n'arrête pas de te sourire...",
-      photos: 32,
-      videos: 5,
-      likes: 720,
-      dislikes: 68,
-      badge: "Premium",
-      badgeType: "premium",
-      gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20",
-      icon: <Sparkles className="w-6 h-6" />,
-      image: unknownCard,
-    },
-    {
-      id: "ex",
-      title: "L'Ex",
-      description: "Le passé qui revient",
-      emotionalSubtitle: "Ambiguïté retrouvée",
-      sexyTagline: "On avait quelque chose de spécial... 💔",
-      detailedDescription: "Ton ex qui revient dans ta vie avec de nouvelles intentions...",
-      photos: 60,
-      videos: 12,
-      likes: 1120,
-      dislikes: 95,
-      badge: "Populaire",
-      badgeType: "trending",
-      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20",
-      icon: <Heart className="w-6 h-6" />,
-    },
-    {
-      id: "married",
-      title: "Femme Mariée",
-      description: "Relation interdite",
-      emotionalSubtitle: "Passion clandestine",
-      sexyTagline: "C'est notre secret... 🤫",
-      detailedDescription: "Une femme mariée qui cherche l'excitation que son couple ne lui offre plus...",
-      photos: 38,
-      videos: 7,
-      likes: 950,
-      dislikes: 120,
-      badge: "Intense",
-      badgeType: "premium",
-      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20",
-      icon: <Crown className="w-6 h-6" />,
-      image: marriedCard,
-    },
-    {
-      id: "boss",
-      title: "La Patronne",
-      description: "Autorité séduisante",
-      emotionalSubtitle: "Pouvoir et désir",
-      sexyTagline: "Dans mon bureau, maintenant... 👠",
-      detailedDescription: "Ta patronne autoritaire qui aime mélanger travail et plaisir...",
-      photos: 55,
-      videos: 10,
-      likes: 1050,
-      dislikes: 78,
-      badge: "Top 3",
-      badgeType: "trending",
-      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20",
-      icon: <Briefcase className="w-6 h-6" />,
-      image: bossCard,
-      isOnline: true,
-    },
-    {
-      id: "doctor",
-      title: "Docteure",
-      description: "Consultation privée",
-      emotionalSubtitle: "Soins personnalisés",
-      sexyTagline: "Je vais bien m'occuper de toi... 💊",
-      detailedDescription: "Une docteure qui propose des consultations très... personnalisées...",
-      photos: 42,
-      videos: 9,
-      likes: 840,
-      dislikes: 61,
-      badge: "Tendance",
-      badgeType: "trending",
-      gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20",
-      icon: <Stethoscope className="w-6 h-6" />,
-      image: doctorCard,
-    },
-    {
-      id: "secretary",
-      title: "Secrétaire",
-      description: "Assistante dévouée",
-      emotionalSubtitle: "Dévouement absolu",
-      sexyTagline: "Je ferais tout pour toi... 📋",
-      detailedDescription: "Ta secrétaire qui ferait n'importe quoi pour te satisfaire...",
-      photos: 48,
-      videos: 11,
-      likes: 920,
-      dislikes: 55,
-      badge: "Nouveau",
-      badgeType: "new",
-      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20",
-      icon: <ClipboardList className="w-6 h-6" />,
-      image: secretaryCard,
-    },
-    {
       id: "fitgirl",
       title: "La Fit Girl",
       description: "Énergie et sensualité",
       emotionalSubtitle: "Corps sculpté",
       sexyTagline: "Tu veux voir mes muscles ? 💪",
-      detailedDescription: "Cette sportive passionnée qui aime repousser ses limites... et les tiennes.",
+      detailedDescription: "Cette sportive passionnée, énergique et confiante. Langage direct, taquin, parfois dominant. Séduction physique assumée.",
       photos: 65,
       videos: 14,
       likes: 1180,
@@ -313,7 +176,7 @@ const Scenarios = () => {
       description: "Étudiante coquine",
       emotionalSubtitle: "Innocence trompeuse",
       sexyTagline: "On révise ensemble ? 📚",
-      detailedDescription: "Cette étudiante rebelle qui aime jouer avec les limites entre cours et plaisir...",
+      detailedDescription: "Cette étudiante intelligente et curieuse. Mélange innocence apparente et curiosité sensuelle. Séduction mentale avant physique.",
       photos: 48,
       videos: 9,
       likes: 1050,
@@ -323,6 +186,7 @@ const Scenarios = () => {
       gradient: "from-pink-600/25 via-rose-400/15 to-red-400/20",
       icon: <GraduationCap className="w-6 h-6" />,
       image: universityCard,
+      isOnline: true,
     },
     {
       id: "police",
@@ -330,7 +194,7 @@ const Scenarios = () => {
       description: "Autorité séduisante",
       emotionalSubtitle: "Loi et désir",
       sexyTagline: "Vous êtes en état d'arrestation... 🚔",
-      detailedDescription: "Cette officière qui sait faire respecter l'ordre... à sa manière.",
+      detailedDescription: "Cette officière autoritaire qui sait faire respecter l'ordre... Jeux de pouvoir, domination consentie. Langage ferme mais excitant.",
       photos: 52,
       videos: 10,
       likes: 1120,
@@ -340,6 +204,7 @@ const Scenarios = () => {
       gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20",
       icon: <Shield className="w-6 h-6" />,
       image: policeCard,
+      isOnline: true,
     },
     {
       id: "teacher",
@@ -347,7 +212,7 @@ const Scenarios = () => {
       description: "Enseignement privé",
       emotionalSubtitle: "Leçons particulières",
       sexyTagline: "Tu as été un mauvais élève... 👩‍🏫",
-      detailedDescription: "Cette enseignante qui propose des cours privés très... instructifs.",
+      detailedDescription: "Cette enseignante calme, posée, légèrement supérieure. Séduction élégante, voix rassurante. Érotisme psychologique fort.",
       photos: 46,
       videos: 8,
       likes: 980,
@@ -357,67 +222,15 @@ const Scenarios = () => {
       gradient: "from-amber-600/25 via-orange-400/15 to-yellow-400/20",
       icon: <BookOpen className="w-6 h-6" />,
       image: teacherCard,
-    },
-    {
-      id: "celebrity3",
-      title: "Bonnio Blue",
-      description: "Collaboration vérifiée",
-      emotionalSubtitle: "Charme mystérieux",
-      sexyTagline: "Je vais te montrer des secrets... 🔥",
-      detailedDescription: "Une créatrice de contenu qui aime partager ses secrets les plus intimes...",
-      photos: 180,
-      videos: 28,
-      likes: 1320,
-      dislikes: 42,
-      badge: "Top 3",
-      badgeType: "verified",
-      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20",
-      isVerified: true,
-      icon: <UserRound className="w-6 h-6" />,
-    },
-    {
-      id: "celebrity4",
-      title: "Sophie Raino",
-      description: "Collaboration vérifiée",
-      emotionalSubtitle: "Élégance sensuelle",
-      sexyTagline: "Prêt pour une aventure ? ✨",
-      detailedDescription: "Une personnalité captivante qui sait exactement comment te séduire...",
-      photos: 165,
-      videos: 22,
-      likes: 1180,
-      dislikes: 35,
-      badge: "VIP",
-      badgeType: "vip",
-      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20",
-      isVerified: true,
       isOnline: true,
-      icon: <UserRound className="w-6 h-6" />,
-    },
-    {
-      id: "celebrity5",
-      title: "Bella Thorno",
-      description: "Collaboration vérifiée",
-      emotionalSubtitle: "Audace assumée",
-      sexyTagline: "Je n'ai peur de rien... 😈",
-      detailedDescription: "Une star audacieuse qui n'a peur de rien et qui aime provoquer...",
-      photos: 195,
-      videos: 32,
-      likes: 1420,
-      dislikes: 48,
-      badge: "Premium",
-      badgeType: "premium",
-      gradient: "from-rose-500/25 via-purple-400/15 to-violet-500/20",
-      isVerified: true,
-      icon: <UserRound className="w-6 h-6" />,
     },
   ];
 
-  // Categorize scenarios for different carousels
-  const verifiedCharacters = scenarios.filter(s => s.isVerified);
-  const trendingCharacters = scenarios.filter(s => s.badgeType === "trending" || s.likes > 900);
-  const premiumCharacters = scenarios.filter(s => s.badgeType === "premium" || s.badgeType === "vip");
+  // PHASE DE LANCEMENT : Catégorisation simplifiée pour les 5 scénarios Fantasy
+  // Pas de personnages "vérifiés" dans cette phase
+  const trendingCharacters = scenarios.filter(s => s.badgeType === "trending");
   const newCharacters = scenarios.filter(s => s.badgeType === "new");
-  const intenseCharacters = scenarios.filter(s => ["married", "boss", "ex", "police"].includes(s.id));
+  const intenseCharacters = scenarios.filter(s => ["police", "teacher"].includes(s.id));
 
   // Filter for search
   const filteredScenarios = scenarios.filter((scenario) => {
@@ -619,12 +432,12 @@ const Scenarios = () => {
         </section>
       ) : (
         <>
-          {/* Verified Characters Carousel */}
+          {/* PHASE DE LANCEMENT : Tous les scénarios Fantasy disponibles */}
           <CharacterCarousel
-            title="Vérifiées"
-            subtitle="Personnalités certifiées"
-            icon={<BadgeCheck className="w-6 h-6" />}
-            characters={verifiedCharacters}
+            title="Fantasy"
+            subtitle="Scénarios immersifs disponibles"
+            icon={<Sparkles className="w-6 h-6" />}
+            characters={scenarios}
             isAuthenticated={isAuthenticated}
             favorites={favorites}
             onCharacterClick={handleScenarioClick}
@@ -641,18 +454,6 @@ const Scenarios = () => {
             subtitle="Les plus appréciés cette semaine"
             icon={<Flame className="w-6 h-6" />}
             characters={trendingCharacters}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onCharacterClick={handleScenarioClick}
-            onFavoriteToggle={toggleFavorite}
-          />
-
-          {/* VIP & Premium */}
-          <CharacterCarousel
-            title="VIP & Premium"
-            subtitle="Expériences exclusives"
-            icon={<Crown className="w-6 h-6" />}
-            characters={premiumCharacters}
             isAuthenticated={isAuthenticated}
             favorites={favorites}
             onCharacterClick={handleScenarioClick}
@@ -683,18 +484,7 @@ const Scenarios = () => {
             onFavoriteToggle={toggleFavorite}
           />
 
-          {/* All Characters Section */}
-          <CharacterCarousel
-            title="Tous les personnages"
-            subtitle="Explore toutes les possibilités"
-            icon={<Star className="w-6 h-6" />}
-            characters={scenarios}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onCharacterClick={handleScenarioClick}
-            onFavoriteToggle={toggleFavorite}
-            cardSize="small"
-          />
+          {/* PHASE DE LANCEMENT : Section "Tous les personnages" retirée - seuls les 5 Fantasy sont visibles */}
         </>
       )}
 

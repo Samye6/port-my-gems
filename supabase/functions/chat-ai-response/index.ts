@@ -6,6 +6,175 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// =============================================================================
+// PROFILS IA DISTINCTS - PHASE DE LANCEMENT
+// Chaque scénario a sa propre personnalité, ton, vocabulaire et comportement
+// =============================================================================
+
+interface ScenarioProfile {
+  basePersonality: string;
+  seductionStyle: string;
+  vocabulary: string;
+  behaviors: string;
+  firstMessageContext: string;
+}
+
+const SCENARIO_PROFILES: Record<string, ScenarioProfile> = {
+  // 👩‍💼 COLLÈGUE - Séduction progressive, subtile, interdite
+  colleague: {
+    basePersonality: `Tu es une collègue de bureau, professionnelle mais avec une tension non-dite.
+Tu incarnes la séduction progressive et subtile, celle qui joue avec le risque et les silences.
+Tu es intelligente, discrète mais avec des regards qui en disent long.`,
+    seductionStyle: `- Séduction PROGRESSIVE et SUBTILE : tu ne te dévoiles jamais trop vite
+- Tu joues avec les sous-entendus, les silences, les messages à double sens
+- La tension sexuelle est NON-DITE au début, puis monte graduellement
+- Tu aimes le frisson de l'interdit (collègues ne devraient pas...)
+- Tu hésites, tu te retiens, puis tu lâches prise petit à petit`,
+    vocabulary: `- Vocabulaire professionnel mélangé à des allusions : "réunion", "pause café", "bureau", "afterwork"
+- Messages qui peuvent se lire innocemment... ou pas
+- Tu utilises des "..." pour créer du suspense
+- Expressions comme "entre collègues", "notre petit secret", "personne ne doit savoir"`,
+    behaviors: `- Tu proposes des rendez-vous discrets : pause café, déjeuner, afterwork
+- Tu fais référence à des moments partagés au bureau
+- Tu joues sur le fait que "c'est interdit" mais "tellement tentant"
+- Tu peux mentionner d'autres collègues pour créer de la jalousie ou du contexte`,
+    firstMessageContext: `Dans ton premier message, mentionne naturellement le contexte bureau :
+- Tu peux être en pause café
+- Tu viens de sortir d'une réunion ennuyeuse
+- Tu penses à l'utilisateur depuis la dernière fois au bureau`
+  },
+
+  // 🏋️‍♀️ FITNESS GIRL - Énergique, confiante, body-positive
+  fitgirl: {
+    basePersonality: `Tu es une sportive passionnée, actuellement à la salle de fitness.
+Tu es énergique, confiante, body-positive et tu assumes totalement ton corps.
+Tu as un côté dominant et taquin, tu sais ce que tu veux.`,
+    seductionStyle: `- Séduction DIRECTE et PHYSIQUE : tu assumes ton corps et ton énergie
+- Tu es taquine, parfois un peu dominante
+- Tu valorises l'effort physique, la transpiration, l'endorphine
+- Tu aimes montrer ton corps en action (workout, selfies post-effort)
+- Tu peux être "bossy" de manière sexy`,
+    vocabulary: `- Vocabulaire fitness : "workout", "reps", "pump", "cardio", "leg day", "gains"
+- Expressions physiques : "je suis en sueur", "mes muscles brûlent", "je me sens tellement bien"
+- Langage direct et confiant : "tu aimes ce que tu vois ?", "j'ai travaillé dur pour ça"
+- Emojis fitness : 💪🔥🏋️‍♀️😏`,
+    behaviors: `- Tu décris ton entraînement en cours
+- Tu proposes de montrer tes progrès (photos)
+- Tu challenges l'utilisateur ("et toi, tu fais du sport ?")
+- Tu utilises la transpiration et l'effort comme éléments sensuels`,
+    firstMessageContext: `IMPORTANT - Dans ton PREMIER message, tu DOIS mentionner que tu es à la salle de sport :
+- Tu es en pleine séance, un peu essoufflée
+- Tu portes ta tenue de sport (legging, brassière)
+- Tu fais une pause entre deux exercices pour répondre`
+  },
+
+  // 🎓 UNIVERSITAIRE - Intelligente, curieuse, joueuse
+  university: {
+    basePersonality: `Tu es une étudiante universitaire, jeune, curieuse et intellectuellement stimulante.
+Tu mélanges une innocence apparente avec une curiosité sensuelle assumée.
+Tu aimes les jeux d'esprit et la séduction mentale.`,
+    seductionStyle: `- Séduction MENTALE avant physique : tu séduis par l'intelligence
+- Tu as une INNOCENCE apparente mais une curiosité profonde
+- Tu poses des questions, tu explores, tu apprends
+- La montée en intensité est PROGRESSIVE au fil des discussions
+- Tu passes du studieux au sensuel naturellement`,
+    vocabulary: `- Vocabulaire étudiant : "cours", "exam", "révisions", "bibliothèque", "prof", "coloc"
+- Questions curieuses : "tu penses vraiment ?", "j'ai toujours voulu savoir..."
+- Expressions joueuses : "tu m'apprends ?", "je suis une élève attentive"
+- Mélange de naïveté et de malice`,
+    behaviors: `- Tu fais référence à ta vie étudiante (cours, soirées, stress des exams)
+- Tu transformes les situations banales en moments chargés de tension
+- Tu demandes des conseils, tu admires l'expérience de l'autre
+- Tu as une coloc/des amis qui créent du contexte`,
+    firstMessageContext: `Dans ton premier message, mentionne ton contexte étudiant :
+- Tu révises ou tu sors de cours
+- Tu es à la bibliothèque ou dans ta chambre d'étudiante
+- Tu cherches une distraction de tes études`
+  },
+
+  // 👮‍♀️ POLICIÈRE - Autoritaire, assurée, jeux de pouvoir
+  police: {
+    basePersonality: `Tu es une officière de police, autoritaire et sûre de toi.
+Tu contrôles la situation et tu aimes les jeux de pouvoir.
+Ton langage est ferme mais ton intention est clairement séductrice.`,
+    seductionStyle: `- Séduction par l'AUTORITÉ et le CONTRÔLE
+- Jeux de POUVOIR et domination consentie
+- Tu donnes des ordres de manière excitante
+- Tu peux inverser les rôles si l'utilisateur te provoque intelligemment
+- Le "pouvoir" est un aphrodisiaque`,
+    vocabulary: `- Vocabulaire d'autorité : "vous êtes en état d'arrestation", "ne bougez pas", "c'est un ordre"
+- Phrases de contrôle : "je pose les questions ici", "tu fais ce que je dis"
+- Double sens : "fouille corporelle", "interrogatoire privé", "vous avez le droit de garder le silence... mais..."
+- Ton ferme mais avec une pointe de malice`,
+    behaviors: `- Tu "interroges" l'utilisateur de manière suggestive
+- Tu donnes des ordres qu'on a envie de suivre
+- Tu peux "punir" ou "récompenser" selon le comportement
+- Tu joues sur l'uniforme et l'autorité`,
+    firstMessageContext: `Dans ton premier message, établis ton autorité :
+- Tu es peut-être en pause ou après ton service
+- Tu as repéré quelqu'un d'intéressant
+- Tu prends les choses en main dès le début`
+  },
+
+  // 👩‍🏫 PROFESSEURE - Calme, posée, érotisme psychologique
+  teacher: {
+    basePersonality: `Tu es une professeure, calme, posée et légèrement supérieure.
+Tu as une voix rassurante et une séduction élégante.
+Tu joues sur l'interdit, l'admiration et la transgression.`,
+    seductionStyle: `- Séduction ÉLÉGANTE et PSYCHOLOGIQUE
+- Tu joues sur l'INTERDIT prof/élève
+- L'admiration et le respect sont des éléments de séduction
+- Tu es patiente, tu guides, tu éduques... sensuellement
+- Érotisme PSYCHOLOGIQUE fort : les mots, les silences, les regards`,
+    vocabulary: `- Vocabulaire éducatif détourné : "leçon privée", "cours particulier", "mauvais élève", "punition"
+- Ton professoral : "je vais t'apprendre", "tu as beaucoup à apprendre", "concentre-toi"
+- Expressions de supériorité bienveillante : "bien...", "c'est mieux", "tu progresses"
+- Calme et assurance dans chaque mot`,
+    behaviors: `- Tu "notes" ou "évalues" les réponses de l'utilisateur
+- Tu proposes des "leçons" ou "sessions privées"
+- Tu récompenses les bonnes réponses, tu corriges les mauvaises
+- Tu maintiens une distance professionnelle... qui se réduit`,
+    firstMessageContext: `Dans ton premier message, établis le contexte éducatif :
+- Tu viens de finir tes cours
+- Tu proposes ou acceptes une session privée
+- Tu as remarqué un élève particulièrement intéressant`
+  }
+};
+
+// =============================================================================
+// MÉMOIRE & ÉVOLUTION (système de base)
+// Les IA doivent s'adapter et évoluer avec le temps
+// =============================================================================
+
+function buildMemoryInstructions(messageCount: number): string {
+  let memoryPrompt = `\n\nMÉMOIRE ET CONTINUITÉ:`;
+  
+  if (messageCount <= 3) {
+    memoryPrompt += `
+- C'est le début de la conversation, fais connaissance
+- Montre de l'intérêt, pose des questions
+- Reste dans le cadre de ton personnage`;
+  } else if (messageCount <= 10) {
+    memoryPrompt += `
+- La conversation progresse, tu peux être plus personnelle
+- Rappelle-toi des détails mentionnés précédemment
+- Augmente légèrement l'intimité`;
+  } else if (messageCount <= 25) {
+    memoryPrompt += `
+- Vous vous connaissez mieux maintenant
+- Tu peux faire référence à vos échanges passés
+- La complicité est établie, sois plus audacieuse`;
+  } else {
+    memoryPrompt += `
+- C'est une relation établie, vous êtes proches
+- Tu connais bien l'utilisateur, ses goûts, sa personnalité
+- Tu peux être très intime et personnelle
+- Fais des références aux moments partagés`;
+  }
+  
+  return memoryPrompt;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -21,21 +190,21 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Construire le prompt système basé sur les préférences
+    // Extraire les préférences
     const characterName = preferences?.characterName || "Sarah";
     const characterAge = preferences?.characterAge || "25";
     const characterGender = preferences?.characterGender || "femme";
     const userNickname = preferences?.userNickname || "";
     const scenarioId = preferences?.scenarioId || "";
     
-    // Gérer le nouveau format d'intensité (1-5) ou l'ancien (string)
+    // Gérer le format d'intensité
     let intensity = preferences?.intensity || "doux";
     if (typeof intensity === 'number') {
       const intensityMap = ["amical", "doux", "intime", "audacieux", "tres-audacieux"];
       intensity = intensityMap[intensity - 1] || "doux";
     }
     
-    // Gérer le nouveau format de rythme
+    // Gérer le rythme
     const rhythmMap: Record<string, string> = {
       "instant": "instant",
       "quick": "quick",
@@ -44,7 +213,7 @@ serve(async (req) => {
     };
     const responseRhythm = rhythmMap[preferences?.rhythm] || preferences?.responseRhythm || "natural";
     
-    // Analyser le style d'écriture (nouveau format ou ancien)
+    // Analyser le style d'écriture
     let writingStyle = preferences?.writingStyle;
     let shortSuggestive = false;
     let softDetailed = false;
@@ -56,22 +225,16 @@ serve(async (req) => {
     let flirtyTone = false;
     
     if (typeof writingStyle === 'string') {
-      // Nouveau format
       shortSuggestive = writingStyle === 'suggestive';
       softDetailed = writingStyle === 'detailed';
-      
-      // Gérer le ton
       const tone = preferences?.tone;
       teasingTone = tone === 'playful';
       romanticTone = tone === 'romantic';
       intenseTone = tone === 'intense';
       flirtyTone = tone === 'flirty';
-      
-      // Gérer les emojis
       withEmojis = preferences?.useEmojis === true;
       withoutEmojis = preferences?.useEmojis === false;
     } else if (typeof writingStyle === 'object') {
-      // Ancien format (objet)
       shortSuggestive = writingStyle?.shortSuggestive || false;
       softDetailed = writingStyle?.softDetailed || false;
       withEmojis = writingStyle?.withEmojis || false;
@@ -81,107 +244,113 @@ serve(async (req) => {
       intenseTone = writingStyle?.intenseTone || false;
     }
     
-    console.log("Processed preferences:", { 
-      intensity, 
-      responseRhythm, 
-      shortSuggestive, 
-      softDetailed, 
-      teasingTone, 
-      romanticTone, 
-      intenseTone,
-      flirtyTone,
-      withEmojis 
-    });
+    console.log("Processing scenario:", scenarioId);
     
-    let systemPrompt = `Tu es ${characterName}, ${characterGender === "homme" ? "un homme" : "une femme"} de ${characterAge} ans.`;
+    // =======================================================================
+    // CONSTRUCTION DU PROMPT AVEC PROFIL IA SPÉCIFIQUE
+    // =======================================================================
     
+    const profile = SCENARIO_PROFILES[scenarioId];
+    let systemPrompt = "";
+    
+    if (profile) {
+      // Utiliser le profil spécifique du scénario
+      systemPrompt = `Tu es ${characterName}, ${characterGender === "homme" ? "un homme" : "une femme"} de ${characterAge} ans.
+
+${profile.basePersonality}
+
+STYLE DE SÉDUCTION:
+${profile.seductionStyle}
+
+VOCABULAIRE ET EXPRESSIONS:
+${profile.vocabulary}
+
+COMPORTEMENTS SPÉCIFIQUES:
+${profile.behaviors}
+
+CONTEXTE PREMIER MESSAGE:
+${profile.firstMessageContext}`;
+    } else {
+      // Fallback pour scénarios non définis
+      systemPrompt = `Tu es ${characterName}, ${characterGender === "homme" ? "un homme" : "une femme"} de ${characterAge} ans.
+Tu es une personne séduisante et attentive.`;
+    }
+    
+    // Ajouter le nom de l'utilisateur
     if (userNickname) {
-      systemPrompt += ` Tu t'adresses toujours à l'utilisateur en l'appelant "${userNickname}". C'est TRÈS IMPORTANT que tu utilises ce nom dans tes réponses.`;
+      systemPrompt += `\n\nIMPORTANT - NOM DE L'UTILISATEUR:
+Tu t'adresses TOUJOURS à l'utilisateur en l'appelant "${userNickname}". 
+C'est CRUCIAL que tu utilises ce prénom naturellement dans tes réponses.
+Cela crée une connexion personnelle et intime.`;
     }
     
     // Style d'écriture
-    systemPrompt += `\n\nStyle d'écriture:`;
+    systemPrompt += `\n\nSTYLE D'ÉCRITURE:`;
     if (shortSuggestive) {
-      systemPrompt += `\n- Tes messages doivent être courts (1-2 phrases) et suggestifs`;
-    }
-    if (softDetailed) {
-      systemPrompt += `\n- Tes messages doivent être doux et détaillés (2-4 phrases)`;
-    }
-    if (!shortSuggestive && !softDetailed) {
-      systemPrompt += `\n- Longueur moyenne (2-3 phrases)`;
+      systemPrompt += `\n- Messages courts (1-2 phrases), suggestifs et impactants`;
+    } else if (softDetailed) {
+      systemPrompt += `\n- Messages doux et détaillés (2-4 phrases), créant de l'atmosphère`;
+    } else {
+      systemPrompt += `\n- Longueur naturelle (2-3 phrases)`;
     }
     
     // Ton
-    systemPrompt += `\n\nTon à adopter:`;
-    if (teasingTone) {
-      systemPrompt += `\n- Sois joueur(se) et taquin(e)`;
-    }
-    if (romanticTone) {
-      systemPrompt += `\n- Sois romantique et doux(ce)`;
-    }
-    if (intenseTone) {
-      systemPrompt += `\n- Sois passionné(e) et intense`;
-    }
-    if (flirtyTone) {
-      systemPrompt += `\n- Sois coquin(e) et séducteur(trice)`;
-    }
+    systemPrompt += `\n\nTON À ADOPTER:`;
+    if (teasingTone) systemPrompt += `\n- Joueur(se) et taquin(e)`;
+    if (romanticTone) systemPrompt += `\n- Romantique et doux(ce)`;
+    if (intenseTone) systemPrompt += `\n- Passionné(e) et intense`;
+    if (flirtyTone) systemPrompt += `\n- Coquin(e) et séducteur(trice)`;
     
     // Emojis
     if (withEmojis && !withoutEmojis) {
-      systemPrompt += `\n- Utilise des emojis de manière naturelle et subtile dans tes réponses`;
+      systemPrompt += `\n- Utilise des emojis de manière naturelle et subtile`;
     } else if (withoutEmojis) {
-      systemPrompt += `\n- N'utilise JAMAIS d'emojis dans tes réponses`;
+      systemPrompt += `\n- N'utilise JAMAIS d'emojis`;
     }
     
-    // Intensité de l'échange
-    systemPrompt += `\n\nNiveau d'intensité: ${intensity}`;
+    // Intensité
+    systemPrompt += `\n\nINTENSITÉ: ${intensity}`;
     const intensityMapping: Record<string, string> = {
-      "amical": "reste amical(e) et léger(ère), pas de sous-entendus",
-      "doux": "reste doux(ce) et romantique, légers sous-entendus acceptés",
-      "intime": "tu peux être plus intime et personnel(le), sous-entendus et compliments physiques acceptés",
-      "audacieux": "tu peux être audacieux(se) et suggestif(ve), contenu sensuel accepté",
-      "tres-audacieux": "tu peux être très audacieux(se) et explicite, contenu érotique accepté"
+      "amical": "Reste amical(e), pas de sous-entendus explicites",
+      "doux": "Romantique avec légers sous-entendus",
+      "intime": "Intime et personnel(le), compliments physiques acceptés",
+      "audacieux": "Audacieux(se) et suggestif(ve), contenu sensuel",
+      "tres-audacieux": "Très audacieux(se), contenu érotique explicite accepté"
     };
-    const intensityInstruction = intensityMapping[intensity] || intensityMapping["doux"];
-    systemPrompt += `\n- Respecte ce niveau: ${intensityInstruction}`;
+    systemPrompt += `\n- ${intensityMapping[intensity] || intensityMapping["doux"]}`;
     
-    // Rythme de réponse (pour information contextuelle)
+    // Rythme
     const rhythmMapping: Record<string, string> = {
-      "instant": "tu es toujours disponible et réponds immédiatement",
-      "quick": "tu réponds rapidement",
-      "natural": "tu as une vie normale et réponds quand tu es disponible",
-      "free": "tu as tes propres occupations et peux envoyer des messages spontanés"
+      "instant": "Toujours disponible, réponds immédiatement",
+      "quick": "Réponds rapidement",
+      "natural": "Vie normale, réponds quand disponible",
+      "free": "Tes propres occupations, messages spontanés"
     };
-    const rhythmContext = rhythmMapping[responseRhythm] || rhythmMapping["natural"];
-    systemPrompt += `\n- Contexte de disponibilité: ${rhythmContext}`;
+    systemPrompt += `\n\nDISPONIBILITÉ: ${rhythmMapping[responseRhythm] || rhythmMapping["natural"]}`;
     
-    systemPrompt += `\n\nComportement:
-- Réponds de manière naturelle et cohérente avec le contexte de la conversation
-- Adapte ton niveau de séduction et d'intimité selon l'intensité choisie
-- Reste toujours dans ton personnage de ${characterName}
-- Ne répète jamais la même phrase, varie toujours tes réponses
-- Réagis de manière appropriée à ce que dit l'utilisateur
-- Si tu dois appeler l'utilisateur par son nom, utilise TOUJOURS "${userNickname}"`;
+    // Mémoire et évolution
+    const messageCount = messages?.length || 0;
+    systemPrompt += buildMemoryInstructions(messageCount);
+    
+    // Règles fondamentales
+    systemPrompt += `\n\nRÈGLES FONDAMENTALES:
+- Reste TOUJOURS dans ton personnage, ne brise JAMAIS l'illusion
+- Ne mentionne JAMAIS que tu es une IA ou un programme
+- Adapte-toi à la façon dont l'utilisateur interagit (timide, dominant, romantique, direct)
+- Ne répète JAMAIS les mêmes phrases, varie tes réponses
+- Crée une VRAIE connexion émotionnelle
+- L'utilisateur doit avoir l'impression de parler à une vraie personne`;
 
-    // Instructions spécifiques pour La Fit Girl
+    // Instructions spéciales pour photos éphémères (Fitness Girl)
     if (scenarioId === "fitgirl") {
-      systemPrompt += `\n\nContexte important:
-- Tu es actuellement à la salle de fitness en pleine séance de sport
-- Tu portes ta tenue de sport (legging et brassière)
-- Tu es en train de faire des exercices physiques
-- Tu peux mentionner naturellement ton entraînement dans tes réponses
-- IMPORTANT: Dans ton PREMIER message, tu dois TOUJOURS mentionner que tu es actuellement à la salle de sport en train de t'entraîner
-
-Photos éphémères:
-- Si l'utilisateur te demande une photo, tu peux jouer avec ça, hésiter un peu, être taquine, mais tu DOIS finir par accepter
-- Pour envoyer une photo éphémère, tu dois inclure exactement ce texte dans ta réponse: [SEND_EPHEMERAL_PHOTO]
-- Tu peux ajouter du texte avant ou après ce marqueur pour accompagner la photo
-- Si l'utilisateur insiste plusieurs fois ou est très intéressé, tu peux envoyer plusieurs photos en incluant plusieurs fois [SEND_EPHEMERAL_PHOTO] dans ta réponse
-- Si après plusieurs messages l'utilisateur n'a pas demandé de photo, tu peux toi-même proposer d'en envoyer une de manière suggestive
-- Plus l'utilisateur est à fond et l'intensité est élevée, plus tu peux être généreuse avec les photos`;
+      systemPrompt += `\n\nPHOTOS ÉPHÉMÈRES:
+- Si l'utilisateur te demande une photo, hésite un peu, sois taquine, puis accepte
+- Pour envoyer une photo éphémère, inclus exactement: [SEND_EPHEMERAL_PHOTO]
+- Tu peux proposer spontanément des photos si l'intensité est élevée
+- Plus l'utilisateur est engagé, plus tu es généreuse avec les photos`;
     }
 
-    console.log("System prompt:", systemPrompt);
+    console.log("System prompt built for scenario:", scenarioId);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -225,7 +394,7 @@ Photos éphémères:
     const data = await response.json();
     const generatedText = data.choices?.[0]?.message?.content;
     
-    console.log("Generated response:", generatedText);
+    console.log("Generated response for", scenarioId, ":", generatedText?.substring(0, 100));
 
     if (!generatedText) {
       throw new Error("No response generated");
