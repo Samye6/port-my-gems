@@ -2,27 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { 
-  Briefcase, Users, Heart, Sparkles, Crown, UserRound, BadgeCheck, 
-  Stethoscope, ClipboardList, Search, Lock, Dumbbell, GraduationCap, 
-  Shield, BookOpen, Flame, Star, Zap
+  Users, Heart, Sparkles, Search, Dumbbell, GraduationCap, 
+  Shield, BookOpen
 } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueCard from "@/assets/colleague-card.png";
-import marriedCard from "@/assets/married-card.png";
 import universityCard from "@/assets/university-card.png";
 import policeCard from "@/assets/police-card.png";
 import teacherCard from "@/assets/teacher-card.png";
-import secretaryCard from "@/assets/secretary-card.png";
-import doctorCard from "@/assets/doctor-card.png";
-import bossCard from "@/assets/boss-card.png";
 import fitgirlCard from "@/assets/fitgirl-card.png";
-import unknownCard from "@/assets/unknown-card.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -35,7 +27,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import BottomNav from "@/components/BottomNav";
 import HeroSection from "@/components/home/HeroSection";
@@ -96,20 +87,11 @@ const Scenarios = () => {
     return () => subscription.unsubscribe();
   }, []);
   
-  // Form state
+  // Form state - simplifié
   const [userNickname, setUserNickname] = useState("");
   const [characterName, setCharacterName] = useState("");
   const [characterAge, setCharacterAge] = useState("");
-  const [characterGender, setCharacterGender] = useState("");
-  const [shortSuggestive, setShortSuggestive] = useState(false);
-  const [softDetailed, setSoftDetailed] = useState(false);
-  const [teasingTone, setTeasingTone] = useState(false);
-  const [romanticTone, setRomanticTone] = useState(false);
-  const [intenseTone, setIntenseTone] = useState(false);
-  const [withEmojis, setWithEmojis] = useState(false);
-  const [withoutEmojis, setWithoutEmojis] = useState(false);
-  const [intensity, setIntensity] = useState("doux");
-  const [responseRhythm, setResponseRhythm] = useState("natural");
+  const [characterGender, setCharacterGender] = useState("femme");
 
   const handleScenarioClick = (scenario: Scenario) => {
     if (!isAuthenticated) {
@@ -133,6 +115,40 @@ const Scenarios = () => {
 
   // PHASE DE LANCEMENT : Seulement 5 scénarios Fantasy autorisés
   // Tous les autres scénarios sont cachés (non visibles, non accessibles)
+  // Données immersives pour chaque scénario
+  const scenarioData = {
+    colleague: {
+      meetingStory: "On travaille ensemble depuis des mois. Les réunions, les regards, les silences… Ce soir, on est encore seuls au bureau. Et l'ambiance a changé.",
+      personality: ["Discrète", "Intelligente", "Provocatrice subtile"],
+      contentHint: "Les interactions évoluent au fil de la discussion.",
+      teaser: "Je t'attendais… tu viens enfin me parler ? 😉",
+    },
+    fitgirl: {
+      meetingStory: "On s'est croisés à la salle. Tu m'as aidée sur une série… depuis, j'ai remarqué ton regard quand je m'entraîne. Ce soir, j'ai encore de l'énergie à dépenser.",
+      personality: ["Énergique", "Directe", "Taquine", "Confiante"],
+      contentHint: "Les interactions évoluent au fil de la discussion.",
+      teaser: "Tu viens t'entraîner avec moi ? 💪",
+    },
+    university: {
+      meetingStory: "On s'est retrouvés à la bibliothèque. Une question, un sourire, puis des messages tard le soir. Elle aime apprendre… et provoquer.",
+      personality: ["Curieuse", "Joueuse", "Maligne"],
+      contentHint: "Les interactions évoluent au fil de la discussion.",
+      teaser: "J'ai une question pour toi… 📚",
+    },
+    police: {
+      meetingStory: "Elle t'a contrôlé une fois. Depuis, elle te reconnaît. Son ton est ferme… mais son regard en dit long. Elle aime garder le contrôle.",
+      personality: ["Autoritaire", "Calme", "Dominante"],
+      contentHint: "Les interactions évoluent au fil de la discussion.",
+      teaser: "Vous êtes en infraction… 🚔",
+    },
+    teacher: {
+      meetingStory: "Elle t'a toujours trouvé différent. Trop attentif, trop mature. Ce soir, la discussion dérape doucement. Elle hésite… puis sourit.",
+      personality: ["Élégante", "Intellectuelle", "Troublée"],
+      contentHint: "Les interactions évoluent au fil de la discussion.",
+      teaser: "J'ai quelque chose à te dire… 👩‍🏫",
+    },
+  };
+
   const scenarios: Scenario[] = [
     {
       id: "colleague",
@@ -140,12 +156,12 @@ const Scenarios = () => {
       description: "Tension au bureau",
       emotionalSubtitle: "Regards complices",
       sexyTagline: "On se retrouve à la pause ? 😘",
-      detailedDescription: "Cette collègue qui te regarde différemment depuis la dernière réunion... Séduction progressive, subtile, interdite. Tension sexuelle non dite.",
+      detailedDescription: scenarioData.colleague.meetingStory,
       photos: 45,
       videos: 8,
       likes: 890,
       dislikes: 52,
-      badge: "Tendance",
+      badge: "Recommandé",
       badgeType: "trending",
       gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20",
       icon: <Users className="w-6 h-6" />,
@@ -158,7 +174,7 @@ const Scenarios = () => {
       description: "Énergie et sensualité",
       emotionalSubtitle: "Corps sculpté",
       sexyTagline: "Tu veux voir mes muscles ? 💪",
-      detailedDescription: "Cette sportive passionnée, énergique et confiante. Langage direct, taquin, parfois dominant. Séduction physique assumée.",
+      detailedDescription: scenarioData.fitgirl.meetingStory,
       photos: 65,
       videos: 14,
       likes: 1180,
@@ -176,12 +192,11 @@ const Scenarios = () => {
       description: "Étudiante coquine",
       emotionalSubtitle: "Innocence trompeuse",
       sexyTagline: "On révise ensemble ? 📚",
-      detailedDescription: "Cette étudiante intelligente et curieuse. Mélange innocence apparente et curiosité sensuelle. Séduction mentale avant physique.",
+      detailedDescription: scenarioData.university.meetingStory,
       photos: 48,
       videos: 9,
       likes: 1050,
       dislikes: 47,
-      badge: "Nouveau",
       badgeType: "new",
       gradient: "from-pink-600/25 via-rose-400/15 to-red-400/20",
       icon: <GraduationCap className="w-6 h-6" />,
@@ -194,12 +209,11 @@ const Scenarios = () => {
       description: "Autorité séduisante",
       emotionalSubtitle: "Loi et désir",
       sexyTagline: "Vous êtes en état d'arrestation... 🚔",
-      detailedDescription: "Cette officière autoritaire qui sait faire respecter l'ordre... Jeux de pouvoir, domination consentie. Langage ferme mais excitant.",
+      detailedDescription: scenarioData.police.meetingStory,
       photos: 52,
       videos: 10,
       likes: 1120,
       dislikes: 58,
-      badge: "Tendance",
       badgeType: "trending",
       gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20",
       icon: <Shield className="w-6 h-6" />,
@@ -212,12 +226,11 @@ const Scenarios = () => {
       description: "Enseignement privé",
       emotionalSubtitle: "Leçons particulières",
       sexyTagline: "Tu as été un mauvais élève... 👩‍🏫",
-      detailedDescription: "Cette enseignante calme, posée, légèrement supérieure. Séduction élégante, voix rassurante. Érotisme psychologique fort.",
+      detailedDescription: scenarioData.teacher.meetingStory,
       photos: 46,
       videos: 8,
       likes: 980,
       dislikes: 51,
-      badge: "Nouveau",
       badgeType: "new",
       gradient: "from-amber-600/25 via-orange-400/15 to-yellow-400/20",
       icon: <BookOpen className="w-6 h-6" />,
@@ -225,12 +238,6 @@ const Scenarios = () => {
       isOnline: true,
     },
   ];
-
-  // PHASE DE LANCEMENT : Catégorisation simplifiée pour les 5 scénarios Fantasy
-  // Pas de personnages "vérifiés" dans cette phase
-  const trendingCharacters = scenarios.filter(s => s.badgeType === "trending");
-  const newCharacters = scenarios.filter(s => s.badgeType === "new");
-  const intenseCharacters = scenarios.filter(s => ["police", "teacher"].includes(s.id));
 
   // Filter for search
   const filteredScenarios = scenarios.filter((scenario) => {
@@ -243,23 +250,18 @@ const Scenarios = () => {
     if (selectedScenario && userNickname && characterName) {
       try {
         const avatarUrl = getRandomAvatar();
+        const scenarioPrefs = scenarioData[selectedScenario.id as keyof typeof scenarioData];
         const preferences = {
           userNickname,
           characterName,
           characterAge,
           characterGender,
           avatarUrl,
-          writingStyle: {
-            shortSuggestive,
-            softDetailed,
-            teasingTone,
-            romanticTone,
-            intenseTone,
-            withEmojis,
-            withoutEmojis,
-          },
-          intensity,
-          responseRhythm,
+          // Personnalité et style définis par le scénario
+          personality: scenarioPrefs?.personality || [],
+          meetingStory: scenarioPrefs?.meetingStory || "",
+          // Rythme naturel par défaut
+          responseRhythm: "natural",
         };
 
         const conversation = await createConversation({
@@ -286,7 +288,7 @@ const Scenarios = () => {
     }
   };
 
-  const isVerifiedScenario = selectedScenario?.isVerified;
+  
 
   const generateRandomName = () => {
     const femaleNames = ["Emma", "Sophie", "Chloé", "Léa", "Manon", "Camille", "Sarah", "Laura", "Julie", "Marie"];
@@ -448,41 +450,7 @@ const Scenarios = () => {
           {/* Premium Banner */}
           <PremiumBanner />
 
-          {/* Trending Characters */}
-          <CharacterCarousel
-            title="Très populaires"
-            subtitle="Les plus appréciés cette semaine"
-            icon={<Flame className="w-6 h-6" />}
-            characters={trendingCharacters}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onCharacterClick={handleScenarioClick}
-            onFavoriteToggle={toggleFavorite}
-          />
-
-          {/* Intense Scenarios */}
-          <CharacterCarousel
-            title="Scénarios intenses"
-            subtitle="Pour les plus audacieux"
-            icon={<Zap className="w-6 h-6" />}
-            characters={intenseCharacters}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onCharacterClick={handleScenarioClick}
-            onFavoriteToggle={toggleFavorite}
-          />
-
-          {/* New Characters */}
-          <CharacterCarousel
-            title="Nouveautés"
-            subtitle="Fraîchement arrivées"
-            icon={<Sparkles className="w-6 h-6" />}
-            characters={newCharacters}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onCharacterClick={handleScenarioClick}
-            onFavoriteToggle={toggleFavorite}
-          />
+          {/* Sections supplémentaires retirées pour simplifier le parcours */}
 
           {/* PHASE DE LANCEMENT : Section "Tous les personnages" retirée - seuls les 5 Fantasy sont visibles */}
         </>
@@ -499,165 +467,125 @@ const Scenarios = () => {
         }}
       />
 
-      {/* Configuration Dialog */}
+      {/* Configuration Dialog - Refonte immersive */}
       <Dialog open={selectedScenario !== null} onOpenChange={(open) => !open && setSelectedScenario(null)}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary">
+          <DialogHeader className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/30 to-violet/30 flex items-center justify-center text-primary">
                 {selectedScenario?.icon}
               </div>
-              {selectedScenario?.title}
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              {selectedScenario?.detailedDescription}
-            </DialogDescription>
+              <DialogTitle className="text-xl font-bold text-foreground">
+                {selectedScenario?.title}
+              </DialogTitle>
+            </div>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* User Nickname */}
-            <div className="space-y-2">
-              <Label htmlFor="userNickname" className="text-foreground font-semibold">
-                Nom par lequel je veux être appelé
-              </Label>
-              <Input
-                id="userNickname"
-                value={userNickname}
-                onChange={(e) => setUserNickname(e.target.value)}
-                placeholder="Ton prénom ou pseudo..."
-                className="bg-background border-border"
-              />
+            {/* Section immersive "Notre rencontre" */}
+            <div className="space-y-3 p-4 rounded-2xl bg-gradient-to-br from-primary/5 to-violet/10 border border-primary/20">
+              <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                <Heart className="w-4 h-4" />
+                Notre rencontre
+              </h3>
+              <p className="text-sm text-muted-foreground italic leading-relaxed">
+                "{selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.meetingStory}"
+              </p>
             </div>
 
-            {/* Character Settings (only for non-verified) */}
-            {!isVerifiedScenario && (
-              <>
-                <div className="space-y-2">
-                  <Label className="text-foreground font-semibold">Sexe du personnage</Label>
-                  <Select value={characterGender} onValueChange={setCharacterGender}>
-                    <SelectTrigger className="bg-background border-border">
-                      <SelectValue placeholder="Choisir..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="femme">Femme</SelectItem>
-                      <SelectItem value="homme">Homme</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="characterName" className="text-foreground font-semibold">
-                    Prénom du personnage
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="characterName"
-                      value={characterName}
-                      onChange={(e) => setCharacterName(e.target.value)}
-                      placeholder="Prénom..."
-                      className="bg-background border-border flex-1"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={generateRandomName}
-                      className="whitespace-nowrap"
-                    >
-                      🎲 Random
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-foreground font-semibold">Âge du personnage</Label>
-                  <Select value={characterAge} onValueChange={setCharacterAge}>
-                    <SelectTrigger className="bg-background border-border">
-                      <SelectValue placeholder="Choisir un âge..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 43 }, (_, i) => i + 18).map((age) => (
-                        <SelectItem key={age} value={age.toString()}>
-                          {age} ans
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </>
-            )}
-
-            {/* Writing Style */}
+            {/* Section Personnalité */}
             <div className="space-y-3">
-              <Label className="text-foreground font-semibold">Style d'écriture</Label>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { id: "shortSuggestive", label: "Court et suggestif", state: shortSuggestive, setter: setShortSuggestive },
-                  { id: "softDetailed", label: "Doux et détaillé", state: softDetailed, setter: setSoftDetailed },
-                  { id: "teasingTone", label: "Ton taquin", state: teasingTone, setter: setTeasingTone },
-                  { id: "romanticTone", label: "Ton romantique", state: romanticTone, setter: setRomanticTone },
-                  { id: "intenseTone", label: "Ton intense", state: intenseTone, setter: setIntenseTone },
-                  { id: "withEmojis", label: "Avec emojis", state: withEmojis, setter: setWithEmojis },
-                ].map((item) => (
-                  <div key={item.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={item.id}
-                      checked={item.state}
-                      onCheckedChange={(checked) => item.setter(checked as boolean)}
-                    />
-                    <label htmlFor={item.id} className="text-sm text-foreground cursor-pointer">
-                      {item.label}
-                    </label>
-                  </div>
+              <h3 className="text-sm font-semibold text-foreground">Personnalité</h3>
+              <div className="flex flex-wrap gap-2">
+                {selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.personality.map((trait, index) => (
+                  <span 
+                    key={index}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
+                  >
+                    {trait}
+                  </span>
                 ))}
               </div>
             </div>
 
-            {/* Intensity */}
-            <div className="space-y-3">
-              <Label className="text-foreground font-semibold">Intensité des échanges</Label>
-              <RadioGroup value={intensity} onValueChange={setIntensity} className="grid grid-cols-3 gap-2">
-                {[
-                  { value: "doux", label: "Doux" },
-                  { value: "sensuel", label: "Sensuel" },
-                  { value: "intense", label: "Intense" },
-                ].map((item) => (
-                  <div key={item.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={item.value} id={item.value} />
-                    <label htmlFor={item.value} className="text-sm text-foreground cursor-pointer">
-                      {item.label}
-                    </label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            {/* Response Rhythm */}
-            <div className="space-y-3">
-              <Label className="text-foreground font-semibold">Rythme des réponses</Label>
-              <RadioGroup value={responseRhythm} onValueChange={setResponseRhythm} className="space-y-2">
-                {[
-                  { value: "natural", label: "Naturel (simulé)" },
-                  { value: "instant", label: "Instantané" },
-                  { value: "slow", label: "Lent et pensif" },
-                ].map((item) => (
-                  <div key={item.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={item.value} id={item.value} />
-                    <label htmlFor={item.value} className="text-sm text-foreground cursor-pointer">
-                      {item.label}
-                    </label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            {/* CTA */}
-            <div className="pt-4 space-y-3">
-              <p className="text-center text-sm text-muted-foreground">
-                ✨ Tu es prêt ? Elle t'attend…
+            {/* Section "Ce que tu vas vivre" */}
+            <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                {selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.contentHint}
               </p>
+            </div>
+
+            {/* Champs utilisateur simplifiés */}
+            <div className="space-y-4 pt-2">
+              <div className="space-y-2">
+                <Label htmlFor="userNickname" className="text-foreground font-semibold">
+                  Ton prénom ou pseudo
+                </Label>
+                <Input
+                  id="userNickname"
+                  value={userNickname}
+                  onChange={(e) => setUserNickname(e.target.value)}
+                  placeholder="Comment veux-tu être appelé ?"
+                  className="bg-background border-border"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="characterName" className="text-foreground font-semibold">
+                  Prénom du personnage
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="characterName"
+                    value={characterName}
+                    onChange={(e) => setCharacterName(e.target.value)}
+                    placeholder="Prénom..."
+                    className="bg-background border-border flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={generateRandomName}
+                    className="whitespace-nowrap"
+                  >
+                    🎲 Aléatoire
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-foreground font-semibold">Âge du personnage</Label>
+                <Select value={characterAge} onValueChange={setCharacterAge}>
+                  <SelectTrigger className="bg-background border-border">
+                    <SelectValue placeholder="Choisir un âge..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 43 }, (_, i) => i + 18).map((age) => (
+                      <SelectItem key={age} value={age.toString()}>
+                        {age} ans
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Teaser avant CTA */}
+            <div className="pt-4 space-y-4">
+              <div className="text-center p-3 rounded-xl bg-gradient-to-r from-primary/10 to-violet/10 border border-primary/20">
+                <p className="text-sm text-primary italic">
+                  "{selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.teaser}"
+                </p>
+              </div>
+              
+              <p className="text-center text-xs text-muted-foreground">
+                Quand tu veux.
+              </p>
+              
               <Button
                 onClick={handleStartChat}
-                disabled={!userNickname || (!isVerifiedScenario && !characterName)}
+                disabled={!userNickname || !characterName}
                 className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 rounded-full shadow-[0_0_30px_rgba(255,77,141,0.3)] hover:shadow-[0_0_50px_rgba(255,77,141,0.5)] transition-all"
               >
                 Commencer la conversation
