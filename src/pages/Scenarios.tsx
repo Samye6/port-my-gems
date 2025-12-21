@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Users, Heart, Sparkles, Search, Dumbbell, GraduationCap, 
-  Shield, BookOpen
-} from "lucide-react";
+import { Heart, Sparkles, Search } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueCard from "@/assets/colleague-card.png";
@@ -58,6 +55,30 @@ interface Scenario {
   isOnline?: boolean;
 }
 
+// Mapping des slugs DB vers les ids internes de l'app
+const normalizeSlug = (slug: string): string => {
+  const slugMap: Record<string, string> = {
+    'collegue': 'colleague',
+    'fit-girl': 'fitgirl',
+    'universitaire': 'university',
+    'policiere': 'police',
+    'professeure': 'teacher',
+  };
+  return slugMap[slug] || slug;
+};
+
+// Mapping des images par id normalisé
+const getScenarioImage = (id: string): string | undefined => {
+  const imageMap: Record<string, string> = {
+    'colleague': colleagueCard,
+    'fitgirl': fitgirlCard,
+    'university': universityCard,
+    'police': policeCard,
+    'teacher': teacherCard,
+  };
+  return imageMap[id];
+};
+
 const Scenarios = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -65,6 +86,8 @@ const Scenarios = () => {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [loadingScenarios, setLoadingScenarios] = useState(true);
   const [favorites, setFavorites] = useState<string[]>(() => {
     const saved = localStorage.getItem("favoriteScenarios");
     return saved ? JSON.parse(saved) : [];
@@ -86,6 +109,57 @@ const Scenarios = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Fetch scenarios from Supabase
+  useEffect(() => {
+    const fetchScenarios = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("fantasies")
+          .select("slug, title, tagline, description, is_active, gradient, badge, badge_type, photos, videos, likes, dislikes")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true });
+
+        if (error) {
+          console.error("Error fetching scenarios:", error);
+          setLoadingScenarios(false);
+          return;
+        }
+
+        const mappedScenarios: Scenario[] = (data || []).map((row) => {
+          const normalizedId = normalizeSlug(row.slug);
+          const scenarioMeta = scenarioData[normalizedId as keyof typeof scenarioData];
+          
+          return {
+            id: normalizedId,
+            title: row.title,
+            emotionalSubtitle: row.tagline ?? "",
+            description: row.description ?? "",
+            sexyTagline: "",
+            detailedDescription: scenarioMeta?.meetingStory ?? "",
+            photos: row.photos ?? 0,
+            videos: row.videos ?? 0,
+            likes: row.likes ?? 0,
+            dislikes: row.dislikes ?? 0,
+            badge: row.badge ?? undefined,
+            badgeType: (row.badge_type as Scenario["badgeType"]) ?? undefined,
+            gradient: row.gradient ?? "from-primary/25 via-violet/15 to-pink/20",
+            icon: <Sparkles className="w-6 h-6" />,
+            image: getScenarioImage(normalizedId),
+            isOnline: true,
+          };
+        });
+
+        setScenarios(mappedScenarios);
+      } catch (err) {
+        console.error("Error fetching scenarios:", err);
+      } finally {
+        setLoadingScenarios(false);
+      }
+    };
+
+    fetchScenarios();
+  }, []);
   
   // Form state - simplifié
   const [userNickname, setUserNickname] = useState("");
@@ -95,10 +169,7 @@ const Scenarios = () => {
 
   const handleScenarioClick = (scenario: Scenario) => {
     if (!isAuthenticated) {
-      if (scenario.id === "colleague" || scenario.id === "doctor") {
-        navigate("/auth");
-        return;
-      }
+      navigate("/auth");
       return;
     }
     setSelectedScenario(scenario);
@@ -149,95 +220,6 @@ const Scenarios = () => {
     },
   };
 
-  const scenarios: Scenario[] = [
-    {
-      id: "colleague",
-      title: "Collègue",
-      description: "Tension au bureau",
-      emotionalSubtitle: "Regards complices",
-      sexyTagline: "On se retrouve à la pause ? 😘",
-      detailedDescription: scenarioData.colleague.meetingStory,
-      photos: 45,
-      videos: 8,
-      likes: 890,
-      dislikes: 52,
-      badge: "Recommandé",
-      badgeType: "trending",
-      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20",
-      icon: <Users className="w-6 h-6" />,
-      image: colleagueCard,
-      isOnline: true,
-    },
-    {
-      id: "fitgirl",
-      title: "La Fit Girl",
-      description: "Énergie et sensualité",
-      emotionalSubtitle: "Corps sculpté",
-      sexyTagline: "Tu veux voir mes muscles ? 💪",
-      detailedDescription: scenarioData.fitgirl.meetingStory,
-      photos: 65,
-      videos: 14,
-      likes: 1180,
-      dislikes: 42,
-      badge: "Populaire",
-      badgeType: "trending",
-      gradient: "from-red-700/25 via-orange-500/15 to-amber-500/20",
-      icon: <Dumbbell className="w-6 h-6" />,
-      image: fitgirlCard,
-      isOnline: true,
-    },
-    {
-      id: "university",
-      title: "Universitaire",
-      description: "Étudiante coquine",
-      emotionalSubtitle: "Innocence trompeuse",
-      sexyTagline: "On révise ensemble ? 📚",
-      detailedDescription: scenarioData.university.meetingStory,
-      photos: 48,
-      videos: 9,
-      likes: 1050,
-      dislikes: 47,
-      badgeType: "new",
-      gradient: "from-pink-600/25 via-rose-400/15 to-red-400/20",
-      icon: <GraduationCap className="w-6 h-6" />,
-      image: universityCard,
-      isOnline: true,
-    },
-    {
-      id: "police",
-      title: "Policière",
-      description: "Autorité séduisante",
-      emotionalSubtitle: "Loi et désir",
-      sexyTagline: "Vous êtes en état d'arrestation... 🚔",
-      detailedDescription: scenarioData.police.meetingStory,
-      photos: 52,
-      videos: 10,
-      likes: 1120,
-      dislikes: 58,
-      badgeType: "trending",
-      gradient: "from-blue-900/25 via-indigo-600/15 to-purple-500/20",
-      icon: <Shield className="w-6 h-6" />,
-      image: policeCard,
-      isOnline: true,
-    },
-    {
-      id: "teacher",
-      title: "Professeure",
-      description: "Enseignement privé",
-      emotionalSubtitle: "Leçons particulières",
-      sexyTagline: "Tu as été un mauvais élève... 👩‍🏫",
-      detailedDescription: scenarioData.teacher.meetingStory,
-      photos: 46,
-      videos: 8,
-      likes: 980,
-      dislikes: 51,
-      badgeType: "new",
-      gradient: "from-amber-600/25 via-orange-400/15 to-yellow-400/20",
-      icon: <BookOpen className="w-6 h-6" />,
-      image: teacherCard,
-      isOnline: true,
-    },
-  ];
 
   // Filter for search
   const filteredScenarios = scenarios.filter((scenario) => {
@@ -431,6 +413,17 @@ const Scenarios = () => {
               </div>
             ))}
           </div>
+        </section>
+      ) : loadingScenarios ? (
+        <section className="container px-6 py-12 text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-muted-foreground">Chargement…</p>
+          </div>
+        </section>
+      ) : scenarios.length === 0 ? (
+        <section className="container px-6 py-12 text-center">
+          <p className="text-muted-foreground">Aucun scénario disponible</p>
         </section>
       ) : (
         <>

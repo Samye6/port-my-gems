@@ -62,6 +62,63 @@ export type Database = {
         }
         Relationships: []
       }
+      fantasies: {
+        Row: {
+          badge: string | null
+          badge_type: string | null
+          created_at: string
+          description: string | null
+          dislikes: number | null
+          gradient: string | null
+          id: string
+          is_active: boolean
+          likes: number | null
+          photos: number | null
+          slug: string
+          sort_order: number | null
+          tagline: string | null
+          title: string
+          updated_at: string
+          videos: number | null
+        }
+        Insert: {
+          badge?: string | null
+          badge_type?: string | null
+          created_at?: string
+          description?: string | null
+          dislikes?: number | null
+          gradient?: string | null
+          id?: string
+          is_active?: boolean
+          likes?: number | null
+          photos?: number | null
+          slug: string
+          sort_order?: number | null
+          tagline?: string | null
+          title: string
+          updated_at?: string
+          videos?: number | null
+        }
+        Update: {
+          badge?: string | null
+          badge_type?: string | null
+          created_at?: string
+          description?: string | null
+          dislikes?: number | null
+          gradient?: string | null
+          id?: string
+          is_active?: boolean
+          likes?: number | null
+          photos?: number | null
+          slug?: string
+          sort_order?: number | null
+          tagline?: string | null
+          title?: string
+          updated_at?: string
+          videos?: number | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
