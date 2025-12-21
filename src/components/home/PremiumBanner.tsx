@@ -67,7 +67,7 @@ const PremiumBanner = () => {
               </span>
             </h2>
             <p className="text-muted-foreground mb-6">
-              Accès illimité aux scénarios Fantasy, messages et photos sans restriction
+              Profite d'une expérience continue, sans interruption. Ne t'arrête jamais au moment le plus intense.
             </p>
 
             {/* Benefits Grid */}
