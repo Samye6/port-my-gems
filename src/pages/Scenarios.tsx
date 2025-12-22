@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Sparkles, Search } from "lucide-react";
+import { Heart, Sparkles, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueCard from "@/assets/colleague-card.png";
@@ -55,28 +55,89 @@ interface Scenario {
   isOnline?: boolean;
 }
 
-// Mapping des slugs DB vers les ids internes de l'app
-const normalizeSlug = (slug: string): string => {
-  const slugMap: Record<string, string> = {
-    'collegue': 'colleague',
-    'fit-girl': 'fitgirl',
-    'universitaire': 'university',
-    'policiere': 'police',
-    'professeure': 'teacher',
-  };
-  return slugMap[slug] || slug;
+// Mapping des slugs DB vers les ids internes de l'app (HORS DU COMPOSANT)
+const SLUG_MAP: Record<string, string> = {
+  'collegue': 'colleague',
+  'fit-girl': 'fitgirl',
+  'universitaire': 'university',
+  'policiere': 'police',
+  'professeure': 'teacher',
 };
 
-// Mapping des images par id normalisé
+const normalizeSlug = (slug: string): string => {
+  return SLUG_MAP[slug] || slug;
+};
+
+// Mapping des images par id normalisé (HORS DU COMPOSANT)
+const IMAGE_MAP: Record<string, string> = {
+  'colleague': colleagueCard,
+  'fitgirl': fitgirlCard,
+  'university': universityCard,
+  'police': policeCard,
+  'teacher': teacherCard,
+};
+
 const getScenarioImage = (id: string): string | undefined => {
-  const imageMap: Record<string, string> = {
-    'colleague': colleagueCard,
-    'fitgirl': fitgirlCard,
-    'university': universityCard,
-    'police': policeCard,
-    'teacher': teacherCard,
+  return IMAGE_MAP[id];
+};
+
+// Mapping des icônes par id normalisé (HORS DU COMPOSANT)
+const getScenarioIcon = (id: string): React.ReactNode => {
+  const iconMap: Record<string, React.ReactNode> = {
+    'colleague': <Users className="w-6 h-6" />,
+    'fitgirl': <Dumbbell className="w-6 h-6" />,
+    'university': <GraduationCap className="w-6 h-6" />,
+    'police': <Shield className="w-6 h-6" />,
+    'teacher': <BookOpen className="w-6 h-6" />,
   };
-  return imageMap[id];
+  return iconMap[id] || <Sparkles className="w-6 h-6" />;
+};
+
+// Mapping des gradients par id normalisé (HORS DU COMPOSANT)
+const getScenarioGradient = (id: string, dbGradient?: string | null): string => {
+  if (dbGradient) return dbGradient;
+  const gradientMap: Record<string, string> = {
+    'colleague': 'from-blue-500/25 via-indigo-500/15 to-purple-500/20',
+    'fitgirl': 'from-pink-500/25 via-rose-500/15 to-red-500/20',
+    'university': 'from-amber-500/25 via-yellow-500/15 to-orange-500/20',
+    'police': 'from-slate-500/25 via-blue-500/15 to-indigo-500/20',
+    'teacher': 'from-emerald-500/25 via-teal-500/15 to-cyan-500/20',
+  };
+  return gradientMap[id] || 'from-primary/25 via-violet/15 to-pink/20';
+};
+
+// Données immersives pour le modal (meetingStory, personality, teaser) - HORS DU COMPOSANT
+const SCENARIO_IMMERSIVE_DATA: Record<string, { meetingStory: string; personality: string[]; contentHint: string; teaser: string }> = {
+  colleague: {
+    meetingStory: "On travaille ensemble depuis des mois. Les réunions, les regards, les silences… Ce soir, on est encore seuls au bureau. Et l'ambiance a changé.",
+    personality: ["Discrète", "Intelligente", "Provocatrice subtile"],
+    contentHint: "Les interactions évoluent au fil de la discussion.",
+    teaser: "Je t'attendais… tu viens enfin me parler ? 😉",
+  },
+  fitgirl: {
+    meetingStory: "On s'est croisés à la salle. Tu m'as aidée sur une série… depuis, j'ai remarqué ton regard quand je m'entraîne. Ce soir, j'ai encore de l'énergie à dépenser.",
+    personality: ["Énergique", "Directe", "Taquine", "Confiante"],
+    contentHint: "Les interactions évoluent au fil de la discussion.",
+    teaser: "Tu viens t'entraîner avec moi ? 💪",
+  },
+  university: {
+    meetingStory: "On s'est retrouvés à la bibliothèque. Une question, un sourire, puis des messages tard le soir. Elle aime apprendre… et provoquer.",
+    personality: ["Curieuse", "Joueuse", "Maligne"],
+    contentHint: "Les interactions évoluent au fil de la discussion.",
+    teaser: "J'ai une question pour toi… 📚",
+  },
+  police: {
+    meetingStory: "Elle t'a contrôlé une fois. Depuis, elle te reconnaît. Son ton est ferme… mais son regard en dit long. Elle aime garder le contrôle.",
+    personality: ["Autoritaire", "Calme", "Dominante"],
+    contentHint: "Les interactions évoluent au fil de la discussion.",
+    teaser: "Vous êtes en infraction… 🚔",
+  },
+  teacher: {
+    meetingStory: "Elle t'a toujours trouvé différent. Trop attentif, trop mature. Ce soir, la discussion dérape doucement. Elle hésite… puis sourit.",
+    personality: ["Élégante", "Intellectuelle", "Troublée"],
+    contentHint: "Les interactions évoluent au fil de la discussion.",
+    teaser: "J'ai quelque chose à te dire… 👩‍🏫",
+  },
 };
 
 const Scenarios = () => {
@@ -126,25 +187,29 @@ const Scenarios = () => {
           return;
         }
 
+        // Debug log temporaire
+        console.log(`[Scenarios] Loaded ${data?.length ?? 0} scenarios from DB:`, data?.map(r => r.slug));
+
         const mappedScenarios: Scenario[] = (data || []).map((row) => {
           const normalizedId = normalizeSlug(row.slug);
-          const scenarioMeta = scenarioData[normalizedId as keyof typeof scenarioData];
+          const immersiveData = SCENARIO_IMMERSIVE_DATA[normalizedId];
           
           return {
             id: normalizedId,
+            // IMPORTANT: title, tagline (emotionalSubtitle), description viennent de la DB
             title: row.title,
             emotionalSubtitle: row.tagline ?? "",
             description: row.description ?? "",
             sexyTagline: "",
-            detailedDescription: scenarioMeta?.meetingStory ?? "",
+            detailedDescription: immersiveData?.meetingStory ?? "",
             photos: row.photos ?? 0,
             videos: row.videos ?? 0,
             likes: row.likes ?? 0,
             dislikes: row.dislikes ?? 0,
             badge: row.badge ?? undefined,
             badgeType: (row.badge_type as Scenario["badgeType"]) ?? undefined,
-            gradient: row.gradient ?? "from-primary/25 via-violet/15 to-pink/20",
-            icon: <Sparkles className="w-6 h-6" />,
+            gradient: getScenarioGradient(normalizedId, row.gradient),
+            icon: getScenarioIcon(normalizedId),
             image: getScenarioImage(normalizedId),
             isOnline: true,
           };
@@ -184,43 +249,6 @@ const Scenarios = () => {
     localStorage.setItem("favoriteScenarios", JSON.stringify(newFavorites));
   };
 
-  // PHASE DE LANCEMENT : Seulement 5 scénarios Fantasy autorisés
-  // Tous les autres scénarios sont cachés (non visibles, non accessibles)
-  // Données immersives pour chaque scénario
-  const scenarioData = {
-    colleague: {
-      meetingStory: "On travaille ensemble depuis des mois. Les réunions, les regards, les silences… Ce soir, on est encore seuls au bureau. Et l'ambiance a changé.",
-      personality: ["Discrète", "Intelligente", "Provocatrice subtile"],
-      contentHint: "Les interactions évoluent au fil de la discussion.",
-      teaser: "Je t'attendais… tu viens enfin me parler ? 😉",
-    },
-    fitgirl: {
-      meetingStory: "On s'est croisés à la salle. Tu m'as aidée sur une série… depuis, j'ai remarqué ton regard quand je m'entraîne. Ce soir, j'ai encore de l'énergie à dépenser.",
-      personality: ["Énergique", "Directe", "Taquine", "Confiante"],
-      contentHint: "Les interactions évoluent au fil de la discussion.",
-      teaser: "Tu viens t'entraîner avec moi ? 💪",
-    },
-    university: {
-      meetingStory: "On s'est retrouvés à la bibliothèque. Une question, un sourire, puis des messages tard le soir. Elle aime apprendre… et provoquer.",
-      personality: ["Curieuse", "Joueuse", "Maligne"],
-      contentHint: "Les interactions évoluent au fil de la discussion.",
-      teaser: "J'ai une question pour toi… 📚",
-    },
-    police: {
-      meetingStory: "Elle t'a contrôlé une fois. Depuis, elle te reconnaît. Son ton est ferme… mais son regard en dit long. Elle aime garder le contrôle.",
-      personality: ["Autoritaire", "Calme", "Dominante"],
-      contentHint: "Les interactions évoluent au fil de la discussion.",
-      teaser: "Vous êtes en infraction… 🚔",
-    },
-    teacher: {
-      meetingStory: "Elle t'a toujours trouvé différent. Trop attentif, trop mature. Ce soir, la discussion dérape doucement. Elle hésite… puis sourit.",
-      personality: ["Élégante", "Intellectuelle", "Troublée"],
-      contentHint: "Les interactions évoluent au fil de la discussion.",
-      teaser: "J'ai quelque chose à te dire… 👩‍🏫",
-    },
-  };
-
-
   // Filter for search
   const filteredScenarios = scenarios.filter((scenario) => {
     return scenario.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -232,16 +260,16 @@ const Scenarios = () => {
     if (selectedScenario && userNickname && characterName) {
       try {
         const avatarUrl = getRandomAvatar();
-        const scenarioPrefs = scenarioData[selectedScenario.id as keyof typeof scenarioData];
+        const immersiveData = SCENARIO_IMMERSIVE_DATA[selectedScenario.id];
         const preferences = {
           userNickname,
           characterName,
           characterAge,
           characterGender,
           avatarUrl,
-          // Personnalité et style définis par le scénario
-          personality: scenarioPrefs?.personality || [],
-          meetingStory: scenarioPrefs?.meetingStory || "",
+          // Personnalité et style définis par le scénario (depuis les constantes)
+          personality: immersiveData?.personality || [],
+          meetingStory: immersiveData?.meetingStory || "",
           // Rythme naturel par défaut
           responseRhythm: "natural",
         };
@@ -482,7 +510,7 @@ const Scenarios = () => {
                 Notre rencontre
               </h3>
               <p className="text-sm text-muted-foreground italic leading-relaxed">
-                "{selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.meetingStory}"
+                "{selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.meetingStory}"
               </p>
             </div>
 
@@ -490,7 +518,7 @@ const Scenarios = () => {
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-foreground">Personnalité</h3>
               <div className="flex flex-wrap gap-2">
-                {selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.personality.map((trait, index) => (
+                {selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.personality.map((trait, index) => (
                   <span 
                     key={index}
                     className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
@@ -505,7 +533,7 @@ const Scenarios = () => {
             <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
               <p className="text-sm text-muted-foreground flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                {selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.contentHint}
+                {selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.contentHint}
               </p>
             </div>
 
@@ -568,7 +596,7 @@ const Scenarios = () => {
             <div className="pt-4 space-y-4">
               <div className="text-center p-3 rounded-xl bg-gradient-to-r from-primary/10 to-violet/10 border border-primary/20">
                 <p className="text-sm text-primary italic">
-                  "{selectedScenario && scenarioData[selectedScenario.id as keyof typeof scenarioData]?.teaser}"
+                  "{selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.teaser}"
                 </p>
               </div>
               
