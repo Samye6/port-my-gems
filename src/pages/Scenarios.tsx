@@ -316,6 +316,10 @@ const Scenarios = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      {/* DEV MARKER - À SUPPRIMER APRÈS VALIDATION */}
+      <div style={{position:"fixed", top:10, right:10, zIndex:999999, background:"yellow", padding:"8px", fontWeight:800, color:"black", borderRadius:"4px"}}>
+        DEV MARKER: Scenarios.tsx
+      </div>
       {/* Premium Header */}
       <header className="sticky top-0 z-50 relative">
         {/* Main header container with premium gradient background */}
