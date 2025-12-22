@@ -141,6 +141,7 @@ const SCENARIO_IMMERSIVE_DATA: Record<string, { meetingStory: string; personalit
 };
 
 const Scenarios = () => {
+  console.log("[SCENARIOS PAGE LOADED]");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createConversation } = useConversations();
@@ -187,8 +188,12 @@ const Scenarios = () => {
           return;
         }
 
-        // Debug log temporaire
-        console.log(`[Scenarios] Loaded ${data?.length ?? 0} scenarios from DB:`, data?.map(r => r.slug));
+        // Diagnostic logs
+        console.log("[FANTASIES FETCH DONE]", {
+          count: data?.length ?? 0,
+          sample: (data ?? []).slice(0, 5).map(r => ({ slug: r.slug, is_active: r.is_active, tagline: r.tagline }))
+        });
+        console.log("[SUPABASE URL USED]", import.meta.env.VITE_SUPABASE_URL);
 
         const mappedScenarios: Scenario[] = (data || []).map((row) => {
           const normalizedId = normalizeSlug(row.slug);
