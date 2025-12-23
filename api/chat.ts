@@ -9,18 +9,18 @@ export default async function handler(
   }
 
   try {
-    const body = JSON.parse(req.body || "{}");
-    const userMessage = body.message;
+    const { message } = req.body;
 
-    if (!userMessage) {
+    if (!message) {
       return res.status(400).json({ error: "No message provided" });
     }
 
-    // Pour l’instant, on renvoie juste le message reçu
+    // Réponse test
     return res.status(200).json({
-      reply: `Tu as dit : ${userMessage}`,
+      reply: `Tu as dit : ${message}`,
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: "Server error" });
   }
 }
