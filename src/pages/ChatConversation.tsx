@@ -420,20 +420,33 @@ const ChatConversation = () => {
           scenarioId: conversationData?.scenarioId || location.state?.scenarioId
         };
 
-        // Appeler l'edge function pour générer la réponse
-        const { data: aiResponse, error: aiError } = await supabase.functions.invoke('chat-ai-response', {
-          body: { 
-            messages: conversationHistory,
-            preferences: preferencesWithScenario
-          }
-        });
+      // Appeler TON backend Vercel (pas Supabase Edge)
+const currentScenarioId = conversationData?.scenarioId || location.state?.scenarioId || null;
 
-        if (aiError) {
-          console.error("Error calling AI function:", aiError);
-          throw aiError;
-        }
+const resp = await fetch("/api/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    message: userMessage.text,
+    scenarioId: currentScenarioId,
+    // on envoie aussi un peu de contexte, utile plus tard
+    preferences: conversationData?.preferences || preferences || {},
+    // optionnel : id de conversation si tu veux la mémoire serveur plus tard
+    conversationId: actualConversationId || null,
+  }),
+});
 
-        let aiText = aiResponse?.text || "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
+const data = await resp.json();
+
+if (!resp.ok) {
+  console.error("API /api/chat error:", data);
+  throw new Error(data?.error || "API error");
+}
+
+let aiText =
+  data?.reply ||
+  "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
+
         
         // Détecter et traiter les photos éphémères
         const ephemeralPhotoMatches = aiText.match(/\[SEND_EPHEMERAL_PHOTO\]/g);
@@ -465,7 +478,7 @@ const ChatConversation = () => {
         }
         
         // Envoyer les photos éphémères si demandées
-        const currentScenarioId = conversationData?.scenarioId || location.state?.scenarioId;
+        
         
         if (hasEphemeralPhotos && currentScenarioId === 'fitgirl') {
           for (let i = 0; i < photoCount; i++) {
