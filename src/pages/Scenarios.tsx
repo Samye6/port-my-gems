@@ -178,7 +178,7 @@ const Scenarios = () => {
       try {
         const { data, error } = await supabase
           .from("fantasies")
-          .select("slug, title, tagline, description, is_active, gradient, badge, badge_type, photos, videos, likes, dislikes")
+          .select("slug, title, tagline, description, is_active, sort_order, badge, badge_type, photos, videos, likes, dislikes")
           .eq("is_active", true)
           .order("sort_order", { ascending: true });
 
