@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Sparkles, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen } from "lucide-react";
+import { Heart, Sparkles, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen, User } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueCard from "@/assets/colleague-card.png";
@@ -10,15 +10,6 @@ import policeCard from "@/assets/police-card.png";
 import teacherCard from "@/assets/teacher-card.png";
 import fitgirlCard from "@/assets/fitgirl-card.png";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -53,6 +44,10 @@ interface Scenario {
   image?: string;
   isVerified?: boolean;
   isOnline?: boolean;
+  // New fields from DB
+  characterName?: string;
+  characterAge?: number;
+  personalityTags?: string[];
 }
 
 // Mapping des slugs DB vers les ids internes de l'app (HORS DU COMPOSANT)
@@ -94,8 +89,7 @@ const getScenarioIcon = (id: string): React.ReactNode => {
 };
 
 // Mapping des gradients par id normalisé (HORS DU COMPOSANT)
-const getScenarioGradient = (id: string, dbGradient?: string | null): string => {
-  if (dbGradient) return dbGradient;
+const getScenarioGradient = (id: string): string => {
   const gradientMap: Record<string, string> = {
     'colleague': 'from-blue-500/25 via-indigo-500/15 to-purple-500/20',
     'fitgirl': 'from-pink-500/25 via-rose-500/15 to-red-500/20',
@@ -178,7 +172,7 @@ const Scenarios = () => {
       try {
         const { data, error } = await supabase
           .from("fantasies")
-          .select("slug, title, tagline, description, is_active, sort_order, badge, badge_type, photos, videos, likes, dislikes")
+          .select("slug, title, tagline, description, is_active, sort_order, badge, badge_type, photos, videos, likes, dislikes, character_name, character_age, personality_tags")
           .eq("is_active", true)
           .order("sort_order", { ascending: true });
 
@@ -191,7 +185,7 @@ const Scenarios = () => {
         // Diagnostic logs
         console.log("[FANTASIES FETCH DONE]", {
           count: data?.length ?? 0,
-          sample: (data ?? []).slice(0, 5).map(r => ({ slug: r.slug, is_active: r.is_active, tagline: r.tagline }))
+          sample: (data ?? []).slice(0, 5).map(r => ({ slug: r.slug, is_active: r.is_active, tagline: r.tagline, character_name: r.character_name }))
         });
         console.log("[SUPABASE URL USED]", import.meta.env.VITE_SUPABASE_URL);
 
@@ -201,7 +195,6 @@ const Scenarios = () => {
           
           return {
             id: normalizedId,
-            // IMPORTANT: title, tagline (emotionalSubtitle), description viennent de la DB
             title: row.title,
             emotionalSubtitle: row.tagline ?? "",
             description: row.description ?? "",
@@ -213,10 +206,14 @@ const Scenarios = () => {
             dislikes: row.dislikes ?? 0,
             badge: row.badge ?? undefined,
             badgeType: (row.badge_type as Scenario["badgeType"]) ?? undefined,
-            gradient: getScenarioGradient(normalizedId, row.gradient),
+            gradient: getScenarioGradient(normalizedId),
             icon: getScenarioIcon(normalizedId),
             image: getScenarioImage(normalizedId),
             isOnline: true,
+            // New fields from DB
+            characterName: row.character_name ?? undefined,
+            characterAge: row.character_age ?? undefined,
+            personalityTags: row.personality_tags ?? [],
           };
         });
 
@@ -230,12 +227,6 @@ const Scenarios = () => {
 
     fetchScenarios();
   }, []);
-  
-  // Form state - simplifié
-  const [userNickname, setUserNickname] = useState("");
-  const [characterName, setCharacterName] = useState("");
-  const [characterAge, setCharacterAge] = useState("");
-  const [characterGender, setCharacterGender] = useState("femme");
 
   const handleScenarioClick = (scenario: Scenario) => {
     if (!isAuthenticated) {
@@ -262,57 +253,44 @@ const Scenarios = () => {
   });
 
   const handleStartChat = async () => {
-    if (selectedScenario && userNickname && characterName) {
-      try {
-        const avatarUrl = getRandomAvatar();
-        const immersiveData = SCENARIO_IMMERSIVE_DATA[selectedScenario.id];
-        const preferences = {
-          userNickname,
-          characterName,
-          characterAge,
-          characterGender,
-          avatarUrl,
-          // Personnalité et style définis par le scénario (depuis les constantes)
-          personality: immersiveData?.personality || [],
-          meetingStory: immersiveData?.meetingStory || "",
-          // Rythme naturel par défaut
-          responseRhythm: "natural",
-        };
+    if (!selectedScenario) return;
+    
+    try {
+      const avatarUrl = getRandomAvatar();
+      const immersiveData = SCENARIO_IMMERSIVE_DATA[selectedScenario.id];
+      
+      const preferences = {
+        characterName: selectedScenario.characterName || selectedScenario.title,
+        characterAge: selectedScenario.characterAge,
+        personality: selectedScenario.personalityTags || [],
+        meetingStory: immersiveData?.meetingStory || "",
+        avatarUrl,
+        responseRhythm: "natural",
+      };
 
-        const conversation = await createConversation({
-          character_name: characterName,
-          character_avatar: avatarUrl,
-          scenario_id: selectedScenario.id,
+      const conversation = await createConversation({
+        character_name: selectedScenario.characterName || selectedScenario.title,
+        character_avatar: avatarUrl,
+        scenario_id: selectedScenario.id,
+        preferences,
+      });
+
+      navigate(`/conversations/${conversation.id}`, {
+        state: { 
+          scenarioId: selectedScenario.id,
           preferences,
-        });
-
-        navigate(`/conversations/${conversation.id}`, {
-          state: { 
-            scenarioId: selectedScenario.id,
-            preferences,
-          },
-        });
-      } catch (error) {
-        console.error("Error creating conversation:", error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de créer la conversation",
-          variant: "destructive",
-        });
-      }
+        },
+      });
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer la conversation",
+        variant: "destructive",
+      });
     }
   };
 
-  
-
-  const generateRandomName = () => {
-    const femaleNames = ["Emma", "Sophie", "Chloé", "Léa", "Manon", "Camille", "Sarah", "Laura", "Julie", "Marie"];
-    const maleNames = ["Lucas", "Hugo", "Thomas", "Nathan", "Louis", "Maxime", "Alexandre", "Antoine", "Paul", "Arthur"];
-    
-    const names = characterGender === "homme" ? maleNames : femaleNames;
-    const randomName = names[Math.floor(Math.random() * names.length)];
-    setCharacterName(randomName);
-  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -509,6 +487,25 @@ const Scenarios = () => {
           </DialogHeader>
 
           <div className="space-y-6 py-4">
+            {/* Section Profil fixe du personnage */}
+            <div className="p-4 rounded-2xl bg-muted/30 border border-border/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-violet/30 flex items-center justify-center">
+                  <User className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">
+                    {selectedScenario?.characterName || selectedScenario?.title}
+                  </p>
+                  {selectedScenario?.characterAge && (
+                    <p className="text-sm text-muted-foreground">
+                      {selectedScenario.characterAge} ans
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Section immersive "Notre rencontre" */}
             <div className="space-y-3 p-4 rounded-2xl bg-gradient-to-br from-primary/5 to-violet/10 border border-primary/20">
               <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
@@ -520,11 +517,11 @@ const Scenarios = () => {
               </p>
             </div>
 
-            {/* Section Personnalité */}
+            {/* Section Personnalité - from DB */}
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-foreground">Personnalité</h3>
               <div className="flex flex-wrap gap-2">
-                {selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.personality.map((trait, index) => (
+                {selectedScenario?.personalityTags?.map((trait, index) => (
                   <span 
                     key={index}
                     className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
@@ -543,61 +540,6 @@ const Scenarios = () => {
               </p>
             </div>
 
-            {/* Champs utilisateur simplifiés */}
-            <div className="space-y-4 pt-2">
-              <div className="space-y-2">
-                <Label htmlFor="userNickname" className="text-foreground font-semibold">
-                  Ton prénom ou pseudo
-                </Label>
-                <Input
-                  id="userNickname"
-                  value={userNickname}
-                  onChange={(e) => setUserNickname(e.target.value)}
-                  placeholder="Comment veux-tu être appelé ?"
-                  className="bg-background border-border"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="characterName" className="text-foreground font-semibold">
-                  Prénom du personnage
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="characterName"
-                    value={characterName}
-                    onChange={(e) => setCharacterName(e.target.value)}
-                    placeholder="Prénom..."
-                    className="bg-background border-border flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={generateRandomName}
-                    className="whitespace-nowrap"
-                  >
-                    🎲 Aléatoire
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-foreground font-semibold">Âge du personnage</Label>
-                <Select value={characterAge} onValueChange={setCharacterAge}>
-                  <SelectTrigger className="bg-background border-border">
-                    <SelectValue placeholder="Choisir un âge..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 43 }, (_, i) => i + 18).map((age) => (
-                      <SelectItem key={age} value={age.toString()}>
-                        {age} ans
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
             {/* Teaser avant CTA */}
             <div className="pt-4 space-y-4">
               <div className="text-center p-3 rounded-xl bg-gradient-to-r from-primary/10 to-violet/10 border border-primary/20">
@@ -612,7 +554,6 @@ const Scenarios = () => {
               
               <Button
                 onClick={handleStartChat}
-                disabled={!userNickname || !characterName}
                 className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 rounded-full shadow-[0_0_30px_rgba(255,77,141,0.3)] hover:shadow-[0_0_50px_rgba(255,77,141,0.5)] transition-all"
               >
                 Commencer la conversation
