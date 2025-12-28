@@ -66,6 +66,8 @@ export type Database = {
         Row: {
           badge: string | null
           badge_type: string | null
+          character_age: number | null
+          character_name: string | null
           created_at: string
           description: string | null
           dislikes: number | null
@@ -73,6 +75,7 @@ export type Database = {
           id: string
           is_active: boolean
           likes: number | null
+          personality_tags: string[] | null
           photos: number | null
           slug: string
           sort_order: number | null
@@ -84,6 +87,8 @@ export type Database = {
         Insert: {
           badge?: string | null
           badge_type?: string | null
+          character_age?: number | null
+          character_name?: string | null
           created_at?: string
           description?: string | null
           dislikes?: number | null
@@ -91,6 +96,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           likes?: number | null
+          personality_tags?: string[] | null
           photos?: number | null
           slug: string
           sort_order?: number | null
@@ -102,6 +108,8 @@ export type Database = {
         Update: {
           badge?: string | null
           badge_type?: string | null
+          character_age?: number | null
+          character_name?: string | null
           created_at?: string
           description?: string | null
           dislikes?: number | null
@@ -109,6 +117,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           likes?: number | null
+          personality_tags?: string[] | null
           photos?: number | null
           slug?: string
           sort_order?: number | null
