@@ -24,31 +24,7 @@ import SearchBar from "@/components/home/SearchBar";
 import FloatingChatButton from "@/components/home/FloatingChatButton";
 import { useConversations } from "@/hooks/useConversations";
 import { useToast } from "@/hooks/use-toast";
-
-interface Scenario {
-  id: string;
-  title: string;
-  description: string;
-  emotionalSubtitle: string;
-  sexyTagline: string;
-  icon: React.ReactNode;
-  detailedDescription: string;
-  photos: number;
-  videos: number;
-  likes: number;
-  dislikes: number;
-  badge?: string;
-  badgeType?: "trending" | "premium" | "new" | "verified" | "vip";
-  gradient: string;
-  avatar?: string;
-  image?: string;
-  isVerified?: boolean;
-  isOnline?: boolean;
-  // New fields from DB
-  characterName?: string;
-  characterAge?: number;
-  personalityTags?: string[];
-}
+import type { Fantasy } from "@/types/Fantasy";
 
 // Mapping des slugs DB vers les ids internes de l'app (HORS DU COMPOSANT)
 const SLUG_MAP: Record<string, string> = {
@@ -139,10 +115,10 @@ const Scenarios = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createConversation } = useConversations();
-  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState<Fantasy | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [fantasies, setFantasies] = useState<Fantasy[]>([]);
   const [loadingScenarios, setLoadingScenarios] = useState(true);
   const [favorites, setFavorites] = useState<string[]>(() => {
     const saved = localStorage.getItem("favoriteScenarios");
@@ -168,7 +144,7 @@ const Scenarios = () => {
 
   // Fetch scenarios from Supabase
   useEffect(() => {
-    const fetchScenarios = async () => {
+    const fetchFantasies = async () => {
       try {
         const { data, error } = await supabase
           .from("fantasies")
@@ -177,81 +153,82 @@ const Scenarios = () => {
           .order("sort_order", { ascending: true });
 
         if (error) {
-          console.error("Error fetching scenarios:", error);
+          console.error("Error fetching fantasies:", error);
           setLoadingScenarios(false);
           return;
         }
 
-        // Diagnostic logs
-        console.log("[FANTASIES FETCH DONE]", {
-          count: data?.length ?? 0,
-          sample: (data ?? []).slice(0, 5).map(r => ({ slug: r.slug, is_active: r.is_active, tagline: r.tagline, character_name: r.character_name }))
-        });
-        console.log("[SUPABASE URL USED]", import.meta.env.VITE_SUPABASE_URL);
+        // Diagnostic log - SUPABASE RAW
+        console.log("SUPABASE RAW FANTASY:", data?.[0]);
 
-        const mappedScenarios: Scenario[] = (data || []).map((row) => {
+        const mappedFantasies: Fantasy[] = (data || []).map((row) => {
           const normalizedId = normalizeSlug(row.slug);
           const immersiveData = SCENARIO_IMMERSIVE_DATA[normalizedId];
           
           return {
             id: normalizedId,
+            slug: row.slug,
             title: row.title,
-            emotionalSubtitle: row.tagline ?? "",
-            description: row.description ?? "",
-            sexyTagline: "",
-            detailedDescription: immersiveData?.meetingStory ?? "",
+            tagline: row.tagline,
+            description: row.description,
+            is_active: row.is_active,
+            sort_order: row.sort_order ?? 0,
+            badge: row.badge,
+            badge_type: row.badge_type as Fantasy["badge_type"],
             photos: row.photos ?? 0,
             videos: row.videos ?? 0,
             likes: row.likes ?? 0,
             dislikes: row.dislikes ?? 0,
-            badge: row.badge ?? undefined,
-            badgeType: (row.badge_type as Scenario["badgeType"]) ?? undefined,
+            // Champs personnage (snake_case de Supabase)
+            character_name: row.character_name,
+            character_age: row.character_age,
+            personality_tags: row.personality_tags,
+            // Champs UI calculés
             gradient: getScenarioGradient(normalizedId),
             icon: getScenarioIcon(normalizedId),
             image: getScenarioImage(normalizedId),
             isOnline: true,
-            // New fields from DB
-            characterName: row.character_name ?? undefined,
-            characterAge: row.character_age ?? undefined,
-            personalityTags: row.personality_tags ?? [],
+            emotionalSubtitle: row.tagline ?? "",
+            sexyTagline: "",
+            detailedDescription: immersiveData?.meetingStory ?? "",
           };
         });
 
-        console.log("[MAPPED SCENARIOS SAMPLE]", mappedScenarios[0]);
-        setScenarios(mappedScenarios);
+        console.log("[MAPPED FANTASIES SAMPLE]", mappedFantasies[0]);
+        setFantasies(mappedFantasies);
       } catch (err) {
-        console.error("Error fetching scenarios:", err);
+        console.error("Error fetching fantasies:", err);
       } finally {
         setLoadingScenarios(false);
       }
     };
 
-    fetchScenarios();
+    fetchFantasies();
   }, []);
 
-  const handleScenarioClick = (scenario: Scenario) => {
-    console.log("[SCENARIO CLICKED]", scenario);
+  const handleScenarioClick = (fantasy: Fantasy) => {
+    console.log("[FANTASY CLICKED]", fantasy);
     if (!isAuthenticated) {
       navigate("/auth");
       return;
     }
-    setSelectedScenario(scenario);
+    setSelectedScenario(fantasy);
   };
 
-  const toggleFavorite = (e: React.MouseEvent, scenarioId: string) => {
+  const toggleFavorite = (e: React.MouseEvent, fantasyId: string) => {
     e.stopPropagation();
-    const newFavorites = favorites.includes(scenarioId)
-      ? favorites.filter((id) => id !== scenarioId)
-      : [...favorites, scenarioId];
+    const newFavorites = favorites.includes(fantasyId)
+      ? favorites.filter((id) => id !== fantasyId)
+      : [...favorites, fantasyId];
     setFavorites(newFavorites);
     localStorage.setItem("favoriteScenarios", JSON.stringify(newFavorites));
   };
 
   // Filter for search
-  const filteredScenarios = scenarios.filter((scenario) => {
-    return scenario.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           scenario.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           scenario.emotionalSubtitle.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredFantasies = fantasies.filter((fantasy) => {
+    return fantasy.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           (fantasy.description ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+           fantasy.emotionalSubtitle.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   const handleStartChat = async () => {
@@ -262,16 +239,16 @@ const Scenarios = () => {
       const immersiveData = SCENARIO_IMMERSIVE_DATA[selectedScenario.id];
       
       const preferences = {
-        characterName: selectedScenario.characterName || selectedScenario.title,
-        characterAge: selectedScenario.characterAge,
-        personality: selectedScenario.personalityTags || [],
+        characterName: selectedScenario.character_name || selectedScenario.title,
+        characterAge: selectedScenario.character_age,
+        personality: selectedScenario.personality_tags || [],
         meetingStory: immersiveData?.meetingStory || "",
         avatarUrl,
         responseRhythm: "natural",
       };
 
       const conversation = await createConversation({
-        character_name: selectedScenario.characterName || selectedScenario.title,
+        character_name: selectedScenario.character_name || selectedScenario.title,
         character_avatar: avatarUrl,
         scenario_id: selectedScenario.id,
         preferences,
@@ -385,7 +362,7 @@ const Scenarios = () => {
       {/* Hero Section */}
       <HeroSection 
         onStartChat={() => {
-          if (scenarios[0]) setSelectedScenario(scenarios[0]);
+          if (fantasies[0]) setSelectedScenario(fantasies[0]);
         }}
         isAuthenticated={isAuthenticated}
       />
@@ -406,22 +383,22 @@ const Scenarios = () => {
             Résultats pour "{searchQuery}"
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filteredScenarios.map((scenario) => (
-              <div key={scenario.id} className="aspect-[3/4]">
+            {filteredFantasies.map((fantasy) => (
+              <div key={fantasy.id} className="aspect-[3/4]">
                 {/* Simplified card for search results */}
                 <div 
                   className="w-full h-full rounded-2xl overflow-hidden cursor-pointer relative group"
-                  onClick={() => handleScenarioClick(scenario)}
+                  onClick={() => handleScenarioClick(fantasy)}
                 >
-                  {scenario.image ? (
-                    <img src={scenario.image} alt={scenario.title} className="w-full h-full object-cover" />
+                  {fantasy.image ? (
+                    <img src={fantasy.image} alt={fantasy.title} className="w-full h-full object-cover" />
                   ) : (
-                    <div className={`w-full h-full bg-gradient-to-br ${scenario.gradient}`} />
+                    <div className={`w-full h-full bg-gradient-to-br ${fantasy.gradient}`} />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="font-bold text-white">{scenario.title}</h3>
-                    <p className="text-sm text-primary">{scenario.emotionalSubtitle}</p>
+                    <h3 className="font-bold text-white">{fantasy.title}</h3>
+                    <p className="text-sm text-primary">{fantasy.emotionalSubtitle}</p>
                   </div>
                 </div>
               </div>
@@ -435,7 +412,7 @@ const Scenarios = () => {
             <p className="text-muted-foreground">Chargement…</p>
           </div>
         </section>
-      ) : scenarios.length === 0 ? (
+      ) : fantasies.length === 0 ? (
         <section className="container px-6 py-12 text-center">
           <p className="text-muted-foreground">Aucun scénario disponible</p>
         </section>
@@ -446,7 +423,7 @@ const Scenarios = () => {
             title="Fantasy"
             subtitle="Scénarios immersifs disponibles"
             icon={<Sparkles className="w-6 h-6" />}
-            characters={scenarios}
+            characters={fantasies}
             isAuthenticated={isAuthenticated}
             favorites={favorites}
             onCharacterClick={handleScenarioClick}
@@ -466,8 +443,8 @@ const Scenarios = () => {
       {/* Floating Chat Button */}
       <FloatingChatButton 
         onClick={() => {
-          if (isAuthenticated && scenarios[0]) {
-            setSelectedScenario(scenarios[0]);
+          if (isAuthenticated && fantasies[0]) {
+            setSelectedScenario(fantasies[0]);
           } else {
             navigate("/auth");
           }
@@ -497,11 +474,11 @@ const Scenarios = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-foreground">
-                    {selectedScenario?.characterName || selectedScenario?.title}
+                    {selectedScenario?.character_name || selectedScenario?.title}
                   </p>
-                  {selectedScenario?.characterAge && (
+                  {selectedScenario?.character_age && (
                     <p className="text-sm text-muted-foreground">
-                      {selectedScenario.characterAge} ans
+                      {selectedScenario.character_age} ans
                     </p>
                   )}
                 </div>
@@ -523,7 +500,7 @@ const Scenarios = () => {
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-foreground">Personnalité</h3>
               <div className="flex flex-wrap gap-2">
-                {selectedScenario?.personalityTags?.map((trait, index) => (
+                {selectedScenario?.personality_tags?.map((trait, index) => (
                   <span 
                     key={index}
                     className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"

@@ -1,45 +1,40 @@
 import { useState } from "react";
 import { Heart, Lock, BadgeCheck, Crown, Flame, Sparkles, MessageCircle } from "lucide-react";
+import type { Fantasy } from "@/types/Fantasy";
 
 interface CharacterCardProps {
-  id: string;
-  title: string;
-  emotionalSubtitle: string;
-  sexyTagline: string;
-  image?: string;
-  gradient: string;
-  badge?: string;
-  badgeType?: "trending" | "premium" | "new" | "verified" | "vip";
-  isVerified?: boolean;
+  fantasy: Fantasy;
   isLocked?: boolean;
   isFavorite?: boolean;
-  isOnline?: boolean;
   onClick: () => void;
   onFavoriteToggle: (e: React.MouseEvent) => void;
   size?: "small" | "medium" | "large";
-  // NEW - from Supabase fantasies table
-  characterName?: string;
-  characterAge?: number;
-  personalityTags?: string[];
 }
 
 const CharacterCard = ({
-  id,
-  title,
-  emotionalSubtitle,
-  sexyTagline,
-  image,
-  gradient,
-  badge,
-  badgeType = "trending",
-  isVerified = false,
+  fantasy,
   isLocked = false,
   isFavorite = false,
-  isOnline = false,
   onClick,
   onFavoriteToggle,
   size = "medium",
 }: CharacterCardProps) => {
+  // Log pour vérification
+  console.log("CARD FANTASY:", fantasy);
+  
+  // Extraction des champs depuis fantasy (snake_case de Supabase)
+  const {
+    title,
+    emotionalSubtitle,
+    sexyTagline,
+    image,
+    gradient,
+    badge,
+    badge_type,
+    isOnline = false,
+  } = fantasy;
+  
+  const badgeType = badge_type || "trending";
   const [isHovered, setIsHovered] = useState(false);
 
   const sizeClasses = {
@@ -169,7 +164,6 @@ const CharacterCard = ({
         <div className="space-y-1">
           <h3 className="font-bold text-white text-lg drop-shadow-lg flex items-center gap-2">
             {title}
-            {isVerified && <BadgeCheck className="w-4 h-4 text-blue-400 fill-blue-400" />}
           </h3>
           <p 
             className="text-sm font-medium"
