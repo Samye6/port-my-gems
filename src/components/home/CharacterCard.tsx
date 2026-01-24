@@ -17,6 +17,10 @@ interface CharacterCardProps {
   onClick: () => void;
   onFavoriteToggle: (e: React.MouseEvent) => void;
   size?: "small" | "medium" | "large";
+  // NEW - from Supabase fantasies table
+  characterName?: string;
+  characterAge?: number;
+  personalityTags?: string[];
 }
 
 const CharacterCard = ({

@@ -14,6 +14,10 @@ interface Character {
   badgeType?: "trending" | "premium" | "new" | "verified" | "vip";
   isVerified?: boolean;
   isOnline?: boolean;
+  // NEW - from Supabase fantasies table
+  characterName?: string;
+  characterAge?: number;
+  personalityTags?: string[];
 }
 
 interface CharacterCarouselProps {

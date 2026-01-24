@@ -217,6 +217,7 @@ const Scenarios = () => {
           };
         });
 
+        console.log("[MAPPED SCENARIOS SAMPLE]", mappedScenarios[0]);
         setScenarios(mappedScenarios);
       } catch (err) {
         console.error("Error fetching scenarios:", err);
@@ -229,6 +230,7 @@ const Scenarios = () => {
   }, []);
 
   const handleScenarioClick = (scenario: Scenario) => {
+    console.log("[SCENARIO CLICKED]", scenario);
     if (!isAuthenticated) {
       navigate("/auth");
       return;
