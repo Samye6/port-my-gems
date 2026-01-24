@@ -158,8 +158,9 @@ const Scenarios = () => {
           return;
         }
 
-        // Diagnostic log - SUPABASE RAW
-        console.log("SUPABASE RAW FANTASY:", data?.[0]);
+        // Diagnostic logs - SUPABASE RAW
+        console.log("SUPABASE RAW FANTASY (first):", data?.[0]);
+        console.log("FETCHED FIT-GIRL:", data?.find((f) => f.slug === "fit-girl"));
 
         const mappedFantasies: Fantasy[] = (data || []).map((row) => {
           const normalizedId = normalizeSlug(row.slug);
