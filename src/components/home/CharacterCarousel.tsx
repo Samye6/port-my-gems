@@ -2,32 +2,16 @@ import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CharacterCard from "./CharacterCard";
-
-interface Character {
-  id: string;
-  title: string;
-  emotionalSubtitle: string;
-  sexyTagline: string;
-  image?: string;
-  gradient: string;
-  badge?: string;
-  badgeType?: "trending" | "premium" | "new" | "verified" | "vip";
-  isVerified?: boolean;
-  isOnline?: boolean;
-  // NEW - from Supabase fantasies table
-  characterName?: string;
-  characterAge?: number;
-  personalityTags?: string[];
-}
+import type { Fantasy } from "@/types/Fantasy";
 
 interface CharacterCarouselProps {
   title: string;
   subtitle?: string;
   icon?: React.ReactNode;
-  characters: Character[];
+  characters: Fantasy[];
   isAuthenticated: boolean;
   favorites: string[];
-  onCharacterClick: (character: Character) => void;
+  onCharacterClick: (character: Fantasy) => void;
   onFavoriteToggle: (e: React.MouseEvent, characterId: string) => void;
   cardSize?: "small" | "medium" | "large";
   glowColor?: "violet" | "peach" | "primary";
@@ -155,7 +139,7 @@ const CharacterCarousel = ({
                 }}
               >
                 <CharacterCard
-                  {...character}
+                  fantasy={character}
                   isLocked={isLocked}
                   isFavorite={favorites.includes(character.id)}
                   onClick={() => onCharacterClick(character)}
