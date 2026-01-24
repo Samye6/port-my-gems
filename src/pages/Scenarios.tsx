@@ -452,7 +452,13 @@ const Scenarios = () => {
       />
 
       {/* Configuration Dialog - Refonte immersive */}
-      <Dialog open={selectedScenario !== null} onOpenChange={(open) => !open && setSelectedScenario(null)}>
+      <Dialog 
+        open={selectedScenario !== null} 
+        onOpenChange={(open) => {
+          if (!open) setSelectedScenario(null);
+          else if (selectedScenario) console.log("MODAL SELECTED FANTASY:", selectedScenario);
+        }}
+      >
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border">
           <DialogHeader className="space-y-4">
             <div className="flex items-center gap-3">
