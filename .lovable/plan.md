@@ -1,34 +1,46 @@
 
-## Ajout de la connexion Google
+## Refonte visuelle de la page Abonnements
 
-### Ce qui va être fait
+### Problème actuel
 
-Intégration de Google OAuth via Lovable Cloud sur la page de connexion `/auth`.
+Le Premium (19,99€) utilise les couleurs or — ce qui le positionne visuellement comme "le meilleur" alors qu'il est moins cher que le Premium+. Le Premium+ a un style anthracite/gris qui le fait paraître fade et peu désirable.
 
-Un bouton "Continuer avec Google" sera ajouté dans le formulaire, entre les champs et le bouton principal, avec le séparateur "ou" classique. Le style sera cohérent avec le design glassmorphism existant (fond transparent, bordure subtile).
+### Stratégie visuelle
 
-### Étapes techniques
+- **Découverte** : gris discret, inchangé
+- **Premium** : rose/magenta chaud + badge "Best Seller" accrocheur → conversion principale
+- **Premium+** : violet/or — couleur "exclusive" qui le distingue clairement du Premium sans voler toute l'attention
 
-**Étape 1 — Configurer le module Lovable Cloud**
-Utiliser l'outil `Configure Social Login` pour générer automatiquement le module `src/integrations/lovable/` avec le package `@lovable.dev/cloud-auth-js`. Google Auth est géré automatiquement par Lovable Cloud, aucune clé API n'est requise.
+---
 
-**Étape 2 — Modifier `src/pages/Auth.tsx`**
-- Importer `lovable` depuis `@/integrations/lovable/index`
-- Ajouter une fonction `handleGoogleAuth` qui appelle `lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin })`
-- Ajouter dans le formulaire :
-  - Un séparateur "─── ou ───" sous le formulaire email/mot de passe
-  - Un bouton Google avec l'icône SVG Google officielle et le style glassmorphism de la page
+### Ce qui change
 
-### Aperçu du bouton Google
+**1. Premium — la star de la conversion**
 
-```text
-┌─────────────────────────────────────────────┐
-│  [G]  Continuer avec Google                 │
-└─────────────────────────────────────────────┘
-```
+- Fond : gradient rose/magenta profond (en cohérence avec l'identité Lydia)
+- Bordure : rose vif avec glow
+- Badge en haut : `🔥 Best Seller` (ou `⚡ Le plus populaire`) — couleur rose/blanc, bien visible
+- Prix : gradient blanc → rose clair
+- Bouton CTA : rose vif, glow fort — l'appel à l'action principal
+- Logo : gold avec glow rose
 
-Style : fond `rgba(255,255,255,0.08)`, bordure `rgba(255,255,255,0.15)`, texte blanc, icône Google colorée.
+**2. Premium+ — l'exclusif désirable**
+
+- Fond : gradient violet profond → indigo
+- Bordure : violet avec glow violet/or
+- Badge en haut : `✦ Exclusif` — ton plus premium/élitiste
+- Prix : gradient or → amber (justifie le prix supérieur)
+- Bouton CTA : gradient violet → rose, très premium
+- Logo : platinum avec glow violet
+
+**3. Ajustements mineurs**
+
+- Le badge "Recommandé" existant sur le Premium+ est remplacé par "Exclusif"
+- La fonction `getCardStyles` est mise à jour pour refléter ces nouvelles couleurs
+- Les check icons et feature texts adaptés aux nouvelles couleurs de chaque plan
+
+---
 
 ### Fichiers modifiés
-1. **`src/integrations/lovable/`** — généré automatiquement par l'outil
-2. **`src/pages/Auth.tsx`** — ajout de l'import, de la fonction et du bouton Google
+
+1. **`src/pages/Subscriptions.tsx`** — uniquement les styles visuels (couleurs, badges, glows) sans toucher à la structure ni au contenu texte
