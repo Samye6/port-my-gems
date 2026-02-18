@@ -117,7 +117,10 @@ const CharacterCard = ({
                   filter: 'brightness(0.9) contrast(1.05) saturate(1.1)',
                 }}
               />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(139,92,246,0.2)_70%,rgba(0,0,0,0.6)_100%)]" />
+              <div 
+                className="absolute inset-0 rounded-2xl pointer-events-none"
+                style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.25)' }}
+              />
             </>
           ) : (
             <div
