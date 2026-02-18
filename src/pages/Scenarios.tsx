@@ -21,7 +21,7 @@ import HeroSection from "@/components/home/HeroSection";
 import CharacterCarousel from "@/components/home/CharacterCarousel";
 import PremiumBanner from "@/components/home/PremiumBanner";
 import SearchBar from "@/components/home/SearchBar";
-import FloatingChatButton from "@/components/home/FloatingChatButton";
+
 import { useConversations } from "@/hooks/useConversations";
 import { useToast } from "@/hooks/use-toast";
 import type { Fantasy } from "@/types/Fantasy";
@@ -441,16 +441,6 @@ const Scenarios = () => {
         </>
       )}
 
-      {/* Floating Chat Button */}
-      <FloatingChatButton 
-        onClick={() => {
-          if (isAuthenticated && fantasies[0]) {
-            setSelectedScenario(fantasies[0]);
-          } else {
-            navigate("/auth");
-          }
-        }}
-      />
 
       {/* Configuration Dialog - Refonte immersive */}
       <Dialog 
