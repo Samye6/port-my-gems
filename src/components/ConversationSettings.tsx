@@ -86,7 +86,7 @@ export const ConversationSettings = ({
         {/* CARD: Style d'écriture */}
         <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 shadow-[0_0_8px_rgba(255,77,141,0.12)] border border-primary/20">
           <h3 className="font-bold text-white mb-5 text-lg flex items-center gap-2">
-            ✨ Style d'écriture
+            Style d'écriture
           </h3>
           
           <div className="space-y-5">
@@ -98,7 +98,7 @@ export const ConversationSettings = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="suggestive">💕 Court & suggestif</SelectItem>
-                  <SelectItem value="detailed">✨ Doux & détaillé</SelectItem>
+                  <SelectItem value="detailed">Doux & détaillé</SelectItem>
                 </SelectContent>
               </Select>
             </div>

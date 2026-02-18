@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Sparkles, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen, User } from "lucide-react";
+import { Heart, Flame, MessageCircle, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen, User } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueCard from "@/assets/colleague-card.png";
@@ -61,7 +61,7 @@ const getScenarioIcon = (id: string): React.ReactNode => {
     'police': <Shield className="w-6 h-6" />,
     'teacher': <BookOpen className="w-6 h-6" />,
   };
-  return iconMap[id] || <Sparkles className="w-6 h-6" />;
+  return iconMap[id] || <MessageCircle className="w-6 h-6" />;
 };
 
 // Mapping des gradients par id normalisé (HORS DU COMPOSANT)
@@ -423,7 +423,7 @@ const Scenarios = () => {
           <CharacterCarousel
             title="Fantasy"
             subtitle="Scénarios immersifs disponibles"
-            icon={<Sparkles className="w-6 h-6" />}
+            icon={<Flame className="w-6 h-6" />}
             characters={fantasies}
             isAuthenticated={isAuthenticated}
             favorites={favorites}
@@ -511,7 +511,7 @@ const Scenarios = () => {
             {/* Section "Ce que tu vas vivre" */}
             <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
               <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" />
+                <Shield className="w-4 h-4 text-primary" />
                 {selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.contentHint}
               </p>
             </div>

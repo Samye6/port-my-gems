@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Lock, BadgeCheck, Crown, Flame, Sparkles, MessageCircle } from "lucide-react";
+import { Heart, Lock, BadgeCheck, Crown, Flame, MessageCircle } from "lucide-react";
 import type { Fantasy } from "@/types/Fantasy";
 
 interface CharacterCardProps {
@@ -71,7 +71,7 @@ const CharacterCard = ({
       case "verified":
         return <BadgeCheck className="w-3 h-3" />;
       default:
-        return <Sparkles className="w-3 h-3" />;
+        return <Flame className="w-3 h-3" />;
     }
   };
 
