@@ -1,62 +1,65 @@
 
-## Suppression des étoiles/Sparkles dans tout le site
+## Correction du hover des cartes Fantasy
 
-### Problème identifié
+### Cause du problème
 
-L'icône `Sparkles` (l'étoile scintillante de Lucide) est utilisée à plusieurs endroits et donne un effet générique "IA" que tu ne veux pas. Voici tous les emplacements :
+La classe `micro-parallax` (dans `src/index.css`) applique ceci au hover :
+```css
+transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-8px);
+```
 
-1. **`src/pages/Scenarios.tsx`** — 3 usages :
-   - Icône à côté du titre **"Fantasy"** dans le carousel → remplacé par `Flame` (la flamme, déjà utilisée dans les badges "Trending", cohérente avec l'érotisme/désir)
-   - Icône par défaut pour les scénarios non mappés → remplacé par `MessageCircle`
-   - Icône dans l'indice de contenu du dialog → remplacé par `Shield` (discrétion)
+Quand un `transform` 3D est combiné avec `overflow-hidden` et `border-radius`, le navigateur perd l'anti-aliasing du clip — le bord carré de l'image "perce" à travers le `rounded-2xl`. C'est un bug connu des moteurs de rendu Webkit/Blink.
 
-2. **`src/components/home/CharacterCard.tsx`** — 1 usage :
-   - Icône de badge par défaut → remplacé par `Flame`
+De plus, le halo rose/violet (`.absolute -inset-2 ... -z-10`) est à l'intérieur du conteneur `overflow-hidden`, donc il est clippé et ne peut pas rayonner vers l'extérieur correctement.
 
-3. **`src/components/home/PremiumBanner.tsx`** — 1 usage :
-   - Icône dans le bouton/bloc premium → remplacé par `Crown`
+### Solution en deux parties
 
-4. **`src/components/home/SuggestedCharacters.tsx`** — 1 usage :
-   - Icône à côté du titre "Elles veulent te parler…" → remplacé par `Heart`
+**1. Remplacer `micro-parallax` sur les cartes** — au lieu du transform 3D qui casse le border-radius, utiliser uniquement `translateY(-6px)` + transition douce. L'effet d'élévation reste, sans artefact visuel.
 
-5. **`src/pages/Onboarding.tsx`** — 1 usage :
-   - Grande icône centrale à l'étape "Choisissez votre style" → remplacé par `Heart`
+**2. Wrapper externe pour le glow** — encapsuler la carte dans un `div` wrapper qui :
+- Porte le glow extérieur (le halo rose/violet diffus)
+- Laisse la carte elle-même gérer son `overflow-hidden` proprement
+- Le glow rayonne en dehors de la carte sans être clippé
 
-6. **`src/pages/Profile.tsx`** — 2 usages :
-   - Icône dans le bloc "Statistiques" → remplacé par `BarChart2` (ou `TrendingUp`)
-   - Icône sur le bouton "Gérer mon abonnement" → remplacé par `Crown`
+### Modifications techniques
 
-7. **`src/pages/Auth.tsx`** — 1 usage :
-   - Le texte "Tu es prêt ? ✨" → l'emoji ✨ est simplement supprimé
+**`src/components/home/CharacterCard.tsx`** :
 
-8. **`src/components/ConversationSettings.tsx`** — 2 usages :
-   - "✨ Style d'écriture" → remplacé par "— Style d'écriture" ou supprimé
-   - "✨ Doux & détaillé" dans la liste → retiré
+```tsx
+// Avant : un seul div avec overflow-hidden + micro-parallax + boxShadow glow
+<div className="relative w-52 h-72 rounded-2xl overflow-hidden cursor-pointer group micro-parallax" style={{ boxShadow: ... }}>
+  {/* halo -inset-2 -z-10 CLIPPÉ par overflow-hidden */}
+  ...
+</div>
 
----
+// Après : wrapper externe pour le glow + carte interne propre
+<div className="relative flex-shrink-0" style={{ /* padding pour laisser place au glow */ }}>
+  {/* Glow externe — rayonne AUTOUR de la carte, pas dedans */}
+  <div className={`absolute inset-0 rounded-2xl blur-2xl transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+       style={{ background: 'gradient rose/violet', transform: 'scale(1.15)' }} />
+  
+  {/* Carte principale — overflow-hidden sans transform 3D */}
+  <div className="relative w-52 h-72 rounded-2xl overflow-hidden cursor-pointer"
+       style={{ 
+         transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
+         transition: 'transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), box-shadow 0.35s ease',
+         boxShadow: isHovered ? '0 20px 60px rgba(0,0,0,0.5)' : '0 10px 40px rgba(0,0,0,0.4)',
+         willChange: 'transform',
+       }}>
+    {/* Contenu inchangé */}
+  </div>
+</div>
+```
 
-### Résumé des remplacements
+La classe `micro-parallax` dans `index.css` est conservée telle quelle car elle peut servir ailleurs — on arrête simplement de l'utiliser sur les `CharacterCard`.
 
-| Fichier | Remplacement |
-|---|---|
-| Scenarios.tsx — "Fantasy" | `Sparkles` → `Flame` |
-| Scenarios.tsx — scénario par défaut | `Sparkles` → `MessageCircle` |
-| Scenarios.tsx — dialog hint | `Sparkles` → `Shield` |
-| CharacterCard.tsx — badge default | `Sparkles` → `Flame` |
-| PremiumBanner.tsx | `Sparkles` → `Crown` |
-| SuggestedCharacters.tsx | `Sparkles` → `Heart` |
-| Onboarding.tsx | `Sparkles` → `Heart` |
-| Profile.tsx — Statistiques | `Sparkles` → `TrendingUp` |
-| Profile.tsx — bouton abonnement | `Sparkles` → `Crown` |
-| Auth.tsx | `✨` supprimé |
-| ConversationSettings.tsx | `✨` supprimés |
+### Résultat attendu
 
-### Fichiers modifiés
-1. `src/pages/Scenarios.tsx`
-2. `src/components/home/CharacterCard.tsx`
-3. `src/components/home/PremiumBanner.tsx`
-4. `src/components/home/SuggestedCharacters.tsx`
-5. `src/pages/Onboarding.tsx`
-6. `src/pages/Profile.tsx`
-7. `src/pages/Auth.tsx`
-8. `src/components/ConversationSettings.tsx`
+- Hover fluide avec légère élévation
+- Aucun carré visible — le `border-radius` reste parfaitement net
+- Glow rose/violet diffus qui rayonne proprement autour de la carte
+- Transition douce avec un cubic-bezier légèrement rebondissant
+
+### Fichier modifié
+
+1. **`src/components/home/CharacterCard.tsx`** — wrapper externe + suppression du `micro-parallax` sur la carte
