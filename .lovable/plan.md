@@ -1,47 +1,52 @@
 
-## Correction du gradient derrière l'image : supprimer la vignette carrée
+## Correction du glow et du gradient bas : effet propre et non intrusif
 
-### Le vrai coupable
+### Ce qu'on voit sur le screenshot
 
-Ligne 120 dans `CharacterCard.tsx` :
+Deux problèmes distincts :
+
+1. **Haut** : le glow externe (div avec `inset: '-8px'`) rayonne avec des couleurs vives (rose/violet) qui sont visibles comme une bande colorée derrière le haut de la carte. L'effet est trop saturé et trop proche de l'image — ça semble "collé" et carré.
+
+2. **Bas** : `bg-gradient-to-t from-black/95 via-black/50 to-transparent` — le `from-black/95` est quasi-opaque et couvre ~50% de la carte en bas. C'est ce qui crée la zone noire trop sombre sous le personnage.
+
+### Corrections précises
+
+**Glow externe (haut) :**
+- Réduire l'opacité max de `0.5/0.4/0.3` à `0.25/0.2/0.15` — moins saturé
+- Augmenter le `blur` de `20px` à `30px` — plus diffus, moins visible comme un bloc
+- Réduire l'`inset` de `-8px` à `-4px` — colle moins à la carte
+
+**Gradient bas :**
+- Changer `from-black/95` → `from-black/80` — moins opaque
+- Changer `via-black/50` → `via-black/20` — transition plus douce
+- Le gradient ne couvre que le bas, pas toute la moitié de la carte
 
 ```tsx
-<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(139,92,246,0.2)_70%,rgba(0,0,0,0.6)_100%)]" />
+// AVANT
+background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.5), hsl(270 60% 50% / 0.4), hsl(20 100% 75% / 0.3))'
+filter: 'blur(20px)'
+inset: '-8px'
+
+// APRÈS — plus subtil, plus diffus
+background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.25), hsl(270 60% 50% / 0.18), hsl(20 100% 75% / 0.12))'
+filter: 'blur(30px)'
+inset: '-4px'
 ```
-
-Ce radial-gradient crée une **ellipse sombre** qui vignette les 4 côtés de la carte avec du noir à 60%. Comme l'ellipse ne suit pas les coins arrondis de la carte, on voit les bords tranchés — surtout à droite et à gauche. Au hover avec `scale(1.05)`, les bords de l'image glissent et le gradient semble "carré" et mal découpé.
-
-### Ce qu'on supprime
-
-- Le `radial-gradient` ellipse avec noir à 60% sur les bords (ligne 120) — c'est lui qui crée l'effet carré visible
-
-### Ce qu'on garde et améliore
-
-- Le gradient du bas `bg-gradient-to-t from-black/95 via-black/50 to-transparent` (ligne 132) — c'est lui qui assure la lisibilité du texte, il fonctionne bien
-- On ajoute à la place un **vignette douce uniquement sur les bords** via un `box-shadow inset` — ça suit parfaitement le `border-radius` de la carte sans jamais déborder
-
-### Changement technique
 
 ```tsx
-// AVANT — ligne 120 — vignette radial carrée
-<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(139,92,246,0.2)_70%,rgba(0,0,0,0.6)_100%)]" />
+// AVANT
+<div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
 
-// APRÈS — box-shadow inset qui suit le border-radius
-<div 
-  className="absolute inset-0 rounded-2xl pointer-events-none"
-  style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.3)' }}
-/>
+// APRÈS — gradient doux, naturel
+<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 ```
-
-Un `box-shadow inset` respecte toujours le `border-radius` du parent — donc la vignette suit parfaitement les coins arrondis, sans jamais créer d'effet carré ou de coupure visible.
 
 ### Résultat attendu
 
-- Aucun carré sombre visible sur les bords de l'image
-- La vignette est douce, arrondie, naturelle
-- Le texte en bas reste parfaitement lisible grâce au gradient du bas (inchangé)
-- Le hover reste smooth : zoom image + soulèvement + glow externe
+- Le glow reste visible comme une "aura" subtile autour de la carte au hover, pas comme un bloc coloré
+- La photo est bien visible sur toute sa hauteur, le bas est lisible sans être noirci
+- Effet premium et naturel
 
 ### Fichier modifié
 
-1. **`src/components/home/CharacterCard.tsx`** — remplacement ligne 120 : suppression du `radial-gradient` carré, remplacement par un `box-shadow inset` qui suit le border-radius
+1. **`src/components/home/CharacterCard.tsx`** — ligne 84 (couleurs glow), ligne 85 (blur), ligne 83 (inset), ligne 135 (gradient bas)
