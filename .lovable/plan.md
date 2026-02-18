@@ -1,59 +1,47 @@
 
-## Refonte du hover : supprimer l'overlay opaque, garder un effet subtil
+## Refonte du hover CTA : supprimer le bouton pill encombrant
 
-### Le vrai problème
+### Problème identifié sur la capture
 
-Le "bloc derrière l'image" est le **Hover CTA** (ligne 203–218) : un `div` qui couvre **toute la carte** avec `bg-black/40 backdrop-blur-sm`. Quand on survole, toute la photo devient sombre et floue — c'est ça qui fait "bug".
+Le bouton "Viens me parler 😘" est un `div` avec `left-0 right-0` — il prend **toute la largeur de la carte**. Avec le padding `px-5`, il reste large mais surtout il se superpose au tagline qui s'ouvre aussi en bas au hover. On a donc deux éléments qui se battent dans la même zone bas de carte.
 
-La combinaison actuelle au hover :
-1. `bg-black/40 backdrop-blur-sm` sur toute la carte → assombrit tout, flou visible
-2. `bg-gradient-to-t from-violet-900/30` (inner tint) → couche violette en plus
-3. `0 20px 60px rgba(0,0,0,0.5)` (box-shadow) → ombre noire lourde
+### La solution : supprimer le bouton pill, garder uniquement le tagline
 
-Trois couches semi-transparentes = effet lourd et "buggy".
+Le tagline (ex : `"Regards complices..."`) est déjà un bon indicateur d'action — il suffit d'en faire le seul élément hover en bas, sans bouton pill en plus. Le clic sur la carte entière fait déjà l'action.
 
-### Ce qu'on garde / supprime
+**Ce qu'on supprime :**
+- Le bloc "Hover CTA" entier (lignes 197–217) — le bouton pill `left-0 right-0` encombrant
 
-**Supprimé :**
-- L'overlay `bg-black/40 backdrop-blur-sm` couvrant toute la carte
-- L'inner tint violet `from-violet-900/30` (redondant avec le gradient de base)
-- La `box-shadow` lourde `0 20px 60px rgba(0,0,0,0.5)` au hover
+**Ce qu'on garde et améliore :**
+- Le tagline qui s'ouvre déjà au hover en bas — on le rend juste un peu plus visible avec une petite icône
 
-**Gardé et affiné :**
-- Le léger soulèvement `translateY(-6px)` → subtil, élégant
-- Le zoom image `scale(1.05)` → dynamique
-- Le glow externe rose/violet autour de la carte → signature visuelle
-- Le tagline qui s'ouvre en bas → informatif
+**Alternative minimaliste** — si on veut garder un bouton, le rendre vraiment petit et `w-auto` centré :
+- `px-3 py-1.5` au lieu de `px-5 py-2`
+- `text-[10px]` au lieu de `text-xs`
+- Pas de `left-0 right-0` — juste `w-auto` centré
+- Le repositionner **par-dessus** le gradient existant, intégré au bloc content en bas
 
-**Nouveau — le bouton "Viens me parler" :**
-Au lieu d'un overlay noir qui écrase la photo, le bouton apparaît **directement en bas de la carte**, glissant depuis le bas par-dessus le gradient existant. Pas d'overlay, pas de blur — juste le bouton pill qui monte proprement :
+### Changement technique dans `src/components/home/CharacterCard.tsx`
+
+**Option retenue : supprimer le bouton pill, améliorer le tagline**
 
 ```tsx
-// Avant — overlay noir sur toute la carte
-<div className="absolute inset-0 bg-black/40 backdrop-blur-sm ...">
-  <div>Viens me parler 😘</div>
-</div>
+// SUPPRIMER complètement le bloc Hover CTA (lignes 197–217)
 
-// Après — bouton pill qui monte depuis le bas, sans overlay
+// AMÉLIORER le tagline au hover — déjà en place, juste le rendre plus visible
 <div
-  className="absolute bottom-4 left-0 right-0 flex justify-center transition-all duration-300"
-  style={{ 
-    opacity: isHovered ? 1 : 0,
-    transform: isHovered ? 'translateY(0)' : 'translateY(12px)'
-  }}
+  className="overflow-hidden transition-all duration-300"
+  style={{ maxHeight: isHovered && !isLocked ? '48px' : '0px', opacity: isHovered && !isLocked ? 1 : 0 }}
 >
-  <div className="px-5 py-2.5 rounded-full text-white font-semibold text-sm ...">
-    Viens me parler 😘
-  </div>
+  <p className="text-white/80 text-[11px] pt-1.5 flex items-center gap-1 italic">
+    <MessageCircle className="w-3 h-3 text-primary flex-shrink-0" />
+    "{sexyTagline}"
+  </p>
 </div>
 ```
 
-### Résultat attendu
-
-- Hover : la photo reste **visible et belle**, la carte se soulève légèrement, le glow rose apparaît autour, le bouton monte depuis le bas
-- Aucun bloc sombre qui "vient derrière l'image"
-- Effet fluide, premium, non intrusif
+Le résultat : au hover, la carte se soulève légèrement avec le glow, l'image zoome subtil, et le tagline apparaît en douceur en bas. Propre, premium, sans bouton qui déborde.
 
 ### Fichier modifié
 
-1. **`src/components/home/CharacterCard.tsx`** — suppression de l'overlay `inset-0 bg-black/40`, remplacement par un bouton positionné en bas, suppression de l'inner tint et allègement du box-shadow
+1. **`src/components/home/CharacterCard.tsx`** — suppression du bloc "Hover CTA" pill (lignes 197–217), légère amélioration du tagline
