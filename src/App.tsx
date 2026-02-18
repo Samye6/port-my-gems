@@ -16,6 +16,7 @@ import Premium from "./pages/Premium";
 import Subscriptions from "./pages/Subscriptions";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <MessageNotification />
             <Routes>
           <Route path="/" element={<Scenarios />} />
