@@ -98,8 +98,8 @@ const CharacterCard = ({
           transform: isHovered && !isLocked ? 'translateY(-6px)' : 'translateY(0)',
           transition: 'transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), box-shadow 0.35s ease',
           boxShadow: isHovered
-            ? '0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.2)'
-            : '0 10px 40px rgba(0,0,0,0.4)',
+            ? '0 8px 24px rgba(0,0,0,0.3)'
+            : '0 4px 16px rgba(0,0,0,0.3)',
           willChange: 'transform',
           zIndex: 1,
         }}
@@ -131,11 +131,6 @@ const CharacterCard = ({
           {/* Bottom gradient for text */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
 
-          {/* Hover inner tint */}
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-violet-900/30 via-primary/10 to-transparent transition-opacity duration-300"
-            style={{ opacity: isHovered && !isLocked ? 1 : 0 }}
-          />
         </div>
 
         {/* Badge */}
@@ -199,17 +194,21 @@ const CharacterCard = ({
           </div>
         </div>
 
-        {/* Hover CTA — uniquement si non-locked */}
+        {/* Hover CTA — bouton pill qui monte depuis le bas, sans overlay */}
         {!isLocked && (
           <div
-            className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300"
-            style={{ opacity: isHovered ? 1 : 0, pointerEvents: isHovered ? 'auto' : 'none' }}
+            className="absolute bottom-4 left-0 right-0 flex justify-center z-20 pointer-events-none transition-all duration-300"
+            style={{
+              opacity: isHovered ? 1 : 0,
+              transform: isHovered ? 'translateY(0)' : 'translateY(12px)',
+            }}
           >
             <div
-              className="px-5 py-2.5 rounded-full text-white font-semibold text-sm"
+              className="px-5 py-2 rounded-full text-white font-semibold text-xs pointer-events-auto"
               style={{
-                background: 'linear-gradient(135deg, hsl(338 100% 55%), hsl(280 70% 50%))',
-                boxShadow: '0 0 30px rgba(255, 77, 141, 0.5), 0 0 60px rgba(139, 92, 246, 0.3)',
+                background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.9), hsl(280 70% 50% / 0.9))',
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 4px 20px rgba(255, 77, 141, 0.4)',
               }}
             >
               Viens me parler 😘
