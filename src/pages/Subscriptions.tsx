@@ -173,15 +173,6 @@ const Subscriptions = () => {
         border: "none",
       };
     }
-    if (plan.isExclusive) {
-      return {
-        label: "✦ Exclusif",
-        background: "linear-gradient(135deg, hsl(270 50% 22% / 0.95) 0%, hsl(260 45% 18% / 0.98) 100%)",
-        color: "hsl(270 60% 80%)",
-        shadow: "0 4px 20px hsl(270 70% 45% / 0.3)",
-        border: "1px solid hsl(270 55% 40% / 0.3)",
-      };
-    }
     return null;
   };
 
