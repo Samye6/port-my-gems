@@ -414,38 +414,33 @@ const ChatConversation = () => {
         console.log("Calling AI with preferences:", preferences);
         console.log("Conversation history:", conversationHistory);
 
-        // Préparer les préférences avec le scenarioId
-        const preferencesWithScenario = {
+        // Edge function call below
+
+        // Appeler l'edge function chat-ai-response
+        const currentScenarioId = conversationData?.scenarioId || location.state?.scenarioId || null;
+        const prefsToSend = {
           ...(conversationData?.preferences || preferences),
-          scenarioId: conversationData?.scenarioId || location.state?.scenarioId
+          scenarioId: currentScenarioId,
+          characterName: characterName,
+          characterGender: "femme",
+          userNickname: "",
         };
 
-      // Appeler TON backend Vercel (pas Supabase Edge)
-const currentScenarioId = conversationData?.scenarioId || location.state?.scenarioId || null;
+        const { data, error: fnError } = await supabase.functions.invoke('chat-ai-response', {
+          body: {
+            messages: conversationHistory,
+            preferences: prefsToSend,
+          },
+        });
 
-const resp = await fetch("/api/chat", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    message: userMessage.text,
-    scenarioId: currentScenarioId,
-    // on envoie aussi un peu de contexte, utile plus tard
-    preferences: conversationData?.preferences || preferences || {},
-    // optionnel : id de conversation si tu veux la mémoire serveur plus tard
-    conversationId: actualConversationId || null,
-  }),
-});
+        if (fnError) {
+          console.error("Edge function error:", fnError);
+          throw new Error(fnError.message || "Edge function error");
+        }
 
-const data = await resp.json();
-
-if (!resp.ok) {
-  console.error("API /api/chat error:", data);
-  throw new Error(data?.error || "API error");
-}
-
-let aiText =
-  data?.reply ||
-  "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
+        let aiText =
+          data?.text ||
+          "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?";
 
         
         // Détecter et traiter les photos éphémères
