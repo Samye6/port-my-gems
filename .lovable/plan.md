@@ -1,46 +1,76 @@
 
-## Refonte visuelle de la page Abonnements
+## Refonte du titre Hero + suppression du badge
 
-### Problème actuel
+### Ce qui pose problème
 
-Le Premium (19,99€) utilise les couleurs or — ce qui le positionne visuellement comme "le meilleur" alors qu'il est moins cher que le Premium+. Le Premium+ a un style anthracite/gris qui le fait paraître fade et peu désirable.
-
-### Stratégie visuelle
-
-- **Découverte** : gris discret, inchangé
-- **Premium** : rose/magenta chaud + badge "Best Seller" accrocheur → conversion principale
-- **Premium+** : violet/or — couleur "exclusive" qui le distingue clairement du Premium sans voler toute l'attention
+1. **Badge "Nouveau match disponible"** — le concept de "match" est trompeur (comme Tinder), il ne correspond pas à l'expérience réelle.
+2. **Titre "Ton match du moment t'attend…"** — même problème + le mot "match" implique une réciprocité (deux personnes qui s'apprécient mutuellement) qui n'existe pas ici.
 
 ---
 
-### Ce qui change
+### Propositions de titres
 
-**1. Premium — la star de la conversion**
+Voici 5 directions, chacune avec un angle différent :
 
-- Fond : gradient rose/magenta profond (en cohérence avec l'identité Lydia)
-- Bordure : rose vif avec glow
-- Badge en haut : `🔥 Best Seller` (ou `⚡ Le plus populaire`) — couleur rose/blanc, bien visible
-- Prix : gradient blanc → rose clair
-- Bouton CTA : rose vif, glow fort — l'appel à l'action principal
-- Logo : gold avec glow rose
+**Option A — L'intimité / le désir**
+> Elle t'attendait.
+> Depuis le début.
 
-**2. Premium+ — l'exclusif désirable**
+Sobre, mystérieux, crée une tension émotionnelle immédiate. Le "elle" implique déjà une personne réelle.
 
-- Fond : gradient violet profond → indigo
-- Bordure : violet avec glow violet/or
-- Badge en haut : `✦ Exclusif` — ton plus premium/élitiste
-- Prix : gradient or → amber (justifie le prix supérieur)
-- Bouton CTA : gradient violet → rose, très premium
-- Logo : platinum avec glow violet
+**Option B — Le fantasme / l'immersion**
+> Tes fantasmes
+> prennent vie
+> ce soir.
 
-**3. Ajustements mineurs**
+Direct, percutant, promet une transformation. Le "ce soir" crée de l'urgence.
 
-- Le badge "Recommandé" existant sur le Premium+ est remplacé par "Exclusif"
-- La fonction `getCardStyles` est mise à jour pour refléter ces nouvelles couleurs
-- Les check icons et feature texts adaptés aux nouvelles couleurs de chaque plan
+**Option C — La connexion / l'évasion**
+> Une conversation
+> qui change tout.
+
+Minimaliste et introspectif. Fonctionne bien pour un public cherchant une expérience émotionnelle profonde.
+
+**Option D — L'invitation / la complicité**
+> Elle n'attend
+> que toi.
+
+Court, percutant, personnel. Le "elle" personnalise immédiatement l'expérience.
+
+**Option E — Le désir / l'IA sexy**
+> Dis-lui ce
+> que tu veux
+> vraiment.
+
+Provocateur, libérateur. Joue sur l'idée que l'IA permet d'être soi sans jugement.
 
 ---
 
-### Fichiers modifiés
+### Ma recommandation
 
-1. **`src/pages/Subscriptions.tsx`** — uniquement les styles visuels (couleurs, badges, glows) sans toucher à la structure ni au contenu texte
+**Option D "Elle n'attend que toi."** combinée avec le sous-titre existant légèrement retouché :
+
+```
+Elle n'attend         ← blanc
+que toi.              ← gradient rose/violet
+```
+
+Sous-titre : *"Des personnalités uniques, des conversations intimes, une expérience faite pour toi."*
+
+Simple, humain, sans mensonge sur le concept, et très accrocheur.
+
+---
+
+### Modifications techniques
+
+**`src/components/home/HeroSection.tsx`**
+
+1. **Supprimer** le bloc badge `<div className="inline-flex items-center gap-2...">` (lignes 165-168) + l'import `Sparkles` devenu inutile
+2. **Remplacer** le H1 à 3 lignes par le nouveau titre choisi
+3. **Retoucher** légèrement le sous-titre pour être cohérent avec le nouveau titre
+
+---
+
+### Question pour toi
+
+Quelle option de titre tu préfères ? Ou tu veux qu'on mixe des éléments de plusieurs options ?
