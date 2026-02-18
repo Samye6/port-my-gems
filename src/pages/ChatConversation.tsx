@@ -6,7 +6,7 @@ import { useNotification } from "@/contexts/NotificationContext";
 import { useMessages } from "@/hooks/useMessages";
 import { useConversations } from "@/hooks/useConversations";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ArrowLeft, Send, MoreVertical, Paperclip, Smile, Check, Bell, BellOff, Edit2, ArrowDown } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, Camera, Smile, Check, Bell, BellOff, Edit2, ArrowDown, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -56,8 +56,11 @@ const ChatConversation = () => {
     scenarioId?: string;
     preferences?: any;
   } | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [pendingPhoto, setPendingPhoto] = useState<{ file: File; previewUrl: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Get conversation ID - use persisted ID if available, otherwise original ID
   const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' ? id || null : null);
@@ -607,6 +610,72 @@ const ChatConversation = () => {
     }
   };
 
+  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setPendingPhoto({ file, previewUrl });
+    // Reset input so same file can be selected again
+    e.target.value = '';
+  };
+
+  const handleCancelPhoto = () => {
+    if (pendingPhoto) {
+      URL.revokeObjectURL(pendingPhoto.previewUrl);
+      setPendingPhoto(null);
+    }
+  };
+
+  const handleSendPhoto = async () => {
+    if (!pendingPhoto) return;
+
+    setIsUploadingPhoto(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Erreur", description: "Tu dois être connecté pour envoyer une photo", variant: "destructive" });
+        setIsUploadingPhoto(false);
+        return;
+      }
+
+      const ext = pendingPhoto.file.name.split('.').pop() || 'jpg';
+      const filePath = `${session.user.id}/${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('user-photos')
+        .upload(filePath, pendingPhoto.file, { upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('user-photos')
+        .getPublicUrl(filePath);
+
+      const ephemeralContent = `ephemeral_photo:${publicUrl}`;
+
+      if (actualConversationId) {
+        await sendMessage(ephemeralContent, 'user');
+        setTimeout(() => refetch(), 200);
+      } else {
+        setLocalMessages((prev) => [...prev, {
+          id: Date.now().toString(),
+          text: ephemeralContent,
+          sender: 'user',
+          timestamp: new Date(),
+          read: false,
+        }]);
+      }
+
+      URL.revokeObjectURL(pendingPhoto.previewUrl);
+      setPendingPhoto(null);
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast({ title: "Erreur", description: "Impossible d'envoyer la photo", variant: "destructive" });
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
   return (
     <div className="h-screen bg-background flex pb-0 relative overflow-hidden">
       {/* Animated premium gradient background */}
@@ -905,13 +974,69 @@ const ChatConversation = () => {
             </Button>
           </div>
         )}
+        {/* Photo preview before sending */}
+        {pendingPhoto && (
+          <div className="max-w-4xl mx-auto mb-3 relative z-10 animate-fade-in-up">
+            <div className="glass border border-border/30 rounded-2xl p-3 flex items-center gap-3 shadow-lg">
+              <img
+                src={pendingPhoto.previewUrl}
+                alt="Aperçu"
+                className="w-16 h-16 object-cover rounded-xl flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">Photo éphémère</p>
+                <p className="text-xs text-muted-foreground">Visible une seule fois · 10 secondes</p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleCancelPhoto}
+                  disabled={isUploadingPhoto}
+                  className="rounded-full h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleSendPhoto}
+                  disabled={isUploadingPhoto}
+                  className="rounded-full bg-gradient-to-r from-primary to-peach text-white h-8 px-4 text-xs shadow-md hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all"
+                >
+                  {isUploadingPhoto ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    "Envoyer"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="max-w-4xl mx-auto flex items-end gap-2 relative z-10 pb-0">
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handlePhotoFileChange}
+          />
+
           <Button
             size="icon"
             variant="ghost"
             className="rounded-full flex-shrink-0 mb-1 hover:bg-primary/10 transition-all"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploadingPhoto || !!pendingPhoto}
+            title="Envoyer une photo éphémère"
           >
-            <Paperclip className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
+            {isUploadingPhoto ? (
+              <Loader2 className="w-5 h-5 text-primary animate-spin" />
+            ) : (
+              <Camera className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
+            )}
           </Button>
 
           <div className="flex-1 glass rounded-3xl flex items-center gap-2 px-4 py-2.5 border border-border/30 shadow-lg relative group">
