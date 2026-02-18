@@ -1,60 +1,24 @@
 
 
-# Plan : Photos par personnage en base de donnees
+# Corrections de navigation et scroll
 
-## Probleme actuel
-- Les photos sont stockees en dur dans le code (`src/assets/ephemeral-photos/fitgirl-*.jpg`)
-- Seul le personnage "fit-girl" peut envoyer des photos
-- Les autres personnages (Clara, Lea, Eva, Nathalie) n'ont aucune photo
+## Probleme 1 : Le bouton "Decouvrir Premium" du Hero redirige vers la mauvaise page
+Dans `src/components/home/HeroSection.tsx` (ligne 206), le bouton navigue vers `/premium` au lieu de `/subscriptions`. La page `/subscriptions` est la vraie page tarifaire avec les 3 offres (Decouverte, Premium, Premium+).
 
-## Solution proposee
+**Correction** : Changer `navigate("/premium")` en `navigate("/subscriptions")`.
 
-### 1. Creer un bucket de stockage pour les photos de personnages
-- Creer un bucket `character-photos` dans le stockage backend (public en lecture)
-- Organiser les photos par personnage : `character-photos/fit-girl/photo1.jpg`, `character-photos/collegue/photo1.jpg`, etc.
+## Probleme 2 : La page ne remonte pas en haut lors d'un changement de page
+Aucun composant `ScrollToTop` n'existe dans le projet. Quand on navigue entre les pages, le scroll reste a la position precedente.
 
-### 2. Creer une table `character_photos` en base de donnees
-- Lier chaque photo a un personnage via son `slug`
-- Stocker l'URL de la photo et des metadonnees (description, ordre, etc.)
+**Correction** : Creer un composant `ScrollToTop` qui ecoute les changements de route et fait `window.scrollTo(0, 0)` a chaque navigation. L'ajouter dans `App.tsx` a l'interieur du `BrowserRouter`.
 
-Structure de la table :
+## Details techniques
 
-```text
-character_photos
-+------------------+----------+---------------------------------------+
-| Colonne          | Type     | Description                           |
-+------------------+----------+---------------------------------------+
-| id               | uuid     | Identifiant unique                    |
-| fantasy_slug     | text     | Slug du personnage (ex: "fit-girl")   |
-| photo_url        | text     | URL vers le fichier dans le bucket    |
-| description      | text     | Description optionnelle de la photo   |
-| sort_order       | integer  | Ordre d'affichage                     |
-| created_at       | timestamp| Date de creation                      |
-+------------------+----------+---------------------------------------+
-```
+### Fichiers modifies
 
-### 3. Modifier le code d'envoi de photos
-- Supprimer le code hardcode `fitgirlPhotos` et les imports locaux
-- Au lieu de verifier `scenarioId === 'fitgirl'`, verifier si le personnage a des photos en base
-- Charger les photos depuis la base de donnees au debut de la conversation
-- Quand l'IA envoie `[SEND_EPHEMERAL_PHOTO]`, piocher une photo aleatoire parmi celles du personnage actuel
+1. **`src/components/home/HeroSection.tsx`** - Ligne 206 : remplacer `/premium` par `/subscriptions`
 
-### 4. Mettre a jour l'edge function IA
-- Ajouter l'instruction "photos ephemeres" a TOUS les personnages qui ont des photos (pas seulement fit-girl)
-- Le systeme verifiera dynamiquement si des photos existent pour le personnage
+2. **`src/components/ScrollToTop.tsx`** (nouveau fichier) - Composant qui utilise `useLocation` de react-router-dom et un `useEffect` pour scroller en haut a chaque changement de `pathname`
 
-### 5. Uploader vos photos
-- Vous pourrez uploader des photos pour chaque personnage via le backend Cloud
-- Chaque personnage aura son propre ensemble de photos
+3. **`src/App.tsx`** - Ajouter `<ScrollToTop />` juste apres `<BrowserRouter>` pour que toutes les pages beneficient du scroll automatique en haut
 
-## Etapes techniques
-
-1. Migration SQL : creer la table `character_photos` + bucket `character-photos`
-2. Modifier `ChatConversation.tsx` : charger les photos depuis la base au lieu du code local
-3. Modifier `chat-ai-response/index.ts` : activer les photos pour tous les personnages qui en ont
-4. Supprimer les fichiers locaux `src/assets/ephemeral-photos/` et `src/utils/ephemeralPhotos.ts` (optionnel, apres migration)
-
-## Resultat final
-- Chaque personnage a ses propres photos en base de donnees
-- Quand un client demande une photo, l'IA envoie une photo du BON personnage
-- Vous pouvez ajouter/supprimer des photos par personnage sans toucher au code
