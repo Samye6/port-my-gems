@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
 import EphemeralPhoto from "@/components/EphemeralPhoto";
+import { fitgirlPhotos } from "@/utils/ephemeralPhotos";
 import { ConversationSettings } from "@/components/ConversationSettings";
 import {
   DropdownMenu,
@@ -117,11 +118,23 @@ const ChatConversation = () => {
           setCharacterPhotos(data.map((p: any) => p.photo_url));
           console.log(`Loaded ${data.length} photos for character: ${slug}`);
         } else {
-          setCharacterPhotos([]);
+          // Fallback: use local fitgirl photos if slug matches and DB is empty
+          if (slug === 'fit-girl') {
+            setCharacterPhotos(fitgirlPhotos);
+            console.log('Using local fitgirl photos as fallback');
+          } else {
+            setCharacterPhotos([]);
+          }
         }
       } catch (error) {
         console.error('Error loading character photos:', error);
-        setCharacterPhotos([]);
+        // Fallback on error
+        const slug = conversationData?.scenarioId || location.state?.scenarioId;
+        if (slug === 'fit-girl') {
+          setCharacterPhotos(fitgirlPhotos);
+        } else {
+          setCharacterPhotos([]);
+        }
       }
     };
 
@@ -769,7 +782,7 @@ const ChatConversation = () => {
               >
                 {(() => {
                   // Vérifier si le message contient une photo éphémère
-                  const ephemeralPhotoMatch = message.text.match(/ephemeral_photo:(.+)/);
+                  const ephemeralPhotoMatch = message.text.match(/ephemeral_photo:(.+)/s);
                   const hasEphemeralPhoto = ephemeralPhotoMatch !== null;
                   
                   // Séparer le texte de la référence photo
