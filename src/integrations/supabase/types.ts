@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      character_photos: {
+        Row: {
+          created_at: string
+          description: string | null
+          fantasy_slug: string
+          id: string
+          photo_url: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          fantasy_slug: string
+          id?: string
+          photo_url: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          fantasy_slug?: string
+          id?: string
+          photo_url?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           character_avatar: string | null

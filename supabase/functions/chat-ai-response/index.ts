@@ -341,8 +341,26 @@ Cela crée une connexion personnelle et intime.`;
 - Crée une VRAIE connexion émotionnelle
 - L'utilisateur doit avoir l'impression de parler à une vraie personne`;
 
-    // Instructions spéciales pour photos éphémères (Fitness Girl)
-    if (scenarioId === "fitgirl") {
+    // Instructions spéciales pour photos éphémères - dynamique selon les photos disponibles
+    // On vérifie en base si le personnage a des photos
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY");
+    
+    let hasPhotos = false;
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const photosRes = await fetch(
+          `${supabaseUrl}/rest/v1/character_photos?fantasy_slug=eq.${encodeURIComponent(scenarioId)}&select=id&limit=1`,
+          { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
+        );
+        const photosData = await photosRes.json();
+        hasPhotos = Array.isArray(photosData) && photosData.length > 0;
+      } catch (e) {
+        console.error("Error checking character photos:", e);
+      }
+    }
+
+    if (hasPhotos) {
       systemPrompt += `\n\nPHOTOS ÉPHÉMÈRES:
 - Si l'utilisateur te demande une photo, hésite un peu, sois taquine, puis accepte
 - Pour envoyer une photo éphémère, inclus exactement: [SEND_EPHEMERAL_PHOTO]

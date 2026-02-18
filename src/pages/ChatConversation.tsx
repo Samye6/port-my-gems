@@ -13,7 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
 import EphemeralPhoto from "@/components/EphemeralPhoto";
 import { ConversationSettings } from "@/components/ConversationSettings";
-import { fitgirlPhotos } from "@/utils/ephemeralPhotos";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +48,7 @@ const ChatConversation = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [viewedEphemeralPhotos, setViewedEphemeralPhotos] = useState<Set<string>>(new Set());
+  const [characterPhotos, setCharacterPhotos] = useState<string[]>([]);
   const [conversationData, setConversationData] = useState<{
     characterName: string;
     avatarUrl?: string;
@@ -97,6 +97,36 @@ const ChatConversation = () => {
 
     loadConversation();
   }, [actualConversationId]);
+
+  // Load character photos from database
+  useEffect(() => {
+    const loadCharacterPhotos = async () => {
+      const slug = conversationData?.scenarioId || location.state?.scenarioId;
+      if (!slug) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('character_photos')
+          .select('photo_url')
+          .eq('fantasy_slug', slug)
+          .order('sort_order');
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          setCharacterPhotos(data.map((p: any) => p.photo_url));
+          console.log(`Loaded ${data.length} photos for character: ${slug}`);
+        } else {
+          setCharacterPhotos([]);
+        }
+      } catch (error) {
+        console.error('Error loading character photos:', error);
+        setCharacterPhotos([]);
+      }
+    };
+
+    loadCharacterPhotos();
+  }, [conversationData?.scenarioId, location.state?.scenarioId]);
 
   useEffect(() => {
     let hasRun = false;
@@ -475,11 +505,11 @@ const ChatConversation = () => {
         // Envoyer les photos éphémères si demandées
         
         
-        if (hasEphemeralPhotos && currentScenarioId === 'fitgirl') {
+        if (hasEphemeralPhotos && characterPhotos.length > 0) {
           for (let i = 0; i < photoCount; i++) {
-            // Sélectionner une photo aléatoire
-            const randomIndex = Math.floor(Math.random() * fitgirlPhotos.length);
-            const photoUrl = fitgirlPhotos[randomIndex];
+            // Sélectionner une photo aléatoire parmi celles du personnage
+            const randomIndex = Math.floor(Math.random() * characterPhotos.length);
+            const photoUrl = characterPhotos[randomIndex];
             
             // Petit délai entre chaque photo
             if (i > 0) {
