@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MessageCircle, Shield, Sparkles } from "lucide-react";
+import { MessageCircle, Shield, Heart } from "lucide-react";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const Onboarding = () => {
         {step === 2 && (
           <div className="w-full space-y-6 animate-in fade-in duration-500">
             <div className="text-center space-y-4">
-              <Sparkles className="w-16 h-16 text-primary mx-auto" />
+              <Heart className="w-16 h-16 text-primary" />
               <h2 className="text-3xl font-bold text-foreground">Choisissez votre style</h2>
               <p className="text-muted-foreground">
                 Personnalisez l'intensité de vos conversations

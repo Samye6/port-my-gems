@@ -191,7 +191,7 @@ const Auth = () => {
           boxShadow: '0 0 20px rgba(255, 108, 168, 0.1)',
         }}
       >
-        <span className="text-white/50 text-xs font-light">Tu es prêt ? ✨</span>
+        <span className="text-white/50 text-xs font-light">Tu es prêt ?</span>
       </div>
 
       {/* Ghost bubble around form - top left */}

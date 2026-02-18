@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Crown, Heart } from "lucide-react";
+import { Heart, Crown } from "lucide-react";
 
 // Import avatars
 import avatar1 from "@/assets/avatars/avatar-1.jpg";
@@ -109,7 +109,7 @@ const SuggestedCharacters = () => {
       {/* Title */}
       <div className="text-center mb-8 animate-fade-in">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-violet via-primary to-peach bg-clip-text text-transparent mb-2 flex items-center justify-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
+          <Heart className="w-5 h-5 text-primary fill-primary" />
           Elles veulent te parler…
         </h2>
         <p className="text-sm text-muted-foreground">

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Flame, MessageCircle, Sparkles, ChevronRight } from "lucide-react";
+import { Flame, MessageCircle, Crown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import lydiaLogo from "@/assets/lydia-logo.png";
 
@@ -103,7 +103,7 @@ const PremiumBanner = () => {
                   className="w-10 h-10 rounded-full bg-gradient-to-br from-violet to-purple flex items-center justify-center flex-shrink-0"
                   style={{ boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)' }}
                 >
-                  <Sparkles className="w-5 h-5 text-white" />
+                  <Crown className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-foreground">IA immersive</p>
