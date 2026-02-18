@@ -122,7 +122,7 @@ const CharacterCarousel = ({
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-5 overflow-x-auto scrollbar-hide px-6 py-4"
+          className="flex gap-5 overflow-x-auto overflow-y-hidden scrollbar-hide px-6 py-4"
           style={{ scrollSnapType: 'x mandatory' }}
         >
           {characters.map((character, index) => {
