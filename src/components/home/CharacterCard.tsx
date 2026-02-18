@@ -184,37 +184,16 @@ const CharacterCard = ({
             {/* Sexy Tagline on Hover */}
             <div
               className="overflow-hidden transition-all duration-300"
-              style={{ maxHeight: isHovered && !isLocked ? '80px' : '0px', opacity: isHovered && !isLocked ? 1 : 0 }}
+              style={{ maxHeight: isHovered && !isLocked ? '48px' : '0px', opacity: isHovered && !isLocked ? 1 : 0 }}
             >
-              <p className="text-white/90 text-xs pt-2 flex items-center gap-1">
-                <MessageCircle className="w-3 h-3 text-primary" />
+              <p className="text-white/80 text-[11px] pt-1.5 flex items-center gap-1 italic">
+                <MessageCircle className="w-3 h-3 text-primary flex-shrink-0" />
                 "{sexyTagline}"
               </p>
             </div>
           </div>
         </div>
 
-        {/* Hover CTA — bouton pill qui monte depuis le bas, sans overlay */}
-        {!isLocked && (
-          <div
-            className="absolute bottom-4 left-0 right-0 flex justify-center z-20 pointer-events-none transition-all duration-300"
-            style={{
-              opacity: isHovered ? 1 : 0,
-              transform: isHovered ? 'translateY(0)' : 'translateY(12px)',
-            }}
-          >
-            <div
-              className="px-5 py-2 rounded-full text-white font-semibold text-xs pointer-events-auto"
-              style={{
-                background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.9), hsl(280 70% 50% / 0.9))',
-                backdropFilter: 'blur(8px)',
-                boxShadow: '0 4px 20px rgba(255, 77, 141, 0.4)',
-              }}
-            >
-              Viens me parler 😘
-            </div>
-          </div>
-        )}
 
         {/* Locked Overlay */}
         {isLocked && (
