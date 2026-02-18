@@ -84,7 +84,7 @@ const CharacterCard = ({
           background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.5), hsl(270 60% 50% / 0.4), hsl(20 100% 75% / 0.3))',
           filter: 'blur(20px)',
           transform: 'scale(1.1)',
-          opacity: isHovered ? 1 : 0,
+        opacity: isHovered && !isLocked ? 1 : 0,
           transition: 'opacity 0.4s ease',
           zIndex: 0,
         }}
@@ -95,7 +95,7 @@ const CharacterCard = ({
         className={`relative ${sizeClasses[size]} rounded-2xl overflow-hidden cursor-pointer group`}
         onClick={!isLocked ? onClick : undefined}
         style={{
-          transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
+          transform: isHovered && !isLocked ? 'translateY(-6px)' : 'translateY(0)',
           transition: 'transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), box-shadow 0.35s ease',
           boxShadow: isHovered
             ? '0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.2)'
@@ -113,7 +113,7 @@ const CharacterCard = ({
                 alt={title}
                 className="w-full h-full object-cover transition-transform duration-500"
                 style={{
-                  transform: isHovered ? 'scale(1.08)' : 'scale(1)',
+                  transform: isHovered && !isLocked ? 'scale(1.05)' : 'scale(1)',
                   filter: 'brightness(0.9) contrast(1.05) saturate(1.1)',
                 }}
               />
@@ -134,7 +134,7 @@ const CharacterCard = ({
           {/* Hover inner tint */}
           <div
             className="absolute inset-0 bg-gradient-to-t from-violet-900/30 via-primary/10 to-transparent transition-opacity duration-300"
-            style={{ opacity: isHovered ? 1 : 0 }}
+            style={{ opacity: isHovered && !isLocked ? 1 : 0 }}
           />
         </div>
 
@@ -189,7 +189,7 @@ const CharacterCard = ({
             {/* Sexy Tagline on Hover */}
             <div
               className="overflow-hidden transition-all duration-300"
-              style={{ maxHeight: isHovered ? '80px' : '0px', opacity: isHovered ? 1 : 0 }}
+              style={{ maxHeight: isHovered && !isLocked ? '80px' : '0px', opacity: isHovered && !isLocked ? 1 : 0 }}
             >
               <p className="text-white/90 text-xs pt-2 flex items-center gap-1">
                 <MessageCircle className="w-3 h-3 text-primary" />
@@ -199,21 +199,23 @@ const CharacterCard = ({
           </div>
         </div>
 
-        {/* Hover CTA */}
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300"
-          style={{ opacity: isHovered && !isLocked ? 1 : 0, pointerEvents: isHovered && !isLocked ? 'auto' : 'none' }}
-        >
+        {/* Hover CTA — uniquement si non-locked */}
+        {!isLocked && (
           <div
-            className="px-5 py-2.5 rounded-full text-white font-semibold text-sm"
-            style={{
-              background: 'linear-gradient(135deg, hsl(338 100% 55%), hsl(280 70% 50%))',
-              boxShadow: '0 0 30px rgba(255, 77, 141, 0.5), 0 0 60px rgba(139, 92, 246, 0.3)',
-            }}
+            className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+            style={{ opacity: isHovered ? 1 : 0, pointerEvents: isHovered ? 'auto' : 'none' }}
           >
-            Viens me parler 😘
+            <div
+              className="px-5 py-2.5 rounded-full text-white font-semibold text-sm"
+              style={{
+                background: 'linear-gradient(135deg, hsl(338 100% 55%), hsl(280 70% 50%))',
+                boxShadow: '0 0 30px rgba(255, 77, 141, 0.5), 0 0 60px rgba(139, 92, 246, 0.3)',
+              }}
+            >
+              Viens me parler 😘
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Locked Overlay */}
         {isLocked && (
