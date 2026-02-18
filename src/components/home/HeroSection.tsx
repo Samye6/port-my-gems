@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Play, Sparkles, Heart, MessageCircle } from "lucide-react";
+import { Play, Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroModel from "@/assets/hero-model.png";
 
@@ -161,15 +161,9 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
       {/* Content */}
       <div className="relative z-10 container px-6 py-20 flex flex-col justify-center min-h-[70vh]">
         <div className={`max-w-xl space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30">
-            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">Nouveau match disponible</span>
-          </div>
-
           {/* Main Title with Premium Gradient */}
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            <span className="text-foreground">Ton match</span>
+            <span className="text-foreground">Elle n'attend</span>
             <br />
             <span 
               className="bg-clip-text text-transparent"
@@ -177,15 +171,13 @@ const HeroSection = ({ onStartChat, isAuthenticated }: HeroSectionProps) => {
                 backgroundImage: 'linear-gradient(135deg, hsl(338 100% 55%) 0%, hsl(280 70% 60%) 50%, hsl(20 100% 75%) 100%)',
               }}
             >
-              du moment
+              que toi.
             </span>
-            <br />
-            <span className="text-foreground">t'attend…</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg text-muted-foreground max-w-md">
-            Découvre des conversations intimes et personnalisées avec des personnalités uniques qui n'attendent que toi.
+            Des personnalités uniques, des conversations intimes, une expérience faite pour toi.
           </p>
 
           {/* CTA Buttons with Glassmorphism */}
