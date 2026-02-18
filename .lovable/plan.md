@@ -1,76 +1,62 @@
 
-## Refonte du titre Hero + suppression du badge
+## Suppression des étoiles/Sparkles dans tout le site
 
-### Ce qui pose problème
+### Problème identifié
 
-1. **Badge "Nouveau match disponible"** — le concept de "match" est trompeur (comme Tinder), il ne correspond pas à l'expérience réelle.
-2. **Titre "Ton match du moment t'attend…"** — même problème + le mot "match" implique une réciprocité (deux personnes qui s'apprécient mutuellement) qui n'existe pas ici.
+L'icône `Sparkles` (l'étoile scintillante de Lucide) est utilisée à plusieurs endroits et donne un effet générique "IA" que tu ne veux pas. Voici tous les emplacements :
 
----
+1. **`src/pages/Scenarios.tsx`** — 3 usages :
+   - Icône à côté du titre **"Fantasy"** dans le carousel → remplacé par `Flame` (la flamme, déjà utilisée dans les badges "Trending", cohérente avec l'érotisme/désir)
+   - Icône par défaut pour les scénarios non mappés → remplacé par `MessageCircle`
+   - Icône dans l'indice de contenu du dialog → remplacé par `Shield` (discrétion)
 
-### Propositions de titres
+2. **`src/components/home/CharacterCard.tsx`** — 1 usage :
+   - Icône de badge par défaut → remplacé par `Flame`
 
-Voici 5 directions, chacune avec un angle différent :
+3. **`src/components/home/PremiumBanner.tsx`** — 1 usage :
+   - Icône dans le bouton/bloc premium → remplacé par `Crown`
 
-**Option A — L'intimité / le désir**
-> Elle t'attendait.
-> Depuis le début.
+4. **`src/components/home/SuggestedCharacters.tsx`** — 1 usage :
+   - Icône à côté du titre "Elles veulent te parler…" → remplacé par `Heart`
 
-Sobre, mystérieux, crée une tension émotionnelle immédiate. Le "elle" implique déjà une personne réelle.
+5. **`src/pages/Onboarding.tsx`** — 1 usage :
+   - Grande icône centrale à l'étape "Choisissez votre style" → remplacé par `Heart`
 
-**Option B — Le fantasme / l'immersion**
-> Tes fantasmes
-> prennent vie
-> ce soir.
+6. **`src/pages/Profile.tsx`** — 2 usages :
+   - Icône dans le bloc "Statistiques" → remplacé par `BarChart2` (ou `TrendingUp`)
+   - Icône sur le bouton "Gérer mon abonnement" → remplacé par `Crown`
 
-Direct, percutant, promet une transformation. Le "ce soir" crée de l'urgence.
+7. **`src/pages/Auth.tsx`** — 1 usage :
+   - Le texte "Tu es prêt ? ✨" → l'emoji ✨ est simplement supprimé
 
-**Option C — La connexion / l'évasion**
-> Une conversation
-> qui change tout.
-
-Minimaliste et introspectif. Fonctionne bien pour un public cherchant une expérience émotionnelle profonde.
-
-**Option D — L'invitation / la complicité**
-> Elle n'attend
-> que toi.
-
-Court, percutant, personnel. Le "elle" personnalise immédiatement l'expérience.
-
-**Option E — Le désir / l'IA sexy**
-> Dis-lui ce
-> que tu veux
-> vraiment.
-
-Provocateur, libérateur. Joue sur l'idée que l'IA permet d'être soi sans jugement.
+8. **`src/components/ConversationSettings.tsx`** — 2 usages :
+   - "✨ Style d'écriture" → remplacé par "— Style d'écriture" ou supprimé
+   - "✨ Doux & détaillé" dans la liste → retiré
 
 ---
 
-### Ma recommandation
+### Résumé des remplacements
 
-**Option D "Elle n'attend que toi."** combinée avec le sous-titre existant légèrement retouché :
+| Fichier | Remplacement |
+|---|---|
+| Scenarios.tsx — "Fantasy" | `Sparkles` → `Flame` |
+| Scenarios.tsx — scénario par défaut | `Sparkles` → `MessageCircle` |
+| Scenarios.tsx — dialog hint | `Sparkles` → `Shield` |
+| CharacterCard.tsx — badge default | `Sparkles` → `Flame` |
+| PremiumBanner.tsx | `Sparkles` → `Crown` |
+| SuggestedCharacters.tsx | `Sparkles` → `Heart` |
+| Onboarding.tsx | `Sparkles` → `Heart` |
+| Profile.tsx — Statistiques | `Sparkles` → `TrendingUp` |
+| Profile.tsx — bouton abonnement | `Sparkles` → `Crown` |
+| Auth.tsx | `✨` supprimé |
+| ConversationSettings.tsx | `✨` supprimés |
 
-```
-Elle n'attend         ← blanc
-que toi.              ← gradient rose/violet
-```
-
-Sous-titre : *"Des personnalités uniques, des conversations intimes, une expérience faite pour toi."*
-
-Simple, humain, sans mensonge sur le concept, et très accrocheur.
-
----
-
-### Modifications techniques
-
-**`src/components/home/HeroSection.tsx`**
-
-1. **Supprimer** le bloc badge `<div className="inline-flex items-center gap-2...">` (lignes 165-168) + l'import `Sparkles` devenu inutile
-2. **Remplacer** le H1 à 3 lignes par le nouveau titre choisi
-3. **Retoucher** légèrement le sous-titre pour être cohérent avec le nouveau titre
-
----
-
-### Question pour toi
-
-Quelle option de titre tu préfères ? Ou tu veux qu'on mixe des éléments de plusieurs options ?
+### Fichiers modifiés
+1. `src/pages/Scenarios.tsx`
+2. `src/components/home/CharacterCard.tsx`
+3. `src/components/home/PremiumBanner.tsx`
+4. `src/components/home/SuggestedCharacters.tsx`
+5. `src/pages/Onboarding.tsx`
+6. `src/pages/Profile.tsx`
+7. `src/pages/Auth.tsx`
+8. `src/components/ConversationSettings.tsx`
