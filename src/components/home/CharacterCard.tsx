@@ -80,11 +80,11 @@ const CharacterCard = ({
       <div
         className="absolute rounded-2xl pointer-events-none"
         style={{
-          inset: '-8px',
-          background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.5), hsl(270 60% 50% / 0.4), hsl(20 100% 75% / 0.3))',
-          filter: 'blur(20px)',
+          inset: '-4px',
+          background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.25), hsl(270 60% 50% / 0.18), hsl(20 100% 75% / 0.12))',
+          filter: 'blur(30px)',
           transform: 'scale(1.1)',
-        opacity: isHovered && !isLocked ? 1 : 0,
+          opacity: isHovered && !isLocked ? 1 : 0,
           transition: 'opacity 0.4s ease',
           zIndex: 0,
         }}
@@ -132,7 +132,7 @@ const CharacterCard = ({
           )}
 
           {/* Bottom gradient for text */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
         </div>
 
