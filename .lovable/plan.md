@@ -1,47 +1,47 @@
 
-## Refonte du hover CTA : supprimer le bouton pill encombrant
+## Correction du gradient derrière l'image : supprimer la vignette carrée
 
-### Problème identifié sur la capture
+### Le vrai coupable
 
-Le bouton "Viens me parler 😘" est un `div` avec `left-0 right-0` — il prend **toute la largeur de la carte**. Avec le padding `px-5`, il reste large mais surtout il se superpose au tagline qui s'ouvre aussi en bas au hover. On a donc deux éléments qui se battent dans la même zone bas de carte.
-
-### La solution : supprimer le bouton pill, garder uniquement le tagline
-
-Le tagline (ex : `"Regards complices..."`) est déjà un bon indicateur d'action — il suffit d'en faire le seul élément hover en bas, sans bouton pill en plus. Le clic sur la carte entière fait déjà l'action.
-
-**Ce qu'on supprime :**
-- Le bloc "Hover CTA" entier (lignes 197–217) — le bouton pill `left-0 right-0` encombrant
-
-**Ce qu'on garde et améliore :**
-- Le tagline qui s'ouvre déjà au hover en bas — on le rend juste un peu plus visible avec une petite icône
-
-**Alternative minimaliste** — si on veut garder un bouton, le rendre vraiment petit et `w-auto` centré :
-- `px-3 py-1.5` au lieu de `px-5 py-2`
-- `text-[10px]` au lieu de `text-xs`
-- Pas de `left-0 right-0` — juste `w-auto` centré
-- Le repositionner **par-dessus** le gradient existant, intégré au bloc content en bas
-
-### Changement technique dans `src/components/home/CharacterCard.tsx`
-
-**Option retenue : supprimer le bouton pill, améliorer le tagline**
+Ligne 120 dans `CharacterCard.tsx` :
 
 ```tsx
-// SUPPRIMER complètement le bloc Hover CTA (lignes 197–217)
-
-// AMÉLIORER le tagline au hover — déjà en place, juste le rendre plus visible
-<div
-  className="overflow-hidden transition-all duration-300"
-  style={{ maxHeight: isHovered && !isLocked ? '48px' : '0px', opacity: isHovered && !isLocked ? 1 : 0 }}
->
-  <p className="text-white/80 text-[11px] pt-1.5 flex items-center gap-1 italic">
-    <MessageCircle className="w-3 h-3 text-primary flex-shrink-0" />
-    "{sexyTagline}"
-  </p>
-</div>
+<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(139,92,246,0.2)_70%,rgba(0,0,0,0.6)_100%)]" />
 ```
 
-Le résultat : au hover, la carte se soulève légèrement avec le glow, l'image zoome subtil, et le tagline apparaît en douceur en bas. Propre, premium, sans bouton qui déborde.
+Ce radial-gradient crée une **ellipse sombre** qui vignette les 4 côtés de la carte avec du noir à 60%. Comme l'ellipse ne suit pas les coins arrondis de la carte, on voit les bords tranchés — surtout à droite et à gauche. Au hover avec `scale(1.05)`, les bords de l'image glissent et le gradient semble "carré" et mal découpé.
+
+### Ce qu'on supprime
+
+- Le `radial-gradient` ellipse avec noir à 60% sur les bords (ligne 120) — c'est lui qui crée l'effet carré visible
+
+### Ce qu'on garde et améliore
+
+- Le gradient du bas `bg-gradient-to-t from-black/95 via-black/50 to-transparent` (ligne 132) — c'est lui qui assure la lisibilité du texte, il fonctionne bien
+- On ajoute à la place un **vignette douce uniquement sur les bords** via un `box-shadow inset` — ça suit parfaitement le `border-radius` de la carte sans jamais déborder
+
+### Changement technique
+
+```tsx
+// AVANT — ligne 120 — vignette radial carrée
+<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(139,92,246,0.2)_70%,rgba(0,0,0,0.6)_100%)]" />
+
+// APRÈS — box-shadow inset qui suit le border-radius
+<div 
+  className="absolute inset-0 rounded-2xl pointer-events-none"
+  style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.3)' }}
+/>
+```
+
+Un `box-shadow inset` respecte toujours le `border-radius` du parent — donc la vignette suit parfaitement les coins arrondis, sans jamais créer d'effet carré ou de coupure visible.
+
+### Résultat attendu
+
+- Aucun carré sombre visible sur les bords de l'image
+- La vignette est douce, arrondie, naturelle
+- Le texte en bas reste parfaitement lisible grâce au gradient du bas (inchangé)
+- Le hover reste smooth : zoom image + soulèvement + glow externe
 
 ### Fichier modifié
 
-1. **`src/components/home/CharacterCard.tsx`** — suppression du bloc "Hover CTA" pill (lignes 197–217), légère amélioration du tagline
+1. **`src/components/home/CharacterCard.tsx`** — remplacement ligne 120 : suppression du `radial-gradient` carré, remplacement par un `box-shadow inset` qui suit le border-radius
