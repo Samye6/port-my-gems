@@ -1,52 +1,63 @@
 
-## Correction du glow et du gradient bas : effet propre et non intrusif
+## Correction du login Google : redirection après OAuth + listener de session
 
-### Ce qu'on voit sur le screenshot
+### Le problème exact
 
-Deux problèmes distincts :
+Le flow Google OAuth fonctionne techniquement (les logs auth montrent une connexion réussie de "Papi Molière"), mais l'expérience utilisateur est cassée pour deux raisons :
 
-1. **Haut** : le glow externe (div avec `inset: '-8px'`) rayonne avec des couleurs vives (rose/violet) qui sont visibles comme une bande colorée derrière le haut de la carte. L'effet est trop saturé et trop proche de l'image — ça semble "collé" et carré.
+**1. Mauvais redirect_uri**
+Le `redirect_uri` pointe vers `window.location.origin` soit la racine `/` qui charge `<Scenarios />`. Après le retour OAuth, l'utilisateur arrive sur la page d'accueil sans jamais être redirigé vers `/profile`.
 
-2. **Bas** : `bg-gradient-to-t from-black/95 via-black/50 to-transparent` — le `from-black/95` est quasi-opaque et couvre ~50% de la carte en bas. C'est ce qui crée la zone noire trop sombre sous le personnage.
+**2. Absence d'écouteur de session**
+Le `useEffect` dans `Auth.tsx` ne vérifie la session qu'une seule fois au montage. Quand Google OAuth redirige l'utilisateur vers `/auth` avec les tokens dans l'URL, il n'y a aucun listener `onAuthStateChange` pour détecter l'arrivée de la session et déclencher la navigation.
 
-### Corrections précises
+### La solution
 
-**Glow externe (haut) :**
-- Réduire l'opacité max de `0.5/0.4/0.3` à `0.25/0.2/0.15` — moins saturé
-- Augmenter le `blur` de `20px` à `30px` — plus diffus, moins visible comme un bloc
-- Réduire l'`inset` de `-8px` à `-4px` — colle moins à la carte
+**Dans `Auth.tsx` :**
 
-**Gradient bas :**
-- Changer `from-black/95` → `from-black/80` — moins opaque
-- Changer `via-black/50` → `via-black/20` — transition plus douce
-- Le gradient ne couvre que le bas, pas toute la moitié de la carte
+1. Remplacer le `redirect_uri` par `${window.location.origin}/auth` — pour que Google redirige vers la page Auth après authentification, et pas vers Scenarios
+
+2. Ajouter un listener `onAuthStateChange` dans le `useEffect` — il détecte en temps réel quand la session est établie (que ce soit via email/password ou Google) et redirige vers `/profile`
 
 ```tsx
-// AVANT
-background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.5), hsl(270 60% 50% / 0.4), hsl(20 100% 75% / 0.3))'
-filter: 'blur(20px)'
-inset: '-8px'
+useEffect(() => {
+  setIsVisible(true);
 
-// APRÈS — plus subtil, plus diffus
-background: 'linear-gradient(135deg, hsl(338 100% 55% / 0.25), hsl(270 60% 50% / 0.18), hsl(20 100% 75% / 0.12))'
-filter: 'blur(30px)'
-inset: '-4px'
+  // Écoute en temps réel les changements de session (email + Google OAuth)
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    (event, session) => {
+      if (session) {
+        navigate("/profile");
+      }
+    }
+  );
+
+  // Vérification initiale au montage (cas où la session existe déjà)
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) {
+      navigate("/profile");
+    }
+  });
+
+  return () => subscription.unsubscribe();
+}, [navigate]);
 ```
 
+3. Changer le `redirect_uri` :
 ```tsx
-// AVANT
-<div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
-
-// APRÈS — gradient doux, naturel
-<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+const { error } = await lovable.auth.signInWithOAuth("google", {
+  redirect_uri: `${window.location.origin}/auth`,  // redirige vers /auth, pas /
+});
 ```
 
 ### Résultat attendu
 
-- Le glow reste visible comme une "aura" subtile autour de la carte au hover, pas comme un bloc coloré
-- La photo est bien visible sur toute sa hauteur, le bas est lisible sans être noirci
-- Effet premium et naturel
+- L'utilisateur clique "Continuer avec Google"
+- Google authentifie l'utilisateur
+- Google redirige vers `/auth` (avec les tokens dans l'URL)
+- `onAuthStateChange` détecte la session et redirige automatiquement vers `/profile`
+- L'expérience est fluide et correcte
 
 ### Fichier modifié
 
-1. **`src/components/home/CharacterCard.tsx`** — ligne 84 (couleurs glow), ligne 85 (blur), ligne 83 (inset), ligne 135 (gradient bas)
+1. **`src/pages/Auth.tsx`** — `useEffect` avec `onAuthStateChange` + `redirect_uri` corrigé vers `/auth`
