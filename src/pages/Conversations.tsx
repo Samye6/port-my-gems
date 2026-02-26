@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, MoreVertical, Pin, Archive, Trash2, Bell, BellOff, MessageCircle } from "lucide-react";
+import { Search, MoreVertical, Pin, Archive, Trash2, Plus, Bell, BellOff, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
-import lydiaLogo from "@/assets/lydia-logo.png";
+import avatar1 from "@/assets/avatars/avatar-1.jpg";
 import { useUnread } from "@/contexts/UnreadContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -46,21 +46,34 @@ const Conversations = () => {
   const { isMuted, toggleMute } = useSoundSettings();
   const { conversations: dbConversations, updateConversation, deleteConversation: deleteConv, loading } = useConversations();
   
+  const demoConversation: Conversation = {
+    id: "demo-tamara",
+    name: "Tamara",
+    lastMessage: "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?",
+    time: "Maintenant",
+    unread: 1,
+    isPinned: false,
+    isRead: false,
+    avatarUrl: avatar1,
+  };
+
   // Convertir les conversations de la DB au format local
-  const conversations: Conversation[] = dbConversations.map(conv => ({
-    id: conv.id,
-    name: conv.character_name,
-    lastMessage: conv.last_message || "",
-    time: conv.last_message_time 
-      ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
-      : "",
-    timestamp: conv.last_message_time || undefined,
-    unread: conv.unread_count,
-    isPinned: conv.is_pinned,
-    isRead: conv.unread_count === 0,
-    isArchived: conv.is_archived,
-    avatarUrl: conv.character_avatar || undefined,
-  }));
+  const conversations: Conversation[] = isAuthenticated 
+    ? dbConversations.map(conv => ({
+        id: conv.id,
+        name: conv.character_name,
+        lastMessage: conv.last_message || "",
+        time: conv.last_message_time 
+          ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
+          : "",
+        timestamp: conv.last_message_time || undefined,
+        unread: conv.unread_count,
+        isPinned: conv.is_pinned,
+        isRead: conv.unread_count === 0,
+        isArchived: conv.is_archived,
+        avatarUrl: conv.character_avatar || undefined,
+      }))
+    : [demoConversation];
 
   // Calculate and update unread count whenever conversations change
   useEffect(() => {
@@ -106,8 +119,8 @@ const Conversations = () => {
     await deleteConv(id);
   };
 
-  // Check if there are no conversations at all (not just filtered)
-  const hasNoConversations = conversations.length === 0 && !loading;
+
+
 
   const filteredConversations = conversations.filter((conv) => {
     const matchesSearch = conv.name
@@ -174,68 +187,7 @@ const Conversations = () => {
         </div>
       </div>
 
-      {hasNoConversations ? (
-        /* Premium Empty State */
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center relative">
-          {/* Glow background */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-          </div>
-
-          <div className="relative z-10 space-y-6 max-w-sm">
-            {/* Logo with pulse glow */}
-            <div className="relative w-24 h-24 mx-auto">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-violet/30 to-peach/30 rounded-full blur-2xl animate-pulse" />
-              <div className="relative w-full h-full rounded-full glass border border-primary/20 flex items-center justify-center shadow-[0_0_30px_hsl(var(--primary)/0.3)]">
-                <img src={lydiaLogo} alt="Lydia" className="w-14 h-14 object-contain" style={{ filter: 'drop-shadow(0 0 15px hsl(var(--primary) / 0.5))' }} />
-              </div>
-            </div>
-
-            {/* Text */}
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-foreground">
-                Aucune conversation pour le moment.
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Choisis une personnalité et commence une discussion immersive.
-              </p>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="space-y-3 pt-2">
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-violet via-primary to-peach rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-                <Button
-                  onClick={() => navigate("/")}
-                  size="lg"
-                  className="relative w-full bg-gradient-to-r from-violet via-primary to-peach hover:from-violet/90 hover:via-primary/90 hover:to-peach/90 text-primary-foreground font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_hsl(var(--primary)/0.5)] active:scale-[0.98] overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Explorer les personnalités
-                </Button>
-              </div>
-
-              <button
-                onClick={() => navigate("/")}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Retour à l'accueil
-              </button>
-            </div>
-
-            {/* Micro-copy */}
-            <p className="text-xs text-muted-foreground/60">
-              5 personnalités disponibles maintenant.
-            </p>
-            <p className="text-xs text-muted-foreground/40 italic">
-              Chaque relation commence par un premier message.
-            </p>
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Search Bar - Glassmorphism Premium */}
+      {/* Search Bar - Glassmorphism Premium */}
           <div className="px-4 py-3 relative">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-violet/20 via-primary/20 to-peach/20 rounded-2xl blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
@@ -335,8 +287,8 @@ const Conversations = () => {
               </TabsContent>
             </Tabs>
           </div>
-        </>
-      )}
+
+
 
       <ProfileImageModal
         isOpen={showProfileModal}
