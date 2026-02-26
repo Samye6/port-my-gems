@@ -155,6 +155,66 @@ export type Database = {
         }
         Relationships: []
       }
+      fantasy_characters: {
+        Row: {
+          age: number
+          card_subtitle: string
+          card_title: string
+          content_access_difficulty: number
+          created_at: string
+          depth: number
+          encounter_preview: string
+          first_name: string
+          id: string
+          openness: number
+          pace: number
+          personality_tags: string[] | null
+          recommended: boolean
+          scenario_name: string
+          slug: string
+          starter_cta: string
+          updated_at: string
+        }
+        Insert: {
+          age: number
+          card_subtitle: string
+          card_title: string
+          content_access_difficulty?: number
+          created_at?: string
+          depth?: number
+          encounter_preview: string
+          first_name: string
+          id?: string
+          openness?: number
+          pace?: number
+          personality_tags?: string[] | null
+          recommended?: boolean
+          scenario_name: string
+          slug: string
+          starter_cta: string
+          updated_at?: string
+        }
+        Update: {
+          age?: number
+          card_subtitle?: string
+          card_title?: string
+          content_access_difficulty?: number
+          created_at?: string
+          depth?: number
+          encounter_preview?: string
+          first_name?: string
+          id?: string
+          openness?: number
+          pace?: number
+          personality_tags?: string[] | null
+          recommended?: boolean
+          scenario_name?: string
+          slug?: string
+          starter_cta?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
