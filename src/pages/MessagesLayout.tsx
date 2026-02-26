@@ -7,7 +7,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useConversations } from "@/hooks/useConversations";
 import { supabase } from "@/integrations/supabase/client";
 import lydiaLogo from "@/assets/lydia-logo.png";
-import SuggestedCharacters from "@/components/home/SuggestedCharacters";
+import { Button } from "@/components/ui/button";
+import { MessageCircle } from "lucide-react";
 
 const MessagesLayout = () => {
   const { id } = useParams();
@@ -77,26 +78,60 @@ const MessagesLayout = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-violet/5 via-background to-background pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-br from-violet/3 via-transparent to-peach/3 pointer-events-none" />
               
-              {/* Animated gradient effect */}
-              <div className="absolute inset-0 opacity-30">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet/20 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-peach/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+              {/* Glow effect */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" />
               </div>
 
-              <div className="text-center space-y-8 max-w-2xl px-6 relative z-10">
-                {/* Logo with premium glow */}
-                <div className="w-32 h-32 mx-auto flex items-center justify-center relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet/30 via-primary/30 to-peach/30 rounded-full blur-2xl animate-pulse" />
-                  <img 
-                    src={lydiaLogo} 
-                    alt="Lydia Logo" 
-                    className="w-full h-full object-contain relative z-10"
-                    style={{ filter: 'drop-shadow(0 0 30px hsl(var(--primary) / 0.5))' }}
-                  />
+              <div className="text-center space-y-6 max-w-sm px-6 relative z-10">
+                {/* Logo with pulse glow */}
+                <div className="relative w-24 h-24 mx-auto">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-violet/30 to-peach/30 rounded-full blur-2xl animate-pulse" />
+                  <div className="relative w-full h-full rounded-full glass border border-primary/20 flex items-center justify-center shadow-[0_0_30px_hsl(var(--primary)/0.3)]">
+                    <img src={lydiaLogo} alt="Lydia" className="w-14 h-14 object-contain" style={{ filter: 'drop-shadow(0 0 15px hsl(var(--primary) / 0.5))' }} />
+                  </div>
                 </div>
 
-                {/* Suggested Characters Section */}
-                <SuggestedCharacters />
+                {/* Text */}
+                <div className="space-y-2">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Aucune conversation pour le moment.
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    Choisis une personnalité et commence une discussion immersive.
+                  </p>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="space-y-3 pt-2">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-violet via-primary to-peach rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+                    <Button
+                      onClick={() => navigate("/")}
+                      size="lg"
+                      className="relative w-full bg-gradient-to-r from-violet via-primary to-peach hover:from-violet/90 hover:via-primary/90 hover:to-peach/90 text-primary-foreground font-semibold rounded-full shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_hsl(var(--primary)/0.5)] active:scale-[0.98] overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      Explorer les personnalités
+                    </Button>
+                  </div>
+
+                  <button
+                    onClick={() => navigate("/")}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Retour à l'accueil
+                  </button>
+                </div>
+
+                {/* Micro-copy */}
+                <p className="text-xs text-muted-foreground/60">
+                  5 personnalités disponibles maintenant.
+                </p>
+                <p className="text-xs text-muted-foreground/40 italic">
+                  Chaque relation commence par un premier message.
+                </p>
               </div>
             </div>
           )}
