@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Flame, MessageCircle, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen, User } from "lucide-react";
+import { Heart, Flame, Search, Users, Dumbbell, GraduationCap, Shield, BookOpen, MessageCircle, Star } from "lucide-react";
 import { getRandomAvatar } from "@/utils/avatars";
 import lydiaLogo from "@/assets/lydia-logo.png";
 import colleagueCard from "@/assets/colleague-card.png";
@@ -10,24 +10,26 @@ import policeCard from "@/assets/police-card.png";
 import teacherCard from "@/assets/teacher-card.png";
 import fitgirlCard from "@/assets/fitgirl-card.png";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import BottomNav from "@/components/BottomNav";
 import HeroSection from "@/components/home/HeroSection";
-import CharacterCarousel from "@/components/home/CharacterCarousel";
 import PremiumBanner from "@/components/home/PremiumBanner";
 import SearchBar from "@/components/home/SearchBar";
+import FantasyCharacterModal, { type FantasyCharacter } from "@/components/home/FantasyCharacterModal";
 
 import { useConversations } from "@/hooks/useConversations";
 import { useToast } from "@/hooks/use-toast";
-import type { Fantasy } from "@/types/Fantasy";
 
-// Mapping des slugs DB vers les ids internes de l'app (HORS DU COMPOSANT)
-const SLUG_MAP: Record<string, string> = {
+// Image mapping by slug
+const IMAGE_MAP: Record<string, string> = {
+  'collegue': colleagueCard,
+  'fit-girl': fitgirlCard,
+  'universitaire': universityCard,
+  'policiere': policeCard,
+  'professeure': teacherCard,
+};
+
+// Slug to internal id mapping for conversation routing
+const SLUG_TO_ID: Record<string, string> = {
   'collegue': 'colleague',
   'fit-girl': 'fitgirl',
   'universitaire': 'university',
@@ -35,91 +37,15 @@ const SLUG_MAP: Record<string, string> = {
   'professeure': 'teacher',
 };
 
-const normalizeSlug = (slug: string): string => {
-  return SLUG_MAP[slug] || slug;
-};
-
-// Mapping des images par id normalisé (HORS DU COMPOSANT)
-const IMAGE_MAP: Record<string, string> = {
-  'colleague': colleagueCard,
-  'fitgirl': fitgirlCard,
-  'university': universityCard,
-  'police': policeCard,
-  'teacher': teacherCard,
-};
-
-const getScenarioImage = (id: string): string | undefined => {
-  return IMAGE_MAP[id];
-};
-
-// Mapping des icônes par id normalisé (HORS DU COMPOSANT)
-const getScenarioIcon = (id: string): React.ReactNode => {
-  const iconMap: Record<string, React.ReactNode> = {
-    'colleague': <Users className="w-6 h-6" />,
-    'fitgirl': <Dumbbell className="w-6 h-6" />,
-    'university': <GraduationCap className="w-6 h-6" />,
-    'police': <Shield className="w-6 h-6" />,
-    'teacher': <BookOpen className="w-6 h-6" />,
-  };
-  return iconMap[id] || <MessageCircle className="w-6 h-6" />;
-};
-
-// Mapping des gradients par id normalisé (HORS DU COMPOSANT)
-const getScenarioGradient = (id: string): string => {
-  const gradientMap: Record<string, string> = {
-    'colleague': 'from-blue-500/25 via-indigo-500/15 to-purple-500/20',
-    'fitgirl': 'from-pink-500/25 via-rose-500/15 to-red-500/20',
-    'university': 'from-amber-500/25 via-yellow-500/15 to-orange-500/20',
-    'police': 'from-slate-500/25 via-blue-500/15 to-indigo-500/20',
-    'teacher': 'from-emerald-500/25 via-teal-500/15 to-cyan-500/20',
-  };
-  return gradientMap[id] || 'from-primary/25 via-violet/15 to-pink/20';
-};
-
-// Données immersives pour le modal (meetingStory, personality, teaser) - HORS DU COMPOSANT
-const SCENARIO_IMMERSIVE_DATA: Record<string, { meetingStory: string; personality: string[]; contentHint: string; teaser: string }> = {
-  colleague: {
-    meetingStory: "On travaille ensemble depuis des mois. Les réunions, les regards, les silences… Ce soir, on est encore seuls au bureau. Et l'ambiance a changé.",
-    personality: ["Discrète", "Intelligente", "Provocatrice subtile"],
-    contentHint: "Les interactions évoluent au fil de la discussion.",
-    teaser: "Je t'attendais… tu viens enfin me parler ? 😉",
-  },
-  fitgirl: {
-    meetingStory: "On s'est croisés à la salle. Tu m'as aidée sur une série… depuis, j'ai remarqué ton regard quand je m'entraîne. Ce soir, j'ai encore de l'énergie à dépenser.",
-    personality: ["Énergique", "Directe", "Taquine", "Confiante"],
-    contentHint: "Les interactions évoluent au fil de la discussion.",
-    teaser: "Tu viens t'entraîner avec moi ? 💪",
-  },
-  university: {
-    meetingStory: "On s'est retrouvés à la bibliothèque. Une question, un sourire, puis des messages tard le soir. Elle aime apprendre… et provoquer.",
-    personality: ["Curieuse", "Joueuse", "Maligne"],
-    contentHint: "Les interactions évoluent au fil de la discussion.",
-    teaser: "J'ai une question pour toi… 📚",
-  },
-  police: {
-    meetingStory: "Elle t'a contrôlé une fois. Depuis, elle te reconnaît. Son ton est ferme… mais son regard en dit long. Elle aime garder le contrôle.",
-    personality: ["Autoritaire", "Calme", "Dominante"],
-    contentHint: "Les interactions évoluent au fil de la discussion.",
-    teaser: "Vous êtes en infraction… 🚔",
-  },
-  teacher: {
-    meetingStory: "Elle t'a toujours trouvé différent. Trop attentif, trop mature. Ce soir, la discussion dérape doucement. Elle hésite… puis sourit.",
-    personality: ["Élégante", "Intellectuelle", "Troublée"],
-    contentHint: "Les interactions évoluent au fil de la discussion.",
-    teaser: "J'ai quelque chose à te dire… 👩‍🏫",
-  },
-};
-
 const Scenarios = () => {
-  console.log("[SCENARIOS PAGE LOADED]");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createConversation } = useConversations();
-  const [selectedScenario, setSelectedScenario] = useState<Fantasy | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<FantasyCharacter | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [fantasies, setFantasies] = useState<Fantasy[]>([]);
-  const [loadingScenarios, setLoadingScenarios] = useState(true);
+  const [characters, setCharacters] = useState<FantasyCharacter[]>([]);
+  const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>(() => {
     const saved = localStorage.getItem("favoriteScenarios");
     return saved ? JSON.parse(saved) : [];
@@ -130,136 +56,85 @@ const Scenarios = () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
     };
-
     checkAuth();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsAuthenticated(!!session);
-      }
+      (event, session) => setIsAuthenticated(!!session)
     );
-
     return () => subscription.unsubscribe();
   }, []);
 
-  // Fetch scenarios from Supabase
+  // Fetch from fantasy_characters
   useEffect(() => {
-    const fetchFantasies = async () => {
+    const fetchCharacters = async () => {
       try {
         const { data, error } = await supabase
-          .from("fantasies")
-          .select("slug, title, tagline, description, is_active, sort_order, badge, badge_type, photos, videos, likes, dislikes, character_name, character_age, personality_tags")
-          .eq("is_active", true)
-          .order("sort_order", { ascending: true });
+          .from("fantasy_characters")
+          .select("*")
+          .order("recommended", { ascending: false });
 
         if (error) {
-          console.error("Error fetching fantasies:", error);
-          setLoadingScenarios(false);
+          console.error("Error fetching fantasy_characters:", error);
+          setLoading(false);
           return;
         }
 
-        // Diagnostic logs - SUPABASE RAW
-        console.log("SUPABASE RAW FANTASY (first):", data?.[0]);
-        console.log("FETCHED FIT-GIRL:", data?.find((f) => f.slug === "fit-girl"));
-
-        const mappedFantasies: Fantasy[] = (data || []).map((row) => {
-          const normalizedId = normalizeSlug(row.slug);
-          const immersiveData = SCENARIO_IMMERSIVE_DATA[normalizedId];
-          
-          return {
-            id: normalizedId,
-            slug: row.slug,
-            title: row.title,
-            tagline: row.tagline,
-            description: row.description,
-            is_active: row.is_active,
-            sort_order: row.sort_order ?? 0,
-            badge: row.badge,
-            badge_type: row.badge_type as Fantasy["badge_type"],
-            photos: row.photos ?? 0,
-            videos: row.videos ?? 0,
-            likes: row.likes ?? 0,
-            dislikes: row.dislikes ?? 0,
-            // Champs personnage (snake_case de Supabase)
-            character_name: row.character_name,
-            character_age: row.character_age,
-            personality_tags: row.personality_tags,
-            // Champs UI calculés
-            gradient: getScenarioGradient(normalizedId),
-            icon: getScenarioIcon(normalizedId),
-            image: getScenarioImage(normalizedId),
-            isOnline: true,
-            emotionalSubtitle: row.tagline ?? "",
-            sexyTagline: "",
-            detailedDescription: immersiveData?.meetingStory ?? "",
-          };
-        });
-
-        console.log("[MAPPED FANTASIES SAMPLE]", mappedFantasies[0]);
-        setFantasies(mappedFantasies);
+        setCharacters((data as FantasyCharacter[]) || []);
       } catch (err) {
-        console.error("Error fetching fantasies:", err);
+        console.error("Error:", err);
       } finally {
-        setLoadingScenarios(false);
+        setLoading(false);
       }
     };
-
-    fetchFantasies();
+    fetchCharacters();
   }, []);
 
-  const handleScenarioClick = (fantasy: Fantasy) => {
-    console.log("[FANTASY CLICKED]", fantasy);
+  const handleCardClick = (character: FantasyCharacter) => {
     if (!isAuthenticated) {
       navigate("/auth");
       return;
     }
-    setSelectedScenario(fantasy);
+    setSelectedCharacter(character);
   };
 
-  const toggleFavorite = (e: React.MouseEvent, fantasyId: string) => {
+  const toggleFavorite = (e: React.MouseEvent, slug: string) => {
     e.stopPropagation();
-    const newFavorites = favorites.includes(fantasyId)
-      ? favorites.filter((id) => id !== fantasyId)
-      : [...favorites, fantasyId];
+    const newFavorites = favorites.includes(slug)
+      ? favorites.filter((s) => s !== slug)
+      : [...favorites, slug];
     setFavorites(newFavorites);
     localStorage.setItem("favoriteScenarios", JSON.stringify(newFavorites));
   };
 
-  // Filter for search
-  const filteredFantasies = fantasies.filter((fantasy) => {
-    return fantasy.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           (fantasy.description ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-           fantasy.emotionalSubtitle.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredCharacters = characters.filter((c) =>
+    c.scenario_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.card_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleStartChat = async () => {
-    if (!selectedScenario) return;
-    
+    if (!selectedCharacter) return;
     try {
       const avatarUrl = getRandomAvatar();
-      const immersiveData = SCENARIO_IMMERSIVE_DATA[selectedScenario.id];
-      
+      const internalId = SLUG_TO_ID[selectedCharacter.slug] || selectedCharacter.slug;
+
       const preferences = {
-        characterName: selectedScenario.character_name || selectedScenario.title,
-        characterAge: selectedScenario.character_age,
-        personality: selectedScenario.personality_tags || [],
-        meetingStory: immersiveData?.meetingStory || "",
+        characterName: selectedCharacter.first_name,
+        characterAge: selectedCharacter.age,
+        personality: selectedCharacter.personality_tags,
+        meetingStory: selectedCharacter.encounter_preview,
         avatarUrl,
         responseRhythm: "natural",
       };
 
       const conversation = await createConversation({
-        character_name: selectedScenario.character_name || selectedScenario.title,
+        character_name: selectedCharacter.first_name,
         character_avatar: avatarUrl,
-        scenario_id: selectedScenario.id,
+        scenario_id: internalId,
         preferences,
       });
 
       navigate(`/conversations/${conversation.id}`, {
-        state: { 
-          scenarioId: selectedScenario.id,
-          preferences,
-        },
+        state: { scenarioId: internalId, preferences },
       });
     } catch (error) {
       console.error("Error creating conversation:", error);
@@ -271,273 +146,190 @@ const Scenarios = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-background pb-24">
-     
-      {/* Premium Header */}
+      {/* Header */}
       <header className="sticky top-0 z-50 relative">
-        {/* Main header container with premium gradient background */}
-        <div 
+        <div
           className="relative backdrop-blur-xl"
           style={{
             background: 'linear-gradient(135deg, rgba(11, 11, 13, 0.95) 0%, rgba(88, 28, 135, 0.15) 50%, rgba(219, 39, 119, 0.08) 100%)',
           }}
         >
-          {/* Subtle floating glow effect */}
-          <div 
+          <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background: 'radial-gradient(ellipse 80% 50% at 50% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
             }}
           />
-          
           <div className="container flex h-16 items-center justify-between px-6 relative z-10">
             <div className="flex items-center gap-3">
-              {/* Logo with premium glow and hover animation */}
               <div className="relative group cursor-pointer">
-                {/* Logo glow background */}
-                <div 
+                <div
                   className="absolute inset-0 rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300 blur-md"
                   style={{
                     background: 'radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(139, 92, 246, 0.2) 70%, transparent 100%)',
                     transform: 'scale(1.5)',
                   }}
                 />
-                <img 
-                  src={lydiaLogo} 
-                  alt="Lydia" 
+                <img
+                  src={lydiaLogo}
+                  alt="Lydia"
                   className="w-10 h-10 object-contain relative z-10 transition-all duration-200 group-hover:scale-105 group-hover:brightness-110"
-                  style={{
-                    filter: 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.3))',
-                  }}
+                  style={{ filter: 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.3))' }}
                 />
               </div>
-              
-              {/* Title with premium typography */}
-              <h1 
+              <h1
                 className="text-xl font-bold tracking-wide"
                 style={{
                   color: '#FFE6F5',
                   textShadow: '0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(236, 72, 153, 0.15)',
-                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                 }}
               >
                 Lydia
               </h1>
             </div>
             {!isAuthenticated && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => navigate("/auth")}
                 className="rounded-full border-primary/50 text-primary hover:bg-primary/10 transition-all duration-200 hover:scale-105"
-                style={{
-                  boxShadow: '0 0 15px rgba(236, 72, 153, 0.2)',
-                }}
+                style={{ boxShadow: '0 0 15px rgba(236, 72, 153, 0.2)' }}
               >
                 Se connecter
               </Button>
             )}
           </div>
         </div>
-        
-        {/* Premium gradient bottom border */}
-        <div 
+        <div
           className="h-[1px] w-full"
           style={{
             background: 'linear-gradient(90deg, rgba(139, 92, 246, 0.5) 0%, rgba(236, 72, 153, 0.6) 50%, rgba(251, 146, 60, 0.4) 100%)',
             boxShadow: '0 1px 8px rgba(236, 72, 153, 0.3)',
           }}
         />
-        
-        {/* Floating glow under header */}
-        <div 
-          className="absolute -bottom-4 left-0 right-0 h-8 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 60% 100% at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
-          }}
-        />
       </header>
 
-      {/* Hero Section */}
-      <HeroSection 
+      {/* Hero */}
+      <HeroSection
         onStartChat={() => {
-          if (fantasies[0]) setSelectedScenario(fantasies[0]);
+          if (characters[0]) handleCardClick(characters[0]);
         }}
         isAuthenticated={isAuthenticated}
       />
 
-      {/* Search Section */}
+      {/* Search */}
       <section className="container px-6 py-8 -mt-8 relative z-20">
-        <SearchBar 
-          value={searchQuery}
-          onChange={setSearchQuery}
-        />
+        <SearchBar value={searchQuery} onChange={setSearchQuery} />
       </section>
 
-      {/* Show filtered results if searching */}
-      {searchQuery ? (
-        <section className="container px-6 py-4">
-          <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-            <Search className="w-5 h-5 text-primary" />
-            Résultats pour "{searchQuery}"
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filteredFantasies.map((fantasy) => (
-              <div key={fantasy.id} className="aspect-[3/4]">
-                {/* Simplified card for search results */}
-                <div 
-                  className="w-full h-full rounded-2xl overflow-hidden cursor-pointer relative group"
-                  onClick={() => handleScenarioClick(fantasy)}
-                >
-                  {fantasy.image ? (
-                    <img src={fantasy.image} alt={fantasy.title} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className={`w-full h-full bg-gradient-to-br ${fantasy.gradient}`} />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="font-bold text-white">{fantasy.title}</h3>
-                    <p className="text-sm text-primary">{fantasy.emotionalSubtitle}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : loadingScenarios ? (
+      {/* Content */}
+      {loading ? (
         <section className="container px-6 py-12 text-center">
           <div className="flex flex-col items-center gap-4">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <p className="text-muted-foreground">Chargement…</p>
           </div>
         </section>
-      ) : fantasies.length === 0 ? (
+      ) : characters.length === 0 ? (
         <section className="container px-6 py-12 text-center">
           <p className="text-muted-foreground">Aucun scénario disponible</p>
         </section>
       ) : (
         <>
-          {/* PHASE DE LANCEMENT : Tous les scénarios Fantasy disponibles */}
-          <CharacterCarousel
-            title="Fantasy"
-            subtitle="Scénarios immersifs disponibles"
-            icon={<Flame className="w-6 h-6" />}
-            characters={fantasies}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onCharacterClick={handleScenarioClick}
-            onFavoriteToggle={toggleFavorite}
-            cardSize="large"
-          />
+          {/* Section title */}
+          <section className="container px-6 pb-2">
+            <div className="flex items-center gap-2 mb-6">
+              <Flame className="w-6 h-6 text-primary" />
+              <h2 className="text-xl font-bold text-foreground">Fantasy</h2>
+              <span className="text-sm text-muted-foreground ml-1">Scénarios immersifs</span>
+            </div>
+          </section>
 
-          {/* Premium Banner */}
+          {/* Character Cards Grid */}
+          <section className="container px-6 pb-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {(searchQuery ? filteredCharacters : characters).map((character, index) => (
+                <div
+                  key={character.id}
+                  className="group cursor-pointer animate-fade-in-up"
+                  style={{ animationDelay: `${index * 80}ms` }}
+                  onClick={() => handleCardClick(character)}
+                >
+                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-card border border-border/30 hover:border-primary/40 transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--primary)/0.2)]">
+                    {/* Image */}
+                    {IMAGE_MAP[character.slug] ? (
+                      <img
+                        src={IMAGE_MAP[character.slug]}
+                        alt={character.scenario_name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ filter: 'brightness(0.85) contrast(1.05) saturate(1.1)' }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 via-violet/20 to-muted" />
+                    )}
+
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+                    {/* Recommended badge */}
+                    {character.recommended && (
+                      <div className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 bg-gradient-to-r from-primary to-pink-500 text-primary-foreground shadow-[0_0_15px_rgba(255,77,141,0.5)]">
+                        <Star className="w-3 h-3" />
+                        Recommandé
+                      </div>
+                    )}
+
+                    {/* Favorite */}
+                    <button
+                      onClick={(e) => toggleFavorite(e, character.slug)}
+                      className="absolute top-3 right-3 z-10 p-2 rounded-xl glass hover:bg-card/80 transition-colors"
+                    >
+                      <Heart
+                        className={`w-4 h-4 transition-all duration-300 ${
+                          favorites.includes(character.slug)
+                            ? "fill-primary text-primary scale-110"
+                            : "text-white group-hover:text-primary"
+                        }`}
+                        style={{
+                          filter: favorites.includes(character.slug) ? 'drop-shadow(0 0 10px rgba(255, 77, 141, 0.8))' : 'none'
+                        }}
+                      />
+                    </button>
+
+                    {/* Text */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                      <h3 className="font-bold text-white text-base drop-shadow-lg">{character.scenario_name}</h3>
+                      <p
+                        className="text-sm font-medium mt-0.5"
+                        style={{
+                          background: 'linear-gradient(90deg, hsl(338 100% 65%), hsl(280 70% 65%))',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                        }}
+                      >
+                        {character.card_title}
+                      </p>
+                      <p className="text-[11px] text-white/60 mt-1">{character.card_subtitle}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <PremiumBanner />
-
-          {/* Sections supplémentaires retirées pour simplifier le parcours */}
-
-          {/* PHASE DE LANCEMENT : Section "Tous les personnages" retirée - seuls les 5 Fantasy sont visibles */}
         </>
       )}
 
-
-      {/* Configuration Dialog - Refonte immersive */}
-      <Dialog 
-        open={selectedScenario !== null} 
-        onOpenChange={(open) => {
-          if (!open) setSelectedScenario(null);
-          else if (selectedScenario) console.log("MODAL SELECTED FANTASY:", selectedScenario);
-        }}
-      >
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-card border-border">
-          <DialogHeader className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/30 to-violet/30 flex items-center justify-center text-primary">
-                {selectedScenario?.icon}
-              </div>
-              <DialogTitle className="text-xl font-bold text-foreground">
-                {selectedScenario?.title}
-              </DialogTitle>
-            </div>
-          </DialogHeader>
-
-          <div className="space-y-6 py-4">
-            {/* Section Profil fixe du personnage */}
-            <div className="p-4 rounded-2xl bg-muted/30 border border-border/50">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-violet/30 flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {selectedScenario?.character_name || selectedScenario?.title}
-                  </p>
-                  {selectedScenario?.character_age && (
-                    <p className="text-sm text-muted-foreground">
-                      {selectedScenario.character_age} ans
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Section immersive "Notre rencontre" */}
-            <div className="space-y-3 p-4 rounded-2xl bg-gradient-to-br from-primary/5 to-violet/10 border border-primary/20">
-              <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
-                <Heart className="w-4 h-4" />
-                Notre rencontre
-              </h3>
-              <p className="text-sm text-muted-foreground italic leading-relaxed">
-                "{selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.meetingStory}"
-              </p>
-            </div>
-
-            {/* Section Personnalité - from DB */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-foreground">Personnalité</h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedScenario?.personality_tags?.map((trait, index) => (
-                  <span 
-                    key={index}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20"
-                  >
-                    {trait}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Section "Ce que tu vas vivre" */}
-            <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Shield className="w-4 h-4 text-primary" />
-                {selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.contentHint}
-              </p>
-            </div>
-
-            {/* Teaser avant CTA */}
-            <div className="pt-4 space-y-4">
-              <div className="text-center p-3 rounded-xl bg-gradient-to-r from-primary/10 to-violet/10 border border-primary/20">
-                <p className="text-sm text-primary italic">
-                  "{selectedScenario && SCENARIO_IMMERSIVE_DATA[selectedScenario.id]?.teaser}"
-                </p>
-              </div>
-              
-              <p className="text-center text-xs text-muted-foreground">
-                Quand tu veux.
-              </p>
-              
-              <Button
-                onClick={handleStartChat}
-                className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 rounded-full shadow-[0_0_30px_rgba(255,77,141,0.3)] hover:shadow-[0_0_50px_rgba(255,77,141,0.5)] transition-all"
-              >
-                Commencer la conversation
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Modal */}
+      <FantasyCharacterModal
+        character={selectedCharacter}
+        open={selectedCharacter !== null}
+        onOpenChange={(open) => { if (!open) setSelectedCharacter(null); }}
+        onStartChat={handleStartChat}
+      />
 
       <BottomNav />
     </div>
