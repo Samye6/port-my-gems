@@ -37,6 +37,58 @@ const SLUG_TO_ID: Record<string, string> = {
   'professeure': 'teacher',
 };
 
+const decodeJwtProjectRef = (token?: string | null) => {
+  if (!token) return null;
+  try {
+    const [, payload] = token.split(".");
+    if (!payload) return null;
+
+    const normalizedPayload = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const paddedPayload = normalizedPayload.padEnd(Math.ceil(normalizedPayload.length / 4) * 4, "=");
+    const parsed = JSON.parse(atob(paddedPayload)) as { ref?: string };
+
+    return typeof parsed.ref === "string" ? parsed.ref : null;
+  } catch {
+    return null;
+  }
+};
+
+const fetchFantasyCharactersFallback = async (): Promise<FantasyCharacter[] | null> => {
+  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string | undefined;
+  const configuredUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
+  const keyCandidates = [
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+    import.meta.env.VITE_SUPABASE_ANON_KEY,
+  ].filter(Boolean) as string[];
+
+  const apiKey =
+    keyCandidates.find((key) => projectId && decodeJwtProjectRef(key) === projectId) ??
+    keyCandidates[0];
+
+  const baseUrl =
+    projectId && (!configuredUrl || !configuredUrl.includes(projectId))
+      ? `https://${projectId}.supabase.co`
+      : configuredUrl;
+
+  if (!baseUrl || !apiKey) return null;
+
+  const response = await fetch(
+    `${baseUrl}/rest/v1/fantasy_characters?select=*&order=recommended.desc`,
+    {
+      headers: {
+        apikey: apiKey,
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
+  );
+
+  if (!response.ok) return null;
+
+  const data = (await response.json()) as FantasyCharacter[];
+  return Array.isArray(data) ? data : null;
+};
+
 const Scenarios = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
