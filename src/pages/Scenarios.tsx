@@ -37,6 +37,76 @@ const SLUG_TO_ID: Record<string, string> = {
   'professeure': 'teacher',
 };
 
+const decodeJwtProjectRef = (token?: string | null) => {
+  if (!token) return null;
+  try {
+    const [, payload] = token.split(".");
+    if (!payload) return null;
+
+    const normalizedPayload = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const paddedPayload = normalizedPayload.padEnd(Math.ceil(normalizedPayload.length / 4) * 4, "=");
+    const parsed = JSON.parse(atob(paddedPayload)) as { ref?: string };
+
+    return typeof parsed.ref === "string" ? parsed.ref : null;
+  } catch {
+    return null;
+  }
+};
+
+const fetchFantasyCharactersFallback = async (): Promise<FantasyCharacter[] | null> => {
+  const cloudProjectId = "nmgjyedcgzzmaifyscnj";
+  const cloudUrl = "https://nmgjyedcgzzmaifyscnj.supabase.co";
+  const cloudPublishableKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tZ2p5ZWRjZ3p6bWFpZnlzY25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0Nzk4NjMsImV4cCI6MjA3OTA1NTg2M30.0_GrcBVryft_YgEmlS_kG50g7XVUeDEifguw4Ldobqg";
+
+  const projectId = (import.meta.env.VITE_SUPABASE_PROJECT_ID as string | undefined) || cloudProjectId;
+  const configuredUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
+  const keyCandidates = [
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+    import.meta.env.VITE_SUPABASE_ANON_KEY,
+    cloudPublishableKey,
+  ].filter(Boolean) as string[];
+
+  const apiKey =
+    keyCandidates.find((key) => decodeJwtProjectRef(key) === projectId) ??
+    cloudPublishableKey;
+
+  const baseUrl =
+    projectId && configuredUrl && configuredUrl.includes(projectId)
+      ? configuredUrl
+      : `https://${projectId}.supabase.co`;
+
+  const response = await fetch(
+    `${baseUrl}/rest/v1/fantasy_characters?select=*&order=recommended.desc`,
+    {
+      headers: {
+        apikey: apiKey,
+        Authorization: `Bearer ${apiKey}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const backupResponse = await fetch(
+      `${cloudUrl}/rest/v1/fantasy_characters?select=*&order=recommended.desc`,
+      {
+        headers: {
+          apikey: cloudPublishableKey,
+          Authorization: `Bearer ${cloudPublishableKey}`,
+        },
+      }
+    );
+
+    if (!backupResponse.ok) return null;
+    const backupData = (await backupResponse.json()) as FantasyCharacter[];
+    return Array.isArray(backupData) ? backupData : null;
+  }
+
+  const data = (await response.json()) as FantasyCharacter[];
+  return Array.isArray(data) ? data : null;
+};
+
 const Scenarios = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -74,13 +144,22 @@ const Scenarios = () => {
 
         if (error) {
           console.error("Error fetching fantasy_characters:", error);
-          setLoading(false);
+          const fallbackData = await fetchFantasyCharactersFallback();
+          setCharacters(fallbackData || []);
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          const fallbackData = await fetchFantasyCharactersFallback();
+          setCharacters(fallbackData || []);
           return;
         }
 
         setCharacters((data as FantasyCharacter[]) || []);
       } catch (err) {
         console.error("Error:", err);
+        const fallbackData = await fetchFantasyCharactersFallback();
+        setCharacters(fallbackData || []);
       } finally {
         setLoading(false);
       }
