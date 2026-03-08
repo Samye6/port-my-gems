@@ -46,34 +46,21 @@ const Conversations = () => {
   const { isMuted, toggleMute } = useSoundSettings();
   const { conversations: dbConversations, updateConversation, deleteConversation: deleteConv, loading } = useConversations();
   
-  const demoConversation: Conversation = {
-    id: "demo-tamara",
-    name: "Tamara",
-    lastMessage: "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?",
-    time: "Maintenant",
-    unread: 1,
-    isPinned: false,
-    isRead: false,
-    avatarUrl: avatar1,
-  };
-
   // Convertir les conversations de la DB au format local
-  const conversations: Conversation[] = isAuthenticated 
-    ? dbConversations.map(conv => ({
-        id: conv.id,
-        name: conv.character_name,
-        lastMessage: conv.last_message || "",
-        time: conv.last_message_time 
-          ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
-          : "",
-        timestamp: conv.last_message_time || undefined,
-        unread: conv.unread_count,
-        isPinned: conv.is_pinned,
-        isRead: conv.unread_count === 0,
-        isArchived: conv.is_archived,
-        avatarUrl: conv.character_avatar || undefined,
-      }))
-    : [demoConversation];
+  const conversations: Conversation[] = dbConversations.map(conv => ({
+    id: conv.id,
+    name: conv.character_name,
+    lastMessage: conv.last_message || "",
+    time: conv.last_message_time 
+      ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
+      : "",
+    timestamp: conv.last_message_time || undefined,
+    unread: conv.unread_count,
+    isPinned: conv.is_pinned,
+    isRead: conv.unread_count === 0,
+    isArchived: conv.is_archived,
+    avatarUrl: conv.character_avatar || undefined,
+  }));
 
   // Calculate and update unread count whenever conversations change
   useEffect(() => {
