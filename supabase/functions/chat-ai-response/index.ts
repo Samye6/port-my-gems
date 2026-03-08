@@ -1,14 +1,77 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+// =============================================================================
+// CORS - Restrict to allowed origins
+// =============================================================================
+
+const ALLOWED_ORIGINS = [
+  'https://port-my-gems.lovable.app',
+  'https://id-preview--ba42f060-b546-4d52-8c3b-54f372db3402.lovable.app',
+  'http://localhost:8080',
+  'http://localhost:5173',
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const isAllowed = ALLOWED_ORIGINS.some(o => origin.startsWith(o) || origin === o);
+  return {
+    'Access-Control-Allow-Origin': isAllowed ? origin : '',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
+
+// =============================================================================
+// INPUT VALIDATION
+// =============================================================================
+
+const ALLOWED_SCENARIOS = ['colleague', 'fitgirl', 'university', 'police', 'teacher'];
+const MAX_MESSAGES = 100;
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_PREFERENCE_STRING_LENGTH = 200;
+
+function validateInput(body: any): { valid: boolean; error?: string } {
+  if (!body || typeof body !== 'object') {
+    return { valid: false, error: 'Invalid request body' };
+  }
+
+  const { messages, preferences } = body;
+
+  if (!messages || !Array.isArray(messages)) {
+    return { valid: false, error: 'Messages must be an array' };
+  }
+
+  if (messages.length > MAX_MESSAGES) {
+    return { valid: false, error: 'Too many messages' };
+  }
+
+  for (const msg of messages) {
+    if (typeof msg !== 'object' || msg === null) {
+      return { valid: false, error: 'Invalid message format' };
+    }
+    const content = msg.text || msg.content || '';
+    if (typeof content !== 'string' || content.length > MAX_MESSAGE_LENGTH) {
+      return { valid: false, error: 'Message content too long or invalid' };
+    }
+  }
+
+  if (preferences && typeof preferences === 'object') {
+    const stringFields = ['characterName', 'characterAge', 'characterGender', 'userNickname', 'scenarioId', 'intensity', 'rhythm', 'responseRhythm', 'tone', 'writingStyle'];
+    for (const field of stringFields) {
+      const val = preferences[field];
+      if (val !== undefined && val !== null && typeof val === 'string' && val.length > MAX_PREFERENCE_STRING_LENGTH) {
+        return { valid: false, error: `Preference field ${field} too long` };
+      }
+    }
+  }
+
+  return { valid: true };
+}
 
 // =============================================================================
 // PROFILS IA DISTINCTS - PHASE DE LANCEMENT
-// Chaque scénario a sa propre personnalité, ton, vocabulaire et comportement
 // =============================================================================
 
 interface ScenarioProfile {
@@ -20,7 +83,6 @@ interface ScenarioProfile {
 }
 
 const SCENARIO_PROFILES: Record<string, ScenarioProfile> = {
-  // 👩‍💼 COLLÈGUE - Séduction progressive, subtile, interdite
   colleague: {
     basePersonality: `Tu es une collègue de bureau, professionnelle mais avec une tension non-dite.
 Tu incarnes la séduction progressive et subtile, celle qui joue avec le risque et les silences.
@@ -44,7 +106,6 @@ Tu es intelligente, discrète mais avec des regards qui en disent long.`,
 - Tu penses à l'utilisateur depuis la dernière fois au bureau`
   },
 
-  // 🏋️‍♀️ FITNESS GIRL - Énergique, confiante, body-positive
   fitgirl: {
     basePersonality: `Tu es une sportive passionnée, actuellement à la salle de fitness.
 Tu es énergique, confiante, body-positive et tu assumes totalement ton corps.
@@ -68,7 +129,6 @@ Tu as un côté dominant et taquin, tu sais ce que tu veux.`,
 - Tu fais une pause entre deux exercices pour répondre`
   },
 
-  // 🎓 UNIVERSITAIRE - Intelligente, curieuse, joueuse
   university: {
     basePersonality: `Tu es une étudiante universitaire, jeune, curieuse et intellectuellement stimulante.
 Tu mélanges une innocence apparente avec une curiosité sensuelle assumée.
@@ -92,7 +152,6 @@ Tu aimes les jeux d'esprit et la séduction mentale.`,
 - Tu cherches une distraction de tes études`
   },
 
-  // 👮‍♀️ POLICIÈRE - Autoritaire, assurée, jeux de pouvoir
   police: {
     basePersonality: `Tu es une officière de police, autoritaire et sûre de toi.
 Tu contrôles la situation et tu aimes les jeux de pouvoir.
@@ -116,7 +175,6 @@ Ton langage est ferme mais ton intention est clairement séductrice.`,
 - Tu prends les choses en main dès le début`
   },
 
-  // 👩‍🏫 PROFESSEURE - Calme, posée, érotisme psychologique
   teacher: {
     basePersonality: `Tu es une professeure, calme, posée et légèrement supérieure.
 Tu as une voix rassurante et une séduction élégante.
@@ -142,8 +200,7 @@ Tu joues sur l'interdit, l'admiration et la transgression.`,
 };
 
 // =============================================================================
-// MÉMOIRE & ÉVOLUTION (système de base)
-// Les IA doivent s'adapter et évoluer avec le temps
+// MÉMOIRE & ÉVOLUTION
 // =============================================================================
 
 function buildMemoryInstructions(messageCount: number): string {
@@ -176,15 +233,56 @@ function buildMemoryInstructions(messageCount: number): string {
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { messages, preferences } = await req.json();
+    // =========================================================================
+    // AUTHENTICATION - Validate JWT
+    // =========================================================================
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Non autorisé' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Non autorisé' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // =========================================================================
+    // INPUT VALIDATION
+    // =========================================================================
+    const body = await req.json();
+    const validation = validateInput(body);
+    if (!validation.valid) {
+      return new Response(
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { messages, preferences } = body;
     
-    console.log("Received request with preferences:", preferences);
-    
+    console.log("Authenticated user:", claimsData.claims.sub);
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -195,13 +293,18 @@ serve(async (req) => {
     const characterAge = preferences?.characterAge || "25";
     const characterGender = preferences?.characterGender || "femme";
     const userNickname = preferences?.userNickname || "";
-    const scenarioId = preferences?.scenarioId || "";
+    const rawScenarioId = preferences?.scenarioId || "";
+    const scenarioId = ALLOWED_SCENARIOS.includes(rawScenarioId) ? rawScenarioId : "";
     
     // Gérer le format d'intensité
     let intensity = preferences?.intensity || "doux";
     if (typeof intensity === 'number') {
       const intensityMap = ["amical", "doux", "intime", "audacieux", "tres-audacieux"];
       intensity = intensityMap[intensity - 1] || "doux";
+    }
+    const allowedIntensities = ["amical", "doux", "intime", "audacieux", "tres-audacieux"];
+    if (!allowedIntensities.includes(intensity)) {
+      intensity = "doux";
     }
     
     // Gérer le rythme
@@ -234,7 +337,7 @@ serve(async (req) => {
       flirtyTone = tone === 'flirty';
       withEmojis = preferences?.useEmojis === true;
       withoutEmojis = preferences?.useEmojis === false;
-    } else if (typeof writingStyle === 'object') {
+    } else if (typeof writingStyle === 'object' && writingStyle) {
       shortSuggestive = writingStyle?.shortSuggestive || false;
       softDetailed = writingStyle?.softDetailed || false;
       withEmojis = writingStyle?.withEmojis || false;
@@ -244,8 +347,6 @@ serve(async (req) => {
       intenseTone = writingStyle?.intenseTone || false;
     }
     
-    console.log("Processing scenario:", scenarioId);
-    
     // =======================================================================
     // CONSTRUCTION DU PROMPT AVEC PROFIL IA SPÉCIFIQUE
     // =======================================================================
@@ -254,7 +355,6 @@ serve(async (req) => {
     let systemPrompt = "";
     
     if (profile) {
-      // Utiliser le profil spécifique du scénario
       systemPrompt = `Tu es ${characterName}, ${characterGender === "homme" ? "un homme" : "une femme"} de ${characterAge} ans.
 
 ${profile.basePersonality}
@@ -271,12 +371,10 @@ ${profile.behaviors}
 CONTEXTE PREMIER MESSAGE:
 ${profile.firstMessageContext}`;
     } else {
-      // Fallback pour scénarios non définis
       systemPrompt = `Tu es ${characterName}, ${characterGender === "homme" ? "un homme" : "une femme"} de ${characterAge} ans.
 Tu es une personne séduisante et attentive.`;
     }
     
-    // Ajouter le nom de l'utilisateur
     if (userNickname) {
       systemPrompt += `\n\nIMPORTANT - NOM DE L'UTILISATEUR:
 Tu t'adresses TOUJOURS à l'utilisateur en l'appelant "${userNickname}". 
@@ -284,7 +382,6 @@ C'est CRUCIAL que tu utilises ce prénom naturellement dans tes réponses.
 Cela crée une connexion personnelle et intime.`;
     }
     
-    // Style d'écriture
     systemPrompt += `\n\nSTYLE D'ÉCRITURE:`;
     if (shortSuggestive) {
       systemPrompt += `\n- Messages courts (1-2 phrases), suggestifs et impactants`;
@@ -294,21 +391,18 @@ Cela crée une connexion personnelle et intime.`;
       systemPrompt += `\n- Longueur naturelle (2-3 phrases)`;
     }
     
-    // Ton
     systemPrompt += `\n\nTON À ADOPTER:`;
     if (teasingTone) systemPrompt += `\n- Joueur(se) et taquin(e)`;
     if (romanticTone) systemPrompt += `\n- Romantique et doux(ce)`;
     if (intenseTone) systemPrompt += `\n- Passionné(e) et intense`;
     if (flirtyTone) systemPrompt += `\n- Coquin(e) et séducteur(trice)`;
     
-    // Emojis
     if (withEmojis && !withoutEmojis) {
       systemPrompt += `\n- Utilise des emojis de manière naturelle et subtile`;
     } else if (withoutEmojis) {
       systemPrompt += `\n- N'utilise JAMAIS d'emojis`;
     }
     
-    // Intensité
     systemPrompt += `\n\nINTENSITÉ: ${intensity}`;
     const intensityMapping: Record<string, string> = {
       "amical": "Reste amical(e), pas de sous-entendus explicites",
@@ -319,7 +413,6 @@ Cela crée une connexion personnelle et intime.`;
     };
     systemPrompt += `\n- ${intensityMapping[intensity] || intensityMapping["doux"]}`;
     
-    // Rythme
     const rhythmMapping: Record<string, string> = {
       "instant": "Toujours disponible, réponds immédiatement",
       "quick": "Réponds rapidement",
@@ -328,11 +421,9 @@ Cela crée une connexion personnelle et intime.`;
     };
     systemPrompt += `\n\nDISPONIBILITÉ: ${rhythmMapping[responseRhythm] || rhythmMapping["natural"]}`;
     
-    // Mémoire et évolution
     const messageCount = messages?.length || 0;
     systemPrompt += buildMemoryInstructions(messageCount);
     
-    // Règles fondamentales
     systemPrompt += `\n\nRÈGLES FONDAMENTALES:
 - Reste TOUJOURS dans ton personnage, ne brise JAMAIS l'illusion
 - Ne mentionne JAMAIS que tu es une IA ou un programme
@@ -341,17 +432,13 @@ Cela crée une connexion personnelle et intime.`;
 - Crée une VRAIE connexion émotionnelle
 - L'utilisateur doit avoir l'impression de parler à une vraie personne`;
 
-    // Instructions spéciales pour photos éphémères - dynamique selon les photos disponibles
-    // On vérifie en base si le personnage a des photos
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY");
-    
+    // Check for ephemeral photos
     let hasPhotos = false;
-    if (supabaseUrl && supabaseKey) {
+    if (scenarioId) {
       try {
         const photosRes = await fetch(
           `${supabaseUrl}/rest/v1/character_photos?fantasy_slug=eq.${encodeURIComponent(scenarioId)}&select=id&limit=1`,
-          { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
+          { headers: { apikey: supabaseAnonKey, Authorization: `Bearer ${supabaseAnonKey}` } }
         );
         const photosData = await photosRes.json();
         hasPhotos = Array.isArray(photosData) && photosData.length > 0;
@@ -368,8 +455,6 @@ Cela crée une connexion personnelle et intime.`;
 - Plus l'utilisateur est engagé, plus tu es généreuse avec les photos`;
     }
 
-    console.log("System prompt built for scenario:", scenarioId);
-
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -382,7 +467,7 @@ Cela crée une connexion personnelle et intime.`;
           { role: "system", content: systemPrompt },
           ...messages.map((msg: any) => ({
             role: msg.sender === "user" ? "user" : "assistant",
-            content: msg.text || msg.content
+            content: (msg.text || msg.content || '').substring(0, MAX_MESSAGE_LENGTH)
           }))
         ],
         max_completion_tokens: 200,
@@ -390,8 +475,7 @@ Cela crée une connexion personnelle et intime.`;
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("AI gateway error:", response.status);
       
       if (response.status === 429) {
         return new Response(
@@ -406,13 +490,11 @@ Cela crée une connexion personnelle et intime.`;
         );
       }
       
-      throw new Error(`AI gateway error: ${response.status}`);
+      throw new Error("AI service error");
     }
 
     const data = await response.json();
     const generatedText = data.choices?.[0]?.message?.content;
-    
-    console.log("Generated response for", scenarioId, ":", generatedText?.substring(0, 100));
 
     if (!generatedText) {
       throw new Error("No response generated");
@@ -426,10 +508,10 @@ Cela crée une connexion personnelle et intime.`;
     console.error("Error in chat-ai-response function:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "Une erreur s'est produite",
+        error: "Une erreur s'est produite",
         text: "Désolé, je ne peux pas répondre pour le moment. Peux-tu réessayer ?"
       }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 });
