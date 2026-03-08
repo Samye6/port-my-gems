@@ -5,7 +5,7 @@ import { Search, MoreVertical, Pin, Archive, Trash2, Plus, Bell, BellOff, Messag
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
-import avatar1 from "@/assets/avatars/avatar-1.jpg";
+
 import { useUnread } from "@/contexts/UnreadContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
