@@ -5,7 +5,7 @@ import { Search, MoreVertical, Pin, Archive, Trash2, Plus, Bell, BellOff, Messag
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileImageModal from "@/components/ProfileImageModal";
-import avatar1 from "@/assets/avatars/avatar-1.jpg";
+
 import { useUnread } from "@/contexts/UnreadContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -46,34 +46,21 @@ const Conversations = () => {
   const { isMuted, toggleMute } = useSoundSettings();
   const { conversations: dbConversations, updateConversation, deleteConversation: deleteConv, loading } = useConversations();
   
-  const demoConversation: Conversation = {
-    id: "demo-tamara",
-    name: "Tamara",
-    lastMessage: "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?",
-    time: "Maintenant",
-    unread: 1,
-    isPinned: false,
-    isRead: false,
-    avatarUrl: avatar1,
-  };
-
   // Convertir les conversations de la DB au format local
-  const conversations: Conversation[] = isAuthenticated 
-    ? dbConversations.map(conv => ({
-        id: conv.id,
-        name: conv.character_name,
-        lastMessage: conv.last_message || "",
-        time: conv.last_message_time 
-          ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
-          : "",
-        timestamp: conv.last_message_time || undefined,
-        unread: conv.unread_count,
-        isPinned: conv.is_pinned,
-        isRead: conv.unread_count === 0,
-        isArchived: conv.is_archived,
-        avatarUrl: conv.character_avatar || undefined,
-      }))
-    : [demoConversation];
+  const conversations: Conversation[] = dbConversations.map(conv => ({
+    id: conv.id,
+    name: conv.character_name,
+    lastMessage: conv.last_message || "",
+    time: conv.last_message_time 
+      ? format(new Date(conv.last_message_time), "HH:mm", { locale: fr })
+      : "",
+    timestamp: conv.last_message_time || undefined,
+    unread: conv.unread_count,
+    isPinned: conv.is_pinned,
+    isRead: conv.unread_count === 0,
+    isArchived: conv.is_archived,
+    avatarUrl: conv.character_avatar || undefined,
+  }));
 
   // Calculate and update unread count whenever conversations change
   useEffect(() => {
@@ -330,8 +317,24 @@ const ConversationList = ({
 }: ConversationListProps) => {
   if (conversations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
-        <p className="text-muted-foreground">Aucune conversation</p>
+      <div className="flex flex-col items-center justify-center p-12 text-center space-y-4">
+        <div className="relative">
+          <div
+            className="absolute inset-0 rounded-full blur-2xl opacity-40"
+            style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)', transform: 'scale(2)' }}
+          />
+          <MessageCircle className="w-12 h-12 text-primary relative" />
+        </div>
+        <h3 className="text-lg font-semibold text-foreground">Aucune conversation pour le moment.</h3>
+        <p className="text-sm text-muted-foreground max-w-xs">
+          Choisis un profil pour commencer une discussion.
+        </p>
+        <Button
+          onClick={() => navigate("/")}
+          className="mt-2 rounded-full bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 text-primary-foreground px-6 py-2 shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
+        >
+          Explorer les profils
+        </Button>
       </div>
     );
   }
