@@ -54,24 +54,28 @@ const decodeJwtProjectRef = (token?: string | null) => {
 };
 
 const fetchFantasyCharactersFallback = async (): Promise<FantasyCharacter[] | null> => {
-  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string | undefined;
+  const cloudProjectId = "nmgjyedcgzzmaifyscnj";
+  const cloudUrl = "https://nmgjyedcgzzmaifyscnj.supabase.co";
+  const cloudPublishableKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tZ2p5ZWRjZ3p6bWFpZnlzY25qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0Nzk4NjMsImV4cCI6MjA3OTA1NTg2M30.0_GrcBVryft_YgEmlS_kG50g7XVUeDEifguw4Ldobqg";
+
+  const projectId = (import.meta.env.VITE_SUPABASE_PROJECT_ID as string | undefined) || cloudProjectId;
   const configuredUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 
   const keyCandidates = [
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
     import.meta.env.VITE_SUPABASE_ANON_KEY,
+    cloudPublishableKey,
   ].filter(Boolean) as string[];
 
   const apiKey =
-    keyCandidates.find((key) => projectId && decodeJwtProjectRef(key) === projectId) ??
-    keyCandidates[0];
+    keyCandidates.find((key) => decodeJwtProjectRef(key) === projectId) ??
+    cloudPublishableKey;
 
   const baseUrl =
-    projectId && (!configuredUrl || !configuredUrl.includes(projectId))
-      ? `https://${projectId}.supabase.co`
-      : configuredUrl;
-
-  if (!baseUrl || !apiKey) return null;
+    projectId && configuredUrl && configuredUrl.includes(projectId)
+      ? configuredUrl
+      : `https://${projectId}.supabase.co`;
 
   const response = await fetch(
     `${baseUrl}/rest/v1/fantasy_characters?select=*&order=recommended.desc`,
@@ -83,7 +87,21 @@ const fetchFantasyCharactersFallback = async (): Promise<FantasyCharacter[] | nu
     }
   );
 
-  if (!response.ok) return null;
+  if (!response.ok) {
+    const backupResponse = await fetch(
+      `${cloudUrl}/rest/v1/fantasy_characters?select=*&order=recommended.desc`,
+      {
+        headers: {
+          apikey: cloudPublishableKey,
+          Authorization: `Bearer ${cloudPublishableKey}`,
+        },
+      }
+    );
+
+    if (!backupResponse.ok) return null;
+    const backupData = (await backupResponse.json()) as FantasyCharacter[];
+    return Array.isArray(backupData) ? backupData : null;
+  }
 
   const data = (await response.json()) as FantasyCharacter[];
   return Array.isArray(data) ? data : null;
