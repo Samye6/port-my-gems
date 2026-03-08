@@ -317,8 +317,24 @@ const ConversationList = ({
 }: ConversationListProps) => {
   if (conversations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
-        <p className="text-muted-foreground">Aucune conversation</p>
+      <div className="flex flex-col items-center justify-center p-12 text-center space-y-4">
+        <div className="relative">
+          <div
+            className="absolute inset-0 rounded-full blur-2xl opacity-40"
+            style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)', transform: 'scale(2)' }}
+          />
+          <MessageCircle className="w-12 h-12 text-primary relative" />
+        </div>
+        <h3 className="text-lg font-semibold text-foreground">Aucune conversation pour le moment.</h3>
+        <p className="text-sm text-muted-foreground max-w-xs">
+          Choisis un profil pour commencer une discussion.
+        </p>
+        <Button
+          onClick={() => navigate("/")}
+          className="mt-2 rounded-full bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 text-primary-foreground px-6 py-2 shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
+        >
+          Explorer les profils
+        </Button>
       </div>
     );
   }
