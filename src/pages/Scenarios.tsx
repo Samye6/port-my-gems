@@ -126,13 +126,22 @@ const Scenarios = () => {
 
         if (error) {
           console.error("Error fetching fantasy_characters:", error);
-          setLoading(false);
+          const fallbackData = await fetchFantasyCharactersFallback();
+          setCharacters(fallbackData || []);
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          const fallbackData = await fetchFantasyCharactersFallback();
+          setCharacters(fallbackData || []);
           return;
         }
 
         setCharacters((data as FantasyCharacter[]) || []);
       } catch (err) {
         console.error("Error:", err);
+        const fallbackData = await fetchFantasyCharactersFallback();
+        setCharacters(fallbackData || []);
       } finally {
         setLoading(false);
       }
