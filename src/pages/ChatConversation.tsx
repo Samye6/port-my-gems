@@ -268,8 +268,11 @@ const ChatConversation = () => {
         }
       } else {
         const isDemoConversation = id === "demo-tamara";
+        const guestCharName = preferences?.characterName || location.state?.preferences?.characterName || "elle";
         const initialText = isDemoConversation
           ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
+          : isGuestConversation
+          ? `Hey… je suis ${guestCharName}. On m'a parlé de toi, j'avais envie de te connaître un peu mieux 😊`
           : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
 
         const initialMessage: Message = {

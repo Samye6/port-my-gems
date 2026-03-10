@@ -201,6 +201,14 @@ const Scenarios = () => {
         responseRhythm: "natural",
       };
 
+      if (!isAuthenticated) {
+        // Guest mode: navigate with a guest ID, no DB persistence
+        navigate(`/conversations/guest-${internalId}`, {
+          state: { scenarioId: internalId, preferences },
+        });
+        return;
+      }
+
       const conversation = await createConversation({
         character_name: selectedCharacter.first_name,
         character_avatar: avatarUrl,
