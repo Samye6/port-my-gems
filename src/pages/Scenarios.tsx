@@ -168,10 +168,6 @@ const Scenarios = () => {
   }, []);
 
   const handleCardClick = (character: FantasyCharacter) => {
-    if (!isAuthenticated) {
-      navigate("/auth");
-      return;
-    }
     setSelectedCharacter(character);
   };
 
