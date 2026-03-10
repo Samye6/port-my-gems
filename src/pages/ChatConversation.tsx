@@ -63,7 +63,8 @@ const ChatConversation = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Get conversation ID - use persisted ID if available, otherwise original ID
-  const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' ? id || null : null);
+  const isGuestConversation = id?.startsWith('guest-') || false;
+  const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' && !isGuestConversation ? id || null : null);
   const { messages: dbMessages, loading, sendMessage } = useMessages(actualConversationId);
   const { createConversation, refetch } = useConversations();
 
@@ -249,9 +250,9 @@ const ChatConversation = () => {
       }
     );
 
-    // Si c'est une conversation demo ou nouvelle ET que l'utilisateur n'est pas authentifié,
+    // Si c'est une conversation demo, nouvelle ou guest ET que l'utilisateur n'est pas authentifié,
     // charger les messages depuis localStorage ou initialiser avec un message de bienvenue
-    if (!isAuthenticated && (id === "demo-tamara" || id === "new")) {
+    if (!isAuthenticated && (id === "demo-tamara" || id === "new" || isGuestConversation)) {
       const storageKey = `conversation_${id}`;
       const savedMessages = localStorage.getItem(storageKey);
       
@@ -267,8 +268,11 @@ const ChatConversation = () => {
         }
       } else {
         const isDemoConversation = id === "demo-tamara";
+        const guestCharName = preferences?.characterName || location.state?.preferences?.characterName || "elle";
         const initialText = isDemoConversation
           ? "Bonjour.. ou salut je sais pas haha... Je viens d'emménager dans le quartier. Je connais pas grand monde en ville mais j'ai eu ton numéro par une amie. Ça te dérange pas si on continue à parler un peu :) ?"
+          : isGuestConversation
+          ? `Hey… je suis ${guestCharName}. On m'a parlé de toi, j'avais envie de te connaître un peu mieux 😊`
           : "Hey... je voulais te parler de quelque chose. Tu as un moment ?";
 
         const initialMessage: Message = {

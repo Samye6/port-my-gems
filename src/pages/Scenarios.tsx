@@ -168,10 +168,6 @@ const Scenarios = () => {
   }, []);
 
   const handleCardClick = (character: FantasyCharacter) => {
-    if (!isAuthenticated) {
-      navigate("/auth");
-      return;
-    }
     setSelectedCharacter(character);
   };
 
@@ -204,6 +200,14 @@ const Scenarios = () => {
         avatarUrl,
         responseRhythm: "natural",
       };
+
+      if (!isAuthenticated) {
+        // Guest mode: navigate with a guest ID, no DB persistence
+        navigate(`/conversations/guest-${internalId}`, {
+          state: { scenarioId: internalId, preferences },
+        });
+        return;
+      }
 
       const conversation = await createConversation({
         character_name: selectedCharacter.first_name,
