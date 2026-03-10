@@ -63,7 +63,8 @@ const ChatConversation = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Get conversation ID - use persisted ID if available, otherwise original ID
-  const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' ? id || null : null);
+  const isGuestConversation = id?.startsWith('guest-') || false;
+  const actualConversationId = persistedConversationId || (id !== 'new' && id !== 'demo-tamara' && !isGuestConversation ? id || null : null);
   const { messages: dbMessages, loading, sendMessage } = useMessages(actualConversationId);
   const { createConversation, refetch } = useConversations();
 
