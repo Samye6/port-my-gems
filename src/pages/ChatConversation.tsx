@@ -250,9 +250,9 @@ const ChatConversation = () => {
       }
     );
 
-    // Si c'est une conversation demo ou nouvelle ET que l'utilisateur n'est pas authentifié,
+    // Si c'est une conversation demo, nouvelle ou guest ET que l'utilisateur n'est pas authentifié,
     // charger les messages depuis localStorage ou initialiser avec un message de bienvenue
-    if (!isAuthenticated && (id === "demo-tamara" || id === "new")) {
+    if (!isAuthenticated && (id === "demo-tamara" || id === "new" || isGuestConversation)) {
       const storageKey = `conversation_${id}`;
       const savedMessages = localStorage.getItem(storageKey);
       
